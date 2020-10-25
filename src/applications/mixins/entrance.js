@@ -1,5 +1,5 @@
 import {fetchData} from '@/applications/mixins/fetchData'
-import {globalSettings} from '@/utils/util'
+import {globalSettings} from '@/utils/base'
 import localCache from '@/applications/common/LocalCache'
 
 export const entrance = {
