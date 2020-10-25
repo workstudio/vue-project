@@ -1,5 +1,5 @@
 import localCache from '@/applications/common/LocalCache'
-import {globalSettings} from '@/utils/util'
+import {globalSettings} from '@/utils/base'
 import {resetRouter} from '@/router'
 import {fetchData} from '@/applications/mixins/fetchData'
 

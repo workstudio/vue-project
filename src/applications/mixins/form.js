@@ -1,4 +1,4 @@
-import {globalSettings} from '@/utils/util'
+import {globalSettings} from '@/utils/base'
 
 export const form = {
   name: "form",
