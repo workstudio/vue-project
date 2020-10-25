@@ -1,5 +1,5 @@
 import router, { resetRouter } from '@/router'
-import {globalSettings} from '@/utils/util'
+import {globalSettings} from '@/utils/base'
 import entranceModel from '@/applications/passport/Entrance'
 import * as popMethod from '@/utils/popup'
 

@@ -3,7 +3,7 @@ import {asyncRoutes, constantRoutes} from '@/router'
 import localCache from '@/applications/common/LocalCache'
 import entranceModel from '@/applications/passport/Entrance'
 import * as popMethod from '@/utils/popup'
-import {globalSettings} from '@/utils/util'
+import {globalSettings} from '@/utils/base'
 import Layout from '@/layout'
 import Middle from '@/layout/middle'
 

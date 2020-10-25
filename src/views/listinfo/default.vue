@@ -64,7 +64,7 @@
 <script>
 //import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils'
+import { parseTime } from '@/utils/base'
 import ListSearch from './components/ListSearch'
 import ListForm from './components/ListForm'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination

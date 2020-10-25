@@ -11,7 +11,7 @@
   <img width="100%" :src="dialogImageUrl" alt="">
 </el-dialog>
 <script>
-import {client} from '@/utils/oss.js';
+import {client} from '@/utils/exts/oss.js';
 
 export default {
   name: 'SingleImageUpload',

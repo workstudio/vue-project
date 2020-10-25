@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { generateTitle } from '@/utils/i18n'
+import { generateTitle } from '@/utils/exts/i18n'
 import pathToRegexp from 'path-to-regexp'
 
 export default {

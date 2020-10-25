@@ -20,7 +20,7 @@
  * emit:
  * btn -> 提交操作
  */
-import { debounce } from "@/utils/explorer"; // 导入防抖函数
+import { debounce } from "@/utils/exts/explorer"; // 导入防抖函数
 export default {
   props: {
     // 状态

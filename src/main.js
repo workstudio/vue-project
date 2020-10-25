@@ -16,7 +16,7 @@ import router from './router'
 
 import i18n from './lang' // internationalization
 import localCache from '@/applications/common/LocalCache'
-import * as baseMethod from '@/utils/util'
+import * as baseMethod from '@/utils/base'
 Vue.prototype.localCache = localCache
 Vue.prototype.baseMethod = baseMethod
 
@@ -32,7 +32,7 @@ Vue.use(WlExplorer);
 
 import './icons' // icon
 import './permission' // permission control
-import './utils/error-log' // error log
+import './utils/exts/error-log' // error log
 
 import * as filters from './filters' // global filters
 

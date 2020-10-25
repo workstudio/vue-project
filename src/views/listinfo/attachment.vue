@@ -70,7 +70,7 @@
 <script>
 import fadeIn from "@/components/Explorer/FadeIn"; // 导入文件管理器
 import submitBtn from "@/components/Explorer/SubmitBtn"; // 导入防抖提交组件
-import {closeOtherLayout, arrayToTree} from "@/utils/explorer"; // 导入关闭其他弹出类视图函数
+import {closeOtherLayout, arrayToTree} from "@/utils/exts/explorer"; // 导入关闭其他弹出类视图函数
 import {listinfo} from '@/applications/mixins/listinfo';
 import localCache from '@/applications/common/LocalCache'
 /*import {

@@ -4,8 +4,8 @@ import localCache from '@/applications/common/LocalCache'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import getPageTitle from '@/utils/get-page-title'
-import {globalSettings} from '@/utils/util'
+import getPageTitle from '@/utils/exts/get-page-title'
+import {globalSettings} from '@/utils/base'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
