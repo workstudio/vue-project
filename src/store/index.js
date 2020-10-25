@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import VuexORM from '@vuex-orm/core';
 import VuexORMAxios from 'plugin-axios-acan/src';
 import { MessageBox, Message } from 'element-ui'
-import {globalSettings} from '@/utils/util';
+import {globalSettings} from '@/utils/base';
 import * as popMethod from '@/utils/popup'
 import localCache from '@/applications/common/LocalCache'
 
@@ -67,7 +67,8 @@ export default new Vuex.Store({
   getters,
   namespaced: true,
   modules: vuexs,
-  plugins: [VuexORM.install(database)]
+  plugins: [VuexORM.install(database)],
+  strict: debug
 })
 
 /*const store = new Vuex.Store({
