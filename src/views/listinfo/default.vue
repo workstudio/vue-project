@@ -13,7 +13,7 @@
       @sort-change="sortChange"
     >
 
-      <el-table-column  v-for="(fieldName, field) in fieldNames" :key="field" :label="fieldName" :prop="field" sortable="custom" align="center" :class-name="getSortClass(field)">
+      <el-table-column  v-for="(fieldItem, field) in fieldNames" :key="field" :align="fieldItem.align" :min-width="fieldItem.width" :label="fieldItem.name" :prop="field" sortable="custom" :class-name="getSortClass(field)">
         <template slot-scope="{row}">
           <component
             :row="row"
@@ -22,7 +22,7 @@
           </component>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('table.actions')" align="center" min-width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <component
             v-for="button in currentResource[5]"

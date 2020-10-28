@@ -1,5 +1,5 @@
 <template>
-  <el-form-item :label="elem.label" prop="field">
+  <el-form-item :label="elem.options.name" prop="field">
     <div style="margin-top: 15px;">
       <el-input placeholder="请输入内容" v-model="input" :disabled="disabled" class="input-with-select" @change="handleFormChange">
         <el-select v-model="select" slot="prepend" placeholder="请选择" @change="handleSelect">

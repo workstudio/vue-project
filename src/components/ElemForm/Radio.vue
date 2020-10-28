@@ -1,5 +1,5 @@
 <template>
-  <el-form-item :label="elem.label" prop="field">
+  <el-form-item :label="elem.options.name" prop="field">
     <el-radio-group v-model="input" @change="handleFormChange">
         <el-radio v-for="(option, optionKey) in elem.infos" :key="optionKey" :label="optionKey">{{option}}</el-radio>
     </el-radio-group>

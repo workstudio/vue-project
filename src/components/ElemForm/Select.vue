@@ -1,5 +1,5 @@
 <template>
-  <el-form-item :label="elem.label" prop="field">
+  <el-form-item :label="elem.options.name" prop="field">
     <el-select v-model="input" placeholder="请选择" @change="handleFormChange">
       <el-option
         v-for="(option, optionKey) in elem.infos"

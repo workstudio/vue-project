@@ -1,6 +1,6 @@
 <template>
   <span>
-    <el-select v-model="input" :placeholder="elem.label" :multiple="multiple" clearable style="width: 90px" class="filter-item" @change="handleChange">
+    <el-select v-model="input" :placeholder="elem.options.name" :multiple="multiple" clearable style="width: 90px" class="filter-item" @change="handleChange">
       <el-option v-for="(item, index) in elem.infos" :key="index" :label="item" :value="index" />
     </el-select>
   </span>

@@ -1,5 +1,5 @@
 <template>
-  <el-form-item :label="elem.label" prop="field">
+  <el-form-item :label="elem.optinos.name" prop="field">
       <el-input v-model="input" :placeholder="'请输入内容' + elem.label" @change="handleFormChange"></el-input>
       {{test}}
   </el-form-item>

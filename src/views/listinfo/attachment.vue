@@ -4,6 +4,7 @@
       ref="wl-explorer-cpt"
       :header-dropdown="headerHandle"
       :upload-options="uploadOptions"
+      :showIndex="showIndex"
       :columns="file_table_columns"
       :all-path="all_folder_list"
       :is-folder-fn="isFolderFn"
@@ -36,14 +37,14 @@
             @keyup.enter.native="submitFolderFrom('folder_form')"
           >
             <el-form-item label="文件路径" prop="ParentId">
-              <wlTreeSelect
+              <!--<wlTreeSelect
                 class="u-full"
                 nodeKey="Id"
                 placeholder="请选择文件路径"
                 :props="tree_select_prop"
                 :data="tree_folder_list"
                 v-model="folder_form.ParentId"
-              ></wlTreeSelect>
+              ></wlTreeSelect>-->
             </el-form-item>
             <el-form-item label="文件夹名称 " prop="Name">
               <el-input v-model="folder_form.Name" placeholder="请输入文件夹名称"></el-input>
@@ -91,6 +92,12 @@ export default {
     const _GB = 1024 * 1024;
     // const vm = this;
     return {
+      showIndex: false,
+      listQuery: {
+        page: 1,
+        per_page: 2000,
+        parent_id: 0,
+      },
       load: {
         folder: false,
       }, // loading管理
@@ -179,8 +186,8 @@ export default {
         self: 1, // 自建
       }, // 数据来源类型
       explorer_prop: {
-        name: "Name",
-        match: "Name",
+        name: "path",
+        match: "name",
         splic: true,
         suffix: "SuffixName",
         pathId: "Id",
@@ -218,13 +225,17 @@ export default {
       fields: [],
     };
   },
+  created() {
+      console.log('hhhhhhhh');
+    this.getList()
+  },
   computed:{
     file_table_columns() {
       let datas = [];
       let fields = [];
-      for (let item in this.fieldNames) {
-        fields.push(item);
-        let data = {label: this.fieldNames[item], prop: item};
+      for (let field in this.fieldNames) {
+        fields.push(field);
+        let data = {label: this.fieldNames[field].name, prop: field, width: this.fiedNames[field].width};
         datas.push(data);
       }
       this.fields = fields;
@@ -236,18 +247,41 @@ export default {
         let data = [];
           this.fields.forEach(index => {
               data[index] = info[index].value;
+              data.Type = 1;
           })
         datas.push(data);
       })
+        console.log('fffffff', datas);
       return datas;
     },
   },
-  created() {
+  /*created() {
     this.closeOtherLayout = closeOtherLayout;
     this.getAllFolders();
     this.getFileList();
-  },
+  },*/
   methods: {
+    getList() {
+        console.log('nnnnnnnnnn', this.cModel);
+      console.log('fffffffff', this.$route);
+      this.listQuery.parent_id = '0';
+      this.listLoading = true
+      this.fetchRequest(this.cModel, {query: this.listQuery, action: 'list'}).then(response => {
+        this.list = response.data;
+        this.addFormFields = response.addFormFields;
+        this.updateFormFields = response.updateFormFields;
+        this.fieldNames = response.fieldNames;
+        this.pageLinks = response.links,
+        this.pageMeta = response.meta,
+        this.searchFields = response.searchFields,
+        this.listQuery.per_page = this.pageMeta.per_page;
+
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
+    },
     /**
      * @name 上传文件提交操作
      */
@@ -405,6 +439,8 @@ export default {
     },
     // 判断是否文件夹函数
     isFolderFn(row) {
+
+        console.log(row.Type == this.type.folder, row);
       return row.Type === this.type.folder;
     },
   }

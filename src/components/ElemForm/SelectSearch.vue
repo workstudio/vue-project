@@ -1,5 +1,5 @@
 <template>
-  <el-form-item :label="elem.label" prop="field">
+  <el-form-item :label="elem.options.name" prop="field">
     <el-select
       v-model="input"
       filterable

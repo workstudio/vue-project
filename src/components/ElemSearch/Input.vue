@@ -1,5 +1,5 @@
 <template>
-  <el-input v-model="input" :placeholder="elem.label" style="width: 200px;" class="filter-item" :test="test" @keyup.enter.native="handleFilter" @change="handleChange()" />
+  <el-input v-model="input" :placeholder="elem.options.name" style="width: 200px;" class="filter-item" :test="test" @keyup.enter.native="handleFilter" @change="handleChange()" />
 </template>
 
 <script>

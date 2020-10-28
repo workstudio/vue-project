@@ -14,7 +14,7 @@
       :tree-props="{children: 'subInfos', hasChildren: 'hasChildren'}"
       >
 
-      <el-table-column v-for="(fieldName, field) in fieldNames" :key="field" :label="fieldName" :prop="field" align="center">
+      <el-table-column v-for="(fieldItem, field) in fieldNames" :align="fieldItem.align" :min-width="fieldItem.width" :key="field" :label="fieldItem.name" :prop="field">
         <template slot-scope="{row}">
           <component
             :row="row"
