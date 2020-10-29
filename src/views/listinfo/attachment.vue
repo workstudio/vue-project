@@ -5,12 +5,13 @@
       :header-dropdown="headerHandle"
       :upload-options="uploadOptions"
       :showIndex="showIndex"
-      :columns="file_table_columns"
+      :columns="pathColumns"
       :all-path="all_folder_list"
       :is-folder-fn="isFolderFn"
       :folderType="rource_type"
       uploadUrl="http://api.supperuser.vip/passport/attachments/upload"
-      :data="file_table_data"
+      :pathDatas="pathDatas"
+      :fileDatas="fileDatas"
       :uploadHeaders="uploadHeaders"
       :props="explorer_prop"
       size="small"
@@ -92,10 +93,11 @@ export default {
     const _GB = 1024 * 1024;
     // const vm = this;
     return {
+      fileList: [],
       showIndex: false,
       listQuery: {
         page: 1,
-        per_page: 2000,
+        per_page: 20,
         parent_id: 0,
       },
       load: {
@@ -173,7 +175,6 @@ export default {
           },
         },
       ],*/ // 自定义表格列
-      //file_table_data: [], // 表格数据
       all_folder_list: [], // 所有文件夹列表
       tree_folder_list: [], // 树形文件夹列表
       type: {
@@ -223,31 +224,60 @@ export default {
         aa: 1212,
       }, // 上传文件附加参数
       fields: [],
+      fileFields: [],
     };
   },
   created() {
       console.log('hhhhhhhh');
-    this.getList()
+    this.getList();
+    this.getFileList()
   },
   computed:{
-    file_table_columns() {
+    fileColumns() {
       let datas = [];
       let fields = [];
-      for (let field in this.fieldNames) {
+      for (let field in this.fileFieldNames) {
         fields.push(field);
-        let data = {label: this.fieldNames[field].name, prop: field, width: this.fiedNames[field].width};
+        let data = {label: this.fieldNames[field].name, prop: field, width: this.fieldNames[field].width};
         datas.push(data);
       }
       this.fields = fields;
       return datas;
     },
-    file_table_data() {
+    pathColumns() {
       let datas = [];
+      let fields = [];
+        console.log(this.fieldNames, 'ffffff');
+      for (let field in this.fieldNames) {
+        fields.push(field);
+        let data = {label: this.fieldNames[field].name, prop: field, width: this.fieldNames[field].width};
+        datas.push(data);
+      }
+      this.fields = fields;
+      return datas;
+    },
+    pathDatas() {
+      let datas = [];
+        console.log('vvvvvv', this.list);
       this.list.forEach(info => {
         let data = [];
           this.fields.forEach(index => {
               data[index] = info[index].value;
               data.Type = 1;
+          })
+        datas.push(data);
+      })
+        console.log('fffffff', datas);
+      return datas;
+    },
+    fileDatas() {
+      let datas = [];
+        console.log('vvvvvv', this.list);
+      this.fileList.forEach(info => {
+        let data = [];
+          this.fileFields.forEach(index => {
+              data[index] = info[index].value;
+              data.Type = 0;
           })
         datas.push(data);
       })
@@ -261,6 +291,26 @@ export default {
     this.getFileList();
   },*/
   methods: {
+    getFileList() {
+        console.log('nnnnnnnnnn', this.cModel);
+      console.log('fffffffff', this.$route);
+      this.listQuery.parent_id = '0';
+      this.listLoading = true
+      let attachmentModel = this.getModel('passport', 'attachment');
+      this.fetchRequest(attachmentModel, {query: this.listQuery, action: 'list'}).then(response => {
+        this.fileList = response.data;
+        this.fileFieldNames = response.fieldNames;
+        this.pageLinks = response.links,
+        this.pageMeta = response.meta,
+        this.searchFields = response.searchFields,
+        this.listQuery.per_page = this.pageMeta.per_page;
+
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
+    },
     getList() {
         console.log('nnnnnnnnnn', this.cModel);
       console.log('fffffffff', this.$route);
@@ -300,18 +350,10 @@ export default {
     fileSearch(file, update) {
       if (update) {
         this.path = file;
-        this.getFileList();
+        //this.getFileList();
       }
     },
     // 获取文件夹列表
-    getFileList() {
-        return ;
-      getFileListApi().then(({ data }) => {
-        if (data.StatusCode === apiok) {
-          this.file_table_data = data.Data || [];
-        }
-      });
-    },
     /**
      * 编辑文件夹
      * act:Object 当前选中文件夹
@@ -423,7 +465,7 @@ export default {
     },
     // 获取所有文件夹
     getAllFolders() {
-        return {};
+      return {};
       getAllFoldersApi().then(({ data }) => {
         if (data.StatusCode === apiok) {
           this.all_folder_list = data.Data || [];
