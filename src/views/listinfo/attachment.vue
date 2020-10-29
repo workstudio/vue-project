@@ -5,7 +5,8 @@
       :header-dropdown="headerHandle"
       :upload-options="uploadOptions"
       :showIndex="showIndex"
-      :columns="pathColumns"
+      :pathColumns="pathColumns"
+      :fileColumns="fileColumns"
       :all-path="all_folder_list"
       :is-folder-fn="isFolderFn"
       :folderType="rource_type"
@@ -228,7 +229,6 @@ export default {
     };
   },
   created() {
-      console.log('hhhhhhhh');
     this.getList();
     this.getFileList()
   },
@@ -241,13 +241,12 @@ export default {
         let data = {label: this.fieldNames[field].name, prop: field, width: this.fieldNames[field].width};
         datas.push(data);
       }
-      this.fields = fields;
+      this.fileFields = fields;
       return datas;
     },
     pathColumns() {
       let datas = [];
       let fields = [];
-        console.log(this.fieldNames, 'ffffff');
       for (let field in this.fieldNames) {
         fields.push(field);
         let data = {label: this.fieldNames[field].name, prop: field, width: this.fieldNames[field].width};
@@ -258,7 +257,6 @@ export default {
     },
     pathDatas() {
       let datas = [];
-        console.log('vvvvvv', this.list);
       this.list.forEach(info => {
         let data = [];
           this.fields.forEach(index => {
@@ -267,12 +265,10 @@ export default {
           })
         datas.push(data);
       })
-        console.log('fffffff', datas);
       return datas;
     },
     fileDatas() {
       let datas = [];
-        console.log('vvvvvv', this.list);
       this.fileList.forEach(info => {
         let data = [];
           this.fileFields.forEach(index => {
@@ -281,7 +277,6 @@ export default {
           })
         datas.push(data);
       })
-        console.log('fffffff', datas);
       return datas;
     },
   },
@@ -292,8 +287,6 @@ export default {
   },*/
   methods: {
     getFileList() {
-        console.log('nnnnnnnnnn', this.cModel);
-      console.log('fffffffff', this.$route);
       this.listQuery.parent_id = '0';
       this.listLoading = true
       let attachmentModel = this.getModel('passport', 'attachment');
@@ -312,8 +305,6 @@ export default {
       })
     },
     getList() {
-        console.log('nnnnnnnnnn', this.cModel);
-      console.log('fffffffff', this.$route);
       this.listQuery.parent_id = '0';
       this.listLoading = true
       this.fetchRequest(this.cModel, {query: this.listQuery, action: 'list'}).then(response => {
@@ -481,8 +472,6 @@ export default {
     },
     // 判断是否文件夹函数
     isFolderFn(row) {
-
-        console.log(row.Type == this.type.folder, row);
       return row.Type === this.type.folder;
     },
   }

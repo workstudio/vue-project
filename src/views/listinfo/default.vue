@@ -102,7 +102,6 @@ export default {
   },
   methods: {
     getList() {
-      //console.log('fffffffff', this.$route);
       this.listQuery.sort_elem = JSON.stringify(this.sortElem);
       this.sortElem = {};
       this.listLoading = true

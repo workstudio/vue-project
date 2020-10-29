@@ -12,7 +12,6 @@
       </el-breadcrumb-item>
   </div>
     </transition-group>
-    <span>{{test}}</span>
   </el-breadcrumb>
   <!--<div
     class="head-bar-wrap clearfix"
@@ -57,9 +56,6 @@ export default {
     }
   },
   computed: {
-    test() {
-        //console.log(this.permission_routes, 'ooooo');
-    },
     activeMenu() {
       const route = this.$route
       const { meta, path } = route

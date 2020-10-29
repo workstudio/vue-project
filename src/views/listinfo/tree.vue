@@ -95,7 +95,6 @@ export default {
     getList() {
       this.listLoading = true
       this.fetchRequest(this.cModel, {query: this.listQuery, params: {action: 'listinfo-tree'}}).then(response => {
-          console.log(response);
         this.list = response.data;
         this.addFormFields = response.addFormFields;
         this.updateFormFields = response.updateFormFields;

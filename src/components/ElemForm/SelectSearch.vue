@@ -39,15 +39,12 @@ export default {
   },
   methods: {
     remoteMethod(query) {
-        console.log(query, 'nnnnnnn');
       if (query == '') {
         this.options = this.elem.infos;
         return ;
       }
       let model = this.getModel(this.elem.searchApp, this.elem.searchResource);;
-      console.log(this.elem, model, 'rrrrrrrrr');
       model.$fetch({query: {keyworkd: query, action: 'list', 'point_scene': 'keyvalue'}}).then(response => {
-        console.log(response);
         this.loading = true;
         setTimeout(() => {
           this.loading = false;

@@ -1,5 +1,5 @@
 <template>
-  <el-input v-model="input" :placeholder="elem.options.name" style="width: 200px;" class="filter-item" :test="test" @keyup.enter.native="handleFilter" @change="handleChange()" />
+  <el-input v-model="input" :placeholder="elem.options.name" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" @change="handleChange()" />
 </template>
 
 <script>
@@ -13,9 +13,6 @@ export default {
     }
   },
   computed: {
-    test() {
-      //console.log(this.elem, 'fffffffffffffffffffff', this.input, this.field);
-    }
   },
   methods: {
     handleChange() {

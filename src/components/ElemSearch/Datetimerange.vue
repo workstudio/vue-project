@@ -55,7 +55,6 @@ export default {
   },
   methods: {
     handleChange() {
-    console.log(this.input, this.listQuery, 'hhhhhhh');
       this.listQuery[this.field] = this.input[0] + '|' + this.input[1];
       this.$emit('update.listQuery');
       //this.$emit('handleFilter');

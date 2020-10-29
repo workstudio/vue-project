@@ -29,7 +29,6 @@
 
 <script>
 import elemForms from '@/components/ElemForm'
-console.log(elemForms, 'fffffffff');
 
 export default {
   name: 'ListForm',
@@ -125,7 +124,6 @@ export default {
             return ;
           }
           //this.list.unshift(this.inputInfos)
-          console.log(response, 'rrrrrrrrrrrr');
           this.dialogFormVisible = false
           this.$notify({
             title: '成功',
@@ -165,13 +163,11 @@ export default {
           //tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
           //updateArticle(tempData).then(() => {
           let data = this.model.formatDirtData(this.inputInfos, this.currentRow, this.updateFormFields);
-            console.log(this.currentRow, this.inputInfos, 'iiii', this.updateFormFields, data, this.currentRow[keyField]);
           this.model.$update({params: {keyField: this.currentRow[keyField].valueSource, action: 'update'}, data: data}).then(response => {
             if (response === false) {
               return ;
             }
             //const index = this.list.findIndex(v => v.id === this.inputInfos.id)
-            console.log(response, 'rrrrrrrrrrrrrrrr');
             //this.list.splice(index, 1, this.inputInfos)
             this.dialogFormVisible = false
             this.$notify({
