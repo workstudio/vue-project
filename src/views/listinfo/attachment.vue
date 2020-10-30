@@ -14,12 +14,14 @@
       :pathDatas="pathDatas"
       :fileDatas="fileDatas"
       :uploadHeaders="uploadHeaders"
-      :props="explorer_prop"
+      :props="pathProps"
+      :fileProps="fileProps"
       size="small"
       @handleFolder="handleFolder"
       @upload="fileUpload"
       @download="download"
       @search="fileSearch"
+      @preview="preview"
       @del="fileDel"
       @closeFade="closeOtherLayout(fade)"
     >
@@ -187,7 +189,20 @@ export default {
       rource_type: {
         self: 1, // 自建
       }, // 数据来源类型
-      explorer_prop: {
+      fileProps: {
+        name: "name",
+        match: "name",
+        splic: true,
+        suffix: "extname",
+        pathId: "Id",
+        pathPid: "ParentId",
+        pathName: "Name",
+        pathChildren: "Children", // String 路径数据 children字段
+        pathConnector: "\\", // String 路径父子数据拼接连接符,默认为'\'
+        pathParents: "Parents", // String 路径数据所有直系祖先节点自增长identityId逗号拼接
+        pathIdentityId: "IdentityId", // String 路径数据自增长id
+      }, // 文件管理器配置项
+      pathProps: {
         name: "path",
         match: "name",
         splic: true,
@@ -226,9 +241,11 @@ export default {
       }, // 上传文件附加参数
       fields: [],
       fileFields: [],
+      fileFieldNames: {},
     };
   },
   created() {
+    //this.closeOtherLayout = closeOtherLayout;
     this.getList();
     this.getFileList()
   },
@@ -238,7 +255,7 @@ export default {
       let fields = [];
       for (let field in this.fileFieldNames) {
         fields.push(field);
-        let data = {label: this.fieldNames[field].name, prop: field, width: this.fieldNames[field].width};
+        let data = {label: this.fileFieldNames[field].name, prop: field, width: this.fileFieldNames[field].width};
         datas.push(data);
       }
       this.fileFields = fields;
@@ -281,11 +298,12 @@ export default {
     },
   },
   /*created() {
-    this.closeOtherLayout = closeOtherLayout;
     this.getAllFolders();
     this.getFileList();
   },*/
   methods: {
+    preview() {
+    },
     getFileList() {
       this.listQuery.parent_id = '0';
       this.listLoading = true
