@@ -62,6 +62,7 @@ VuexORM.use(VuexORMAxios, {
   }
 })
 //let a = [VuexORM.install(database)]
+const debug = false;//process.env.NODE_ENV !== "production";
 
 export default new Vuex.Store({
   getters,

@@ -24,7 +24,6 @@ export const fetchData = {
 	  if (!currentPermissions[this.appCode][this.modelCode]) {
 	      return {};
       }
-      //console.log('fffffffffffffff', currentPermissions[this.appCode][this.modelCode]);
       return currentPermissions[this.appCode][this.modelCode];
     }
   },
