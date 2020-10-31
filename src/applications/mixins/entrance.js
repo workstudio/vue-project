@@ -8,10 +8,9 @@ export const entrance = {
   data() {
     return {
       loginType: '',
-      envType: globalSettings.envType,
 
       needBind: false,
-      captchaUrl: this.baseMethod.getCaptchaUrl(),
+      captchaUrl: '',//this.baseMethod.getCaptchaUrl(),
       captcha: '',
       captchaRequire: false,
       mcode: '',
@@ -28,7 +27,7 @@ export const entrance = {
       return this.getModel('passport', 'user');
     },
     returnData() {
-      return this.remoteRequest(this.cModel, 'token');
+      //return this.remoteRequest(this.cModel, 'token');
 	},
   },
    
@@ -66,7 +65,7 @@ export const entrance = {
     },
   },
   watch: {
-  	returnData(val, oldVal) {
+  	/*returnData(val, oldVal) {
   	  if (!val.code) {
   	  	return ;
 	  }
@@ -99,6 +98,6 @@ export const entrance = {
         let message = rDatas.message ? rDatas.message : '登录失败，请重新登录';
         this.message(message);
 	  }
-    },
+    },*/
   }
 }

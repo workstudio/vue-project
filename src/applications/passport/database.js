@@ -11,5 +11,6 @@ import Attachment from '@/applications/passport/Attachment'
 import AttachmentPath from '@/applications/passport/AttachmentPath'
 import AttachmentInfo from '@/applications/passport/AttachmentInfo'
 import AttachmentVideo from '@/applications/passport/AttachmentVideo'
+import Common from '@/applications/passport/Common'
 
-export default {User, Entrance, UserAddress, UserScore, Role, Manager, Role, Resource, Region, Permission, Attachment, AttachmentPath, AttachmentInfo, AttachmentVideo}
+export default {User, Entrance, UserAddress, UserScore, Role, Manager, Role, Resource, Region, Permission, Attachment, AttachmentPath, AttachmentInfo, AttachmentVideo, Common}
