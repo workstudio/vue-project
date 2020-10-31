@@ -10,6 +10,7 @@ import NotDefined from "@views/NotDefined";
 import $store from "../store";
 import toLogin from "@libs/login";
 import Loading from "@views/Loading";
+import localCache from '@/applications/common/LocalCache'
 
 Vue.use(Router);
 
@@ -248,10 +249,13 @@ router.replace = function(...args) {
 router.beforeEach((to, form, next) => {
   const { title, backgroundColor, footer, home, auth } = to.meta;
   console.log(to.name, form.name);
-  if (auth === true && !$store.state.app.token) {
+  let token = localCache.getToken();
+    console.log('ttttttt', token);
+  if (auth === true && !token) {//!$store.state.app.token) {
     if (form.name === "Login") return;
-    return toLogin(true, to.fullPath);
+    //return toLogin(true, to.fullPath);
   }
+    console.log('nnnnnnnnnn');
   document.title = title || process.env.VUE_APP_NAME || "crmeb商城";
   //判断是否显示底部导航
   footer === true ? $store.commit("SHOW_FOOTER") : $store.commit("HIDE_FOOTER");

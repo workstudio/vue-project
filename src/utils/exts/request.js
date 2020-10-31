@@ -16,10 +16,10 @@ function baseRequest(options) {
   headers["Authori-zation"] = "Bearer " + token;
   options.headers = headers;
   if (options.login && !token) {
-    toLogin();
-    return Promise.reject({ msg: "未登录", toLogin: true });
+    //toLogin();
+    //return Promise.reject({ msg: "未登录", toLogin: true });
   }
-  // console.log(options);
+  console.log(options);
   return instance(options).then(res => {
     const data = res.data || {};
 

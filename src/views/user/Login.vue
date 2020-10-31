@@ -188,12 +188,13 @@ import { validatorDefaultCatch } from "@utils/exts/dialog";
 import { getLogo } from "@api/public";
 import cookie from "@utils/exts/store/cookie";
 import { VUE_APP_API_URL } from "@utils/base";
+import {entrance} from '@/applications/mixins/entrance'
 
 const BACK_URL = "login_back_url";
 
 export default {
   name: "Login",
-  mixins: [sendVerifyCode],
+  mixins: [sendVerifyCode, entrance],
   data: function() {
     return {
       navList: ["账号登录", "快速登录"],
@@ -305,19 +306,24 @@ export default {
       } catch (e) {
         return validatorDefaultCatch(e);
       }
-      register({
-        account: that.account,
-        captcha: that.captcha,
+      
+      this.createRequest(this.cModel, {params: {action: 'signupin'}, data: {
+        mobile: that.account,
+        code: that.captcha,
         password: that.password,
+        type: 'signupin',
         spread: cookie.get("spread")
-      })
-        .then(res => {
-          that.$dialog.success(res.msg);
-          that.formItem = 1;
-        })
-        .catch(res => {
-          that.$dialog.error(res.msg);
+        }}).then(response => {
+          if (response !== false) {
+            that.$dialog.success('注册成功');
+            console.log(response);
+            this.loginSuccess(response);
+            //that.formItem = 1;
+          }
         });
+        /*.catch(res => {
+          that.$dialog.error(res.msg);
+        });*/
     },
     async code() {
       var that = this;
@@ -335,23 +341,24 @@ export default {
         return validatorDefaultCatch(e);
       }
       if (that.formItem == 2) that.type = "register";
-      await registerVerify({
-        phone: that.account,
-        type: that.type,
+      let model = this.getModel('passport', 'common');
+      let query = {
+        mobile: that.account,
+        type: 'signupin',//that.type,
+        template: 'ocode',
         key: that.keyCode,
         code: that.codeVal
+      }
+      await this.fetchRequest(model, {query: query,  params: {action: 'send-code'}}).then(response => {
+        console.log(response);
+        if (response === false) {
+          that.codeUrl = `${VUE_APP_API_URL}/sms_captcha?key=${that.keyCode}`;
+          that.isShowCode = true;
+          //that.$dialog.error(res.msg);
+        }
+        that.$dialog.success('验证码发送成功');
+        that.sendCode();
       })
-        .then(res => {
-          that.$dialog.success(res.msg);
-          that.sendCode();
-        })
-        .catch(res => {
-          if (res.data.status === 402) {
-            that.codeUrl = `${VUE_APP_API_URL}/sms_captcha?key=${that.keyCode}`;
-            that.isShowCode = true;
-          }
-          that.$dialog.error(res.msg);
-        });
     },
     navTap: function(index) {
       this.current = index;
@@ -399,6 +406,21 @@ export default {
         .catch(e => {
           this.$dialog.error(e.msg);
         });
+    },
+    loginSuccess(response) {
+      this.cModel
+      this.cModel.signupinCache(response);
+      /*let expires_time = data.expires_time.substring(0, 19);
+      expires_time = expires_time.replace(/-/g, "/");
+      expires_time = new Date(expires_time).getTime() - 28800000;
+      const datas = {
+        token: data.token,
+        expires_time: expires_time
+      };
+      this.$store.commit("LOGIN", datas);*/
+      const backUrl = cookie.get(BACK_URL) || "/";
+      cookie.remove(BACK_URL);
+      this.$router.replace({ path: backUrl });
     }
   }
 };
