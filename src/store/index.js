@@ -2,10 +2,9 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import VuexORM from '@vuex-orm/core';
 import VuexORMAxios from 'plugin-axios-acan/src';
-import { MessageBox, Message } from 'element-ui'
 import {globalSettings} from '@/utils/base';
-import * as popMethod from '@/utils/popup'
 import localCache from '@/applications/common/LocalCache'
+import * as errorDeal from './modules/errorDeal';
 
 import baseData from './baseData';
 Vue.use(Vuex);
@@ -28,22 +27,7 @@ VuexORM.use(VuexORMAxios, {
     onResponse(response, axios) {
       const res = response.data;
       if (res.code !== 200) {
-      	popMethod.showMessage('error', res.message);
-  
-        // 508: Illegal token; 512: Other clients logged in; 514: Token expired;
-        if (res.code === 508 || res.code === 512 || res.code === 514) {
-          // to re-login
-          popMethod.confirmMessage(
-          	'warning', 
-          	'You have been logged out, you can cancel to stay on this page, or log in again', 
-          	'Confirm logout', 
-          	'重新登录', 
-          	'取消', 
-          	function () {
-              location.reload()
-            }
-          );
-        }
+        errorDeal.errorMessageBox(res);
         Promise.reject(new Error(res.message || 'Error')).catch((e) => {});
         return false;
       } else {
@@ -52,11 +36,7 @@ VuexORM.use(VuexORMAxios, {
     },
     onError() {
       console.log('err' + error) // for debug
-      Message({
-        message: error.message,
-        type: 'error',
-        duration: 5 * 1000
-      })
+      errorDeal.errorMessage(error);
       return Promise.reject(error)
 	}
   }
