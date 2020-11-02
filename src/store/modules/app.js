@@ -65,6 +65,7 @@ const actions = {
     if (state.userInfo !== null && !force)
       return Promise.resolve(state.userInfo);
     else
+      return ;
       return new Promise(reslove => {
         getUserInfo().then(res => {
           return ;

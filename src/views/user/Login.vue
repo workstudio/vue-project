@@ -212,8 +212,16 @@ export default {
     };
   },
   mounted: function() {
-    this.getCode();
-    this.getLogoImage();
+    let hasSignin = this.localCache.hasSignin();
+      console.log(hasSignin, 'ssssssssssss');
+    if (hasSignin) {
+      const backUrl = cookie.get(BACK_URL) || "/";
+      cookie.remove(BACK_URL);
+      //this.$router.replace({ path: backUrl });
+      window.location = backUrl;
+    }
+    //this.getCode();
+    //this.getLogoImage();
   },
   methods: {
     again() {
@@ -258,29 +266,18 @@ export default {
       } catch (e) {
         return validatorDefaultCatch(e);
       }
-      loginMobile({
-        phone: that.account,
-        captcha: that.captcha,
+      let $data = {
+        mobile: that.account,
+        code: that.captcha,
+        type: 'signin',
         spread: cookie.get("spread")
+      };
+      this.createRequest(this.cModel, {params: {action: 'signin'}, data: $data}).then(response => {
+        if (response !== false) {
+          this.$dialog.success('登录成功');
+          this.loginSuccess(response);
+        }
       })
-        .then(res => {
-          let data = res.data;
-          let expires_time = data.expires_time.substring(0, 19);
-          expires_time = expires_time.replace(/-/g, "/");
-          expires_time = new Date(expires_time).getTime() - 28800000;
-          const datas = {
-            token: data.token,
-            expires_time: expires_time
-          };
-          that.$store.commit("LOGIN", datas);
-          // let newTime = Math.round(new Date() / 1000);
-          const backUrl = cookie.get(BACK_URL) || "/";
-          cookie.remove(BACK_URL);
-          that.$router.replace({ path: backUrl });
-        })
-        .catch(res => {
-          that.$dialog.error(res.msg);
-        });
     },
     async register() {
       var that = this;
@@ -306,24 +303,21 @@ export default {
       } catch (e) {
         return validatorDefaultCatch(e);
       }
-      
-      this.createRequest(this.cModel, {params: {action: 'signupin'}, data: {
+      let data = {
         mobile: that.account,
         code: that.captcha,
         password: that.password,
-        type: 'signupin',
+        type: 'signup',
         spread: cookie.get("spread")
-        }}).then(response => {
+      };
+      
+      this.createRequest(this.cModel, {params: {action: 'signup'}, data: data}).then(response => {
           if (response !== false) {
             that.$dialog.success('注册成功');
-            console.log(response);
             this.loginSuccess(response);
             //that.formItem = 1;
           }
         });
-        /*.catch(res => {
-          that.$dialog.error(res.msg);
-        });*/
     },
     async code() {
       var that = this;
@@ -389,23 +383,12 @@ export default {
         return validatorDefaultCatch(e);
       }
 
-      login({ account, password, code: codeVal })
-        .then(({ data }) => {
-          let expires_time = data.expires_time.substring(0, 19);
-          expires_time = expires_time.replace(/-/g, "/");
-          expires_time = new Date(expires_time).getTime() - 28800000;
-          const datas = {
-            token: data.token,
-            expires_time: expires_time
-          };
-          this.$store.commit("LOGIN", datas);
-          const backUrl = cookie.get(BACK_URL) || "/";
-          cookie.remove(BACK_URL);
-          this.$router.replace({ path: backUrl });
-        })
-        .catch(e => {
-          this.$dialog.error(e.msg);
-        });
+      this.createRequest(this.cModel, {params: {action: 'token'}, data: {name: account, password: password, code: codeVal }}).then(response => {
+        if (response !== false) {
+          this.$dialog.success('登录成功');
+          this.loginSuccess(response);
+        }
+      })
     },
     loginSuccess(response) {
       this.cModel
@@ -420,7 +403,8 @@ export default {
       this.$store.commit("LOGIN", datas);*/
       const backUrl = cookie.get(BACK_URL) || "/";
       cookie.remove(BACK_URL);
-      this.$router.replace({ path: backUrl });
+      //this.$router.replace({ path: backUrl });
+      window.location = backUrl;
     }
   }
 };

@@ -124,13 +124,15 @@
 import { mapGetters } from "vuex";
 import { trim, VUE_APP_API_URL, isWeixin } from "@utils/base";
 import VueCoreImageUpload from "vue-core-image-upload";
-import { postUserEdit, getLogout, switchH5Login, getUser } from "@api/user";
+//import { postUserEdit, getLogout, switchH5Login, getUser } from "@api/user";
 import { clearAuthStatus } from "@libs/wechat";
 import cookie from "@utils/exts/store/cookie";
 import store from "@/store";
+import {currentUser} from '@/applications/mixins/currentUser'
 
 export default {
   name: "PersonalData",
+  mixins: [currentUser],
   components: {
     VueCoreImageUpload
   },
@@ -167,6 +169,7 @@ export default {
       if (userInfo === undefined)
         return this.$dialog.toast({ mes: "切换的账号不存在" });
       if (userInfo.user_type === "h5") {
+          return ;
         switchH5Login()
           .then(({ data }) => {
             that.$dialog.loading.close();
@@ -196,7 +199,8 @@ export default {
     },
     getUserInfo: function() {
       let that = this;
-      getUser().then(res => {
+        return ;
+      /*getUser().then(res => {
         let switchUserInfo = res.data.switchUserInfo;
         for (let i = 0; i < switchUserInfo.length; i++) {
           if (switchUserInfo[i].uid == that.userInfo.uid) that.userIndex = i;
@@ -208,7 +212,7 @@ export default {
             switchUserInfo.splice(i, 1);
         }
         that.$set(this, "switchUserInfo", switchUserInfo);
-      });
+      });*/
     },
     imageuploaded(res) {
       if (res.status !== 200)
@@ -219,6 +223,7 @@ export default {
 
     submit: function() {
       let userInfo = this.switchUserInfo[this.userIndex];
+      return ;
       postUserEdit({
         nickname: trim(this.userInfo.nickname),
         avatar: userInfo.avatar
@@ -237,16 +242,18 @@ export default {
       this.$dialog.confirm({
         mes: "确认退出登录?",
         opts: () => {
-          getLogout()
+          let entranceModel = this.getModel('passport', 'entrance');
+            console.log(entranceModel, 'hhhhhhhaaa');
+          this.createRequest(entranceModel, {params: {action: 'logout'}, data: {}})
             .then(res => {
-              this.$store.commit("LOGOUT");
-              clearAuthStatus();
-              location.href = location.origin;
+              if (res !== false) {
+              this.localCache.removeUser();
+              //this.$store.commit("LOGOUT");
+              //clearAuthStatus();
+              //location.href = location.origin;
               console.log(res);
+              }
             })
-            .catch(err => {
-              console.log(err);
-            });
         }
       });
     }

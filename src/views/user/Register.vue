@@ -55,10 +55,24 @@
 
 <script>
 import sendVerifyCode from "@mixins/SendVerifyCode";
+import cookie from "@utils/exts/store/cookie";
+import {entrance} from '@/applications/mixins/entrance'
+
+const BACK_URL = "login_back_url";
 
 export default {
   name: "Register",
-  mixins: [sendVerifyCode],
+  mixins: [sendVerifyCode, entrance],
+  mounted: function() {
+    let hasSignin = this.localCache.hasSignin();
+      console.log(hasSignin, 'ssssssssssss');
+    if (hasSignin) {
+      const backUrl = cookie.get(BACK_URL) || "/";
+      cookie.remove(BACK_URL);
+      //this.$router.replace({ path: backUrl });
+      window.location = backUrl;
+    }
+  },
   methods: {
     code: function() {
       this.sendCode();

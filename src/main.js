@@ -33,6 +33,11 @@ Vue.prototype.$validator = function(rule) {
 Vue.prototype.$scroll = $scroll;
 Vue.prototype.$dialog = dialog;
 
+import localCache from '@/applications/common/LocalCache'
+import * as baseMethod from '@/utils/base'
+Vue.prototype.localCache = localCache
+Vue.prototype.baseMethod = baseMethod
+
 const CACHE_KEY = "clear_0.0.1";
 
 if (!cookie.has(CACHE_KEY)) {

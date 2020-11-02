@@ -195,9 +195,9 @@ export default {
     }
   },
   mounted: function() {
-    this.User();
-    this.MenuUser();
-    this.isWeixin = isWeixin();
+    //this.User();
+    //this.MenuUser();
+    //this.isWeixin = isWeixin();
   },
   methods: {
     changeswitch: function(data) {
@@ -205,6 +205,7 @@ export default {
     },
     User: function() {
       let that = this;
+        return ;
       getUser().then(res => {
         that.userInfo = res.data;
         that.orderStatusNum = res.data.orderStatusNum;
@@ -216,6 +217,7 @@ export default {
       });
     },
     MenuUser: function() {
+        return ;
       let that = this;
       getMenuUser().then(res => {
         that.MyMenus = res.data.routine_my_menus;
