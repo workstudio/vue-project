@@ -2,17 +2,12 @@
   <div id="filesys">
     <wlExplorer
       ref="wl-explorer-cpt"
-      :header-dropdown="headerHandle"
       :fileSystem="fileSystem"
       :currentSystem="currentSystem"
-      :upload-options="uploadOptions"
       :showIndex="showIndex"
       :pathColumns="pathColumns"
       :attachmentPathModel="cModel"
       :fileColumns="fileColumns"
-      :all-path="all_folder_list"
-      :is-folder-fn="isFolderFn"
-      :folderType="rource_type"
       uploadUrl="http://api.supperuser.vip/passport/attachments/upload"
       :pathDatas="pathDatas"
       :fileDatas="fileDatas"
@@ -27,6 +22,11 @@
       @preview="preview"
       @del="fileDel"
       @closeFade="closeOtherLayout(fade)"
+
+      :header-dropdown="headerHandle"
+
+      :upload-options="uploadOptions"
+      :all-path="all_folder_list"
     >
       <!-- 操作文件夹滑入区 -->
       <fadeIn v-show="fade.folder">
@@ -43,6 +43,16 @@
             class="folder_form rule-form"
             @keyup.enter.native="submitFolderFrom('folder_form')"
           >
+            <el-form-item label="系统类别" prop="system">
+              <el-select v-model="folder_form.system" placeholder="请选择" @change="">
+                <el-option
+                  v-for="(option, optionKey) in fileSystem"
+                  :key="optionKey"
+                  :label="option"
+                  :value="optionKey">
+                </el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="文件路径" prop="ParentId">
               <cascaderLoad
                 class="u-full"
@@ -84,11 +94,6 @@ import cascaderLoad from "vue-explorer-canfront/src/components/cascader-load.vue
 import {closeOtherLayout, arrayToTree} from "@/utils/exts/explorer"; // 导入关闭其他弹出类视图函数
 import {listinfo} from '@/applications/mixins/listinfo';
 import localCache from '@/applications/common/LocalCache'
-/*import {
-  getFileListApi, // 1获取文件夹列表
-  getAllFoldersApi, // 4获取全部文件夹
-  delFileApi, // 6删除文件|文件夹
-} from "@/api/explorer"; // 导入接口*/
 const apiok = 200;
 
 export default {
@@ -121,7 +126,7 @@ export default {
       uploadHeaders: {
         Authorization: "Bearer " + localCache.getToken()
       },
-      headerHandle: [{ name: "权限", command: "auth" }], // 头部按钮更多操作-自定义权限
+      headerHandle: [],//[{ name: "权限", command: "auth" }], // 头部按钮更多操作-自定义权限
       /*file_table_columns: [
         {
           label: "名称",
@@ -195,9 +200,6 @@ export default {
         video: 3,
         other: 4,
       }, // 文件类型
-      rource_type: {
-        self: 1, // 自建
-      }, // 数据来源类型
       fileProps: {
         name: "name",
         match: "name",
@@ -228,6 +230,7 @@ export default {
       folder_form: {
         ParentId: "",
         Name: "",
+        system: "",
         preview: [],
         handle: [],
         Describe: "",
@@ -251,6 +254,11 @@ export default {
       fields: [],
       fileFields: [],
       fileFieldNames: {},
+
+
+      /*rource_type: {
+        self: 1, // 自建
+      },*/ // 数据来源类型
     };
   },
   created() {
@@ -306,15 +314,11 @@ export default {
       return datas;
     },
   },
-  /*created() {
-    this.getAllFolders();
-    this.getFileList();
-  },*/
   methods: {
     preview() {
     },
     getFileList() {
-      this.listQuery.parent_id = '0';
+      //this.listQuery.parent_id = '0';
       this.listLoading = true
       let attachmentModel = this.getModel('passport', 'attachment');
       this.fetchRequest(attachmentModel, {query: this.listQuery, action: 'list'}).then(response => {
@@ -332,7 +336,7 @@ export default {
       })
     },
     getList() {
-      this.listQuery.parent_id = '0';
+      //this.listQuery.parent_id = '0';
       this.listLoading = true
       this.fetchRequest(this.cModel, {query: this.listQuery, action: 'list'}).then(response => {
         this.list = response.data;
@@ -367,8 +371,12 @@ export default {
      */
     fileSearch(file, update) {
       if (update) {
+          console.log(file, 'ssssss');
+        
+        this.listQuery.parent_id = file.id;
         this.path = file;
-        //this.getFileList();
+        this.getList();
+        this.getFileList()
       }
     },
     // 获取文件夹列表
@@ -497,10 +505,13 @@ export default {
         }
       });
     },
+
     // 判断是否文件夹函数
-    isFolderFn(row) {
+    //:folderType="rource_type"
+    //:is-folder-fn="isFolderFn"
+    /*isFolderFn(row) {
       return row.Type === this.type.folder;
-    },
+    },*/
   }
 };
 </script>
