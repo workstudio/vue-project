@@ -3,9 +3,12 @@
     <wlExplorer
       ref="wl-explorer-cpt"
       :header-dropdown="headerHandle"
+      :fileSystem="fileSystem"
+      :currentSystem="currentSystem"
       :upload-options="uploadOptions"
       :showIndex="showIndex"
       :pathColumns="pathColumns"
+      :attachmentPathModel="cModel"
       :fileColumns="fileColumns"
       :all-path="all_folder_list"
       :is-folder-fn="isFolderFn"
@@ -41,14 +44,16 @@
             @keyup.enter.native="submitFolderFrom('folder_form')"
           >
             <el-form-item label="文件路径" prop="ParentId">
-              <!--<wlTreeSelect
+              <cascaderLoad
                 class="u-full"
                 nodeKey="Id"
                 placeholder="请选择文件路径"
+                v-if="cModel"
+                :attachmentPathModel="cModel"
                 :props="tree_select_prop"
                 :data="tree_folder_list"
                 v-model="folder_form.ParentId"
-              ></wlTreeSelect>-->
+              ></cascaderLoad>
             </el-form-item>
             <el-form-item label="文件夹名称 " prop="Name">
               <el-input v-model="folder_form.Name" placeholder="请输入文件夹名称"></el-input>
@@ -73,8 +78,9 @@
 </template>
 
 <script>
-import fadeIn from "@/components/Explorer/FadeIn"; // 导入文件管理器
-import submitBtn from "@/components/Explorer/SubmitBtn"; // 导入防抖提交组件
+import fadeIn from "vue-explorer-canfront/src/components/fade-in"; // 导入文件管理器
+import submitBtn from "vue-explorer-canfront/src/components/submit-btn"; // 导入防抖提交组件
+import cascaderLoad from "vue-explorer-canfront/src/components/cascader-load.vue";
 import {closeOtherLayout, arrayToTree} from "@/utils/exts/explorer"; // 导入关闭其他弹出类视图函数
 import {listinfo} from '@/applications/mixins/listinfo';
 import localCache from '@/applications/common/LocalCache'
@@ -91,12 +97,15 @@ export default {
   components: {
     fadeIn,
     submitBtn,
+    cascaderLoad,
   },
   data() {
     const _GB = 1024 * 1024;
     // const vm = this;
     return {
       fileList: [],
+      fileSystem: {local: '本地文件系统', oss: '阿里云OSS'},
+      currentSystem: 'oss',
       showIndex: false,
       listQuery: {
         page: 1,
@@ -245,7 +254,7 @@ export default {
     };
   },
   created() {
-    //this.closeOtherLayout = closeOtherLayout;
+    this.closeOtherLayout = closeOtherLayout;
     this.getList();
     this.getFileList()
   },
