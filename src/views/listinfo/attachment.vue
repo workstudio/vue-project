@@ -64,7 +64,6 @@
                 :attachmentPathModel="cModel"
                 :rootPaths="rootPaths"
                 :props="tree_select_prop"
-                :data="tree_folder_list"
                 v-model="folder_form.ParentId"
               ></cascaderLoad>
             </el-form-item>
@@ -117,6 +116,11 @@ export default {
       showIndex: false,
       rootPaths: {},
       pathDetail: {},
+      listFileQuery: {
+        page: 1,
+        per_page: 20,
+        system: '',
+      },
       listQuery: {
         page: 1,
         per_page: 20,
@@ -133,73 +137,7 @@ export default {
         Authorization: "Bearer " + localCache.getToken()
       },
       headerHandle: [],//[{ name: "权限", command: "auth" }], // 头部按钮更多操作-自定义权限
-      /*file_table_columns: [
-        {
-          label: "名称",
-          prop: "Name",
-          minWidth: 120,
-        },
-        {
-          label: "修改日期",
-          align: "center",
-          width: 120,
-          formatter(row) {
-            return row.EditTime.split("T")[0] || "-";
-          },
-        },
-        {
-          label: "类型",
-          align: "center",
-          width: 90,
-          formatter(row) {
-            return row.Type === 1 ? "文件夹" : row.SuffixName;
-          },
-        },
-        {
-          label: "大小",
-          minWidth: 90,
-          align: "center",
-          formatter(row) {
-            if (row.Size === null) return "-";
-            if (row.Size < 1024) {
-              // 1024以下显示kb
-              return row.Size + "KB";
-            }
-            if (row.Size < _GB) {
-              // 1024*1024
-              let _mb = (row.Size / 1024).toFixed(2);
-              return parseFloat(_mb) + "MB";
-            }
-            let _gb = (row.Size / _GB).toFixed(2);
-            return parseFloat(_gb) + "GB";
-          },
-        },
-        {
-          label: "创建日期",
-          align: "center",
-          width: 120,
-          formatter(row) {
-            return row.CreateTime.split("T")[0] || "-";
-          },
-        },
-        {
-          label: "作者",
-          minWidth: 100,
-          align: "center",
-          formatter(row) {
-            return row.CreateUserName || "-";
-          },
-        },
-        {
-          label: "描述",
-          minWidth: 100,
-          formatter(row) {
-            return row.Describe || "-";
-          },
-        },
-      ],*/ // 自定义表格列
       all_folder_list: [], // 所有文件夹列表
-      tree_folder_list: [], // 树形文件夹列表
       type: {
         folder: 1,
         img: 2,
@@ -272,7 +210,7 @@ export default {
     this.getList();
     this.getPathDetail();
     this.getPathList();
-    this.getFileList()
+    //this.getFileList()
   },
   computed:{
     fileColumns() {
@@ -326,16 +264,15 @@ export default {
     preview() {
     },
     getFileList() {
-      //this.listQuery.parent_id = '0';
       this.listLoading = true
       let attachmentModel = this.getModel('passport', 'attachment');
-      this.fetchRequest(attachmentModel, {query: this.listQuery, action: 'list'}).then(response => {
+      if (this.pathDetail.id) {
+          console.log(this.pathDetail, 'ppppdddd');
+        this.listFileQuery.path_id = this.pathDetail.id ? this.pathDetail.id : 0;
+      }
+      this.fetchRequest(attachmentModel, {query: this.listFileQuery, action: 'list'}).then(response => {
         this.fileList = response.data;
         this.fileFieldNames = response.fieldNames;
-        this.pageLinks = response.links,
-        this.pageMeta = response.meta,
-        this.searchFields = response.searchFields,
-        this.listQuery.per_page = this.pageMeta.per_page;
 
         // Just to simulate the time of the request
         setTimeout(() => {
@@ -344,17 +281,12 @@ export default {
       })
     },
     getList() {
-      //this.listQuery.parent_id = '0';
       this.listLoading = true
       this.fetchRequest(this.cModel, {query: this.listQuery, action: 'list'}).then(response => {
         this.list = response.data;
         this.addFormFields = response.addFormFields;
         this.updateFormFields = response.updateFormFields;
         this.fieldNames = response.fieldNames;
-        this.pageLinks = response.links,
-        this.pageMeta = response.meta,
-        this.searchFields = response.searchFields,
-        this.listQuery.per_page = this.pageMeta.per_page;
 
         // Just to simulate the time of the request
         setTimeout(() => {
@@ -363,15 +295,14 @@ export default {
       })
     },
     getPathDetail() {
-      this.getRequest(this.cModel, {query: {}, params: {keyField: 149}}).then(response => {
-          console.log('ddddssssss', response);
+      let keyField = this.listQuery.parent_id;
+      this.getRequest(this.cModel, {query: {}, params: {keyField: keyField}}).then(response => {
         this.pathDetail = response;
-
+        this.getFileList()
       })
     },
     getPathList() {
-        this.fetchRequest(this.cModel, {query: {parent_id: 0, action: 'list', 'point_scene': 'keyvalue'}}).then(response => {
-          console.log(response, 'rrrrrrrrrrppp');
+      this.fetchRequest(this.cModel, {query: {parent_id: 0, action: 'list', 'point_scene': 'keyvalue'}}).then(response => {
         this.rootPaths = response;
       })
     },
@@ -397,7 +328,8 @@ export default {
         this.listQuery.parent_id = file.id;
         this.path = file;
         this.getList();
-        this.getFileList()
+        this.getPathDetail();
+        //this.getFileList()
       }
     },
     // 获取文件夹列表
@@ -509,22 +441,6 @@ export default {
           });
         }
       });*/
-    },
-    // 获取所有文件夹
-    getAllFolders() {
-      return {};
-      getAllFoldersApi().then(({ data }) => {
-        if (data.StatusCode === apiok) {
-          this.all_folder_list = data.Data || [];
-          let _list = [...this.all_folder_list];
-          let options = {
-            id: this.explorer_prop.pathId,
-            pid: this.explorer_prop.pathPid,
-            children: "Children",
-          };
-          this.tree_folder_list = arrayToTree(_list, options);
-        }
-      });
     },
 
     // 判断是否文件夹函数
