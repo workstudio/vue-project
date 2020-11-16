@@ -5,6 +5,8 @@
       :fileSystem="fileSystem"
       :currentSystem="currentSystem"
       :showIndex="showIndex"
+      :rootPaths="rootPaths"
+      :pathDetail="pathDetail"
       :pathColumns="pathColumns"
       :attachmentPathModel="cModel"
       :fileColumns="fileColumns"
@@ -60,6 +62,7 @@
                 placeholder="请选择文件路径"
                 v-if="cModel"
                 :attachmentPathModel="cModel"
+                :rootPaths="rootPaths"
                 :props="tree_select_prop"
                 :data="tree_folder_list"
                 v-model="folder_form.ParentId"
@@ -112,10 +115,13 @@ export default {
       fileSystem: {local: '本地文件系统', oss: '阿里云OSS'},
       currentSystem: 'oss',
       showIndex: false,
+      rootPaths: {},
+      pathDetail: {},
       listQuery: {
         page: 1,
         per_page: 20,
         parent_id: 0,
+        system: '',
       },
       load: {
         folder: false,
@@ -264,6 +270,8 @@ export default {
   created() {
     this.closeOtherLayout = closeOtherLayout;
     this.getList();
+    this.getPathDetail();
+    this.getPathList();
     this.getFileList()
   },
   computed:{
@@ -352,6 +360,19 @@ export default {
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
+      })
+    },
+    getPathDetail() {
+      this.getRequest(this.cModel, {query: {}, params: {keyField: 149}}).then(response => {
+          console.log('ddddssssss', response);
+        this.pathDetail = response;
+
+      })
+    },
+    getPathList() {
+        this.fetchRequest(this.cModel, {query: {parent_id: 0, action: 'list', 'point_scene': 'keyvalue'}}).then(response => {
+          console.log(response, 'rrrrrrrrrrppp');
+        this.rootPaths = response;
       })
     },
     /**

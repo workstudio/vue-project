@@ -38,6 +38,9 @@ export const fetchData = {
 	fetchRequest(cModel, params) {
 	  return this._sendRequest('fetch', cModel, params);
     },
+	getRequest(cModel, params) {
+	  return this._sendRequest('get', cModel, params);
+    },
   	_sendRequest(type, cModel, params) {
   	  //let envType = params.env_type ? params.env_type : '';
   	  //let query = params.query ? params.query : {};
@@ -50,6 +53,8 @@ export const fetchData = {
           break;
         case 'create':
           return cModel.$create(params);
+        case 'get':
+          return cModel.$get(params);
           break;
         }
 	},
