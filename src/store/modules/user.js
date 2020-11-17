@@ -30,7 +30,7 @@ const actions = {
   login({ commit,state }, userInfo) {
     const {username, password} = userInfo
     return new Promise((resolve, reject) => {
-      entranceModel.$create({params: {action: 'token', env_type: globalSettings.envType}, data: {username: username.trim(), password: password}}).then(response => {
+      entranceModel.$create({params: {action: 'token', env_type: globalSettings.envType}, data: {name: username.trim(), password: password}}).then(response => {
       	//if (globalSettings.envType != response.manager_type) {
           //popMethod.showMessage('error', '管理后台类型有误，请重新登录');
 		//} else {

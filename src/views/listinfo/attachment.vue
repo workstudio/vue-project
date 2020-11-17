@@ -208,7 +208,7 @@ export default {
   created() {
     this.closeOtherLayout = closeOtherLayout;
     this.getList();
-    this.getPathDetail();
+    this.getPathDetail(0);
     this.getPathList();
     //this.getFileList()
   },
@@ -266,10 +266,7 @@ export default {
     getFileList() {
       this.listLoading = true
       let attachmentModel = this.getModel('passport', 'attachment');
-      if (this.pathDetail.id) {
-          console.log(this.pathDetail, 'ppppdddd');
-        this.listFileQuery.path_id = this.pathDetail.id ? this.pathDetail.id : 0;
-      }
+      this.listFileQuery.path_id = this.pathDetail.id ? this.pathDetail.id : 0;
       this.fetchRequest(attachmentModel, {query: this.listFileQuery, action: 'list'}).then(response => {
         this.fileList = response.data;
         this.fileFieldNames = response.fieldNames;
@@ -294,9 +291,13 @@ export default {
         }, 1.5 * 1000)
       })
     },
-    getPathDetail() {
-      let keyField = this.listQuery.parent_id;
-      this.getRequest(this.cModel, {query: {}, params: {keyField: keyField}}).then(response => {
+    getPathDetail(pathId) {
+      if (pathId == 0) {
+        this.getFileList();
+        return ;
+      }
+
+      this.getRequest(this.cModel, {query: {}, params: {keyField: pathId}}).then(response => {
         this.pathDetail = response;
         this.getFileList()
       })
@@ -321,16 +322,11 @@ export default {
      * file: Object 文件属性
      * update: Boolean 数据是否需要更新（不需要表示已存在）
      */
-    fileSearch(file, update) {
-      if (update) {
-          console.log(file, 'ssssss');
-        
-        this.listQuery.parent_id = file.id;
-        this.path = file;
-        this.getList();
-        this.getPathDetail();
-        //this.getFileList()
-      }
+    fileSearch(pathData) {
+      this.listQuery.parent_id = pathData.id;
+      this.path = pathData;
+      this.getList();
+      this.getPathDetail(pathData.id);
     },
     // 获取文件夹列表
     /**
