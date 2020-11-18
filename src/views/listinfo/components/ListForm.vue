@@ -119,7 +119,7 @@ export default {
             return ;
         }
         let data = this.model.formatAddDirtData(this.inputInfos, this.addFormFields);
-        this.model.$create({params: {action: 'create'}, data: data}).then(response => {
+        this.model.$create({params: {}, data: data}).then(response => {
           if (response === false) {
             return ;
           }

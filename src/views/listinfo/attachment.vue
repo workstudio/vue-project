@@ -45,7 +45,15 @@
             class="folder_form rule-form"
             @keyup.enter.native="submitFolderFrom('folder_form')"
           >
-            <el-form-item label="系统类别" prop="system">
+            <component
+              v-for="(formField, field) in formFields"
+              :key="field"
+              :field="field"
+              :elem="formField"
+              :inputInfos.sync="inputInfos"
+              :is="elemForms[formField.type]">
+            </component>
+            <!--<el-form-item label="系统类别" prop="system">
               <el-select v-model="folder_form.system" placeholder="请选择" @change="">
                 <el-option
                   v-for="(option, optionKey) in fileSystem"
@@ -77,7 +85,7 @@
                 v-model="folder_form.Describe"
                 placeholder="请输入备注说明"
               ></el-input>
-            </el-form-item>
+            </el-form-item>-->
           </el-form>
         </el-scrollbar>
         <div class="submit-btn-box">
@@ -96,6 +104,8 @@ import cascaderLoad from "vue-explorer-canfront/src/components/cascader-load.vue
 import {closeOtherLayout, arrayToTree} from "@/utils/exts/explorer"; // 导入关闭其他弹出类视图函数
 import {listinfo} from '@/applications/mixins/listinfo';
 import localCache from '@/applications/common/LocalCache'
+
+import elemForms from '@/components/ElemForm'
 const apiok = 200;
 
 export default {
@@ -110,11 +120,14 @@ export default {
     const _GB = 1024 * 1024;
     // const vm = this;
     return {
+      elemForms: elemForms,
       fileList: [],
       fileSystem: {local: '本地文件系统', oss: '阿里云OSS'},
       currentSystem: 'oss',
       showIndex: false,
       rootPaths: {},
+      formFields: {},
+      inputInfos: {},
       pathDetail: {},
       listFileQuery: {
         page: 1,
@@ -281,7 +294,7 @@ export default {
       this.listLoading = true
       this.fetchRequest(this.cModel, {query: this.listQuery, action: 'list'}).then(response => {
         this.list = response.data;
-        this.addFormFields = response.addFormFields;
+        this.formFields = response.addFormFields;
         this.updateFormFields = response.updateFormFields;
         this.fieldNames = response.fieldNames;
 
@@ -347,8 +360,32 @@ export default {
       this.child_act_saved = act;
       this.folder_form = { ...act };
     },
-    // 提交文件夹表单
+    //addData() {
     submitFolderFrom(formName) {
+      //this.$refs['dataForm'].validate((valid) => {
+      this.$refs[formName].validate((valid) => {
+        if (!valid) {
+            return ;
+        }
+        let data = this.cModel.formatAddDirtData(this.inputInfos, this.formFields);
+        this.cModel.$create({params: {}, data: data}).then(response => {
+          if (response === false) {
+            return ;
+          }
+          //this.list.unshift(this.inputInfos)
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '成功',
+            message: '创建成功',
+            type: 'success',
+            duration: 2000
+          });
+          return this.$emit('handleFilter');
+        })
+      })
+    },
+    // 提交文件夹表单
+    submitFolderFromold(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.load.folder = true;
