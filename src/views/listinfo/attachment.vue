@@ -18,11 +18,12 @@
       @handleFolder="handleFolder"
       @upload="fileUpload"
       @showUpload="showUpload"
+      @closeUpload="closeUpload"
       @download="download"
       @search="fileSearch"
+      @previewFile="previewFile"
       @preview="preview"
       @del="fileDel"
-      @closeFade="closeOtherLayout(fade)"
 
       :upload-options="uploadOptions"
     >
@@ -139,6 +140,7 @@ export default {
     submitBtn,
     fileView,
     cascaderLoad,
+    uploadItem,
   },
   data() {
     const _GB = 1024 * 1024;
@@ -388,8 +390,8 @@ export default {
     fileDel(data) {
     },
     // 预览文件
-    previewFile(row) {
-      let previewType = this.fileTypeItem(row, 'type');
+    previewFile(row, previewType) {
+      //let previewType = this.fileTypeItem(row, 'type');
       //previewType = 'image';
       //previewType = 'audio';
       //previewType = 'video';
@@ -409,22 +411,23 @@ export default {
           this.previewOptions = {url: row.filepath};
       }
 
+      this.showPreview();
 
-      this.$emit("preview", row, this.showPreview());
+      //this.$emit("preview", row, this.showPreview());
     },
     // 显示上传界面
     showUpload() {
-      this.upload_selected =  this.file.id;
+      /*this.upload_selected =  this.file.id;
       this.uoload_data = {
         parentPathId: this.file.pid,
         pathId: this.file.id,
         isCurrentFolder: true
-      };
+      };*/
       if (this.useUpload) {
         this.layout.upload = true;
-        this.$emit("closeFade");
+        this.closeOtherLayout();//fade);
       } else {
-        this.$emit("showUpload");
+        //this.$emit("showUpload");
       }
     },
     // 关闭上传界面
@@ -465,6 +468,10 @@ export default {
       this.load.upload = false;
     },
     uploadRegFuc() {
+    },
+    // 打开预览组件
+    showPreview() {
+      this.layout.view = true;
     },
   }
 };
