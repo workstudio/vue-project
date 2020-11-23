@@ -10,15 +10,14 @@
       :pathColumns="pathColumns"
       :attachmentPathModel="cModel"
       :fileColumns="fileColumns"
-      uploadUrl="http://api.supperuser.vip/passport/attachments/upload"
       :pathDatas="pathDatas"
       :fileDatas="fileDatas"
-      :uploadHeaders="uploadHeaders"
       :props="pathProps"
       :fileProps="fileProps"
       size="small"
       @handleFolder="handleFolder"
       @upload="fileUpload"
+      @showUpload="showUpload"
       @download="download"
       @search="fileSearch"
       @preview="preview"
@@ -38,7 +37,6 @@
             ref="folder_form"
             label-position="top"
             :model="folder_form"
-            :rules="folder_rules"
             class="folder_form rule-form"
             @keyup.enter.native="submitFolderFrom('folder_form')"
           >
@@ -57,6 +55,65 @@
           <el-button size="medium" @click="fade.folder = false">取消</el-button>
         </div>
       </fadeIn>
+
+
+      <!-- 文件预览区 -->
+      <template v-if="usePreview">
+        <file-view
+          v-show="layout.view"
+          ref="file-view"
+          class="file-view-components"
+          :previewType="previewType"
+          :previewOptions="previewOptions"
+          @close="layout.view = false"
+        ></file-view>
+      </template>
+      <!-- 文件上传区 -->
+      <template v-if="useUpload">
+        <fade-in v-show="layout.upload">
+          <h3 class="edit-header">上传文件</h3>
+          <el-scrollbar class="scroll">
+            <el-form
+              :size="size"
+              ref="template_form"
+              label-position="top"
+              class="template_form rule-form"
+            >
+              <el-form-item label="文件路径">
+                <cascaderLoad
+                  class="u-full"
+                  :size="size"
+                  :rootPaths="rootPaths"
+                  :attachmentPathModel="cModel"
+                  v-model="upload_selected"
+                  @change="uploadPathChange"
+                ></cascaderLoad>
+              </el-form-item>
+              <el-form-item label="导入文件">
+                <uploadItem
+                  ref="upload-item"
+                  :size="size"
+                  :reg="uploadReg"
+                  :url="uploadUrl"
+                  :limit="uploadLimit"
+                  :regFuc="uploadRegFuc"
+                  :options="uploadOptions"
+                  :headers="uploadHeaders"
+                  @beforeUpload="uploadBefore"
+                  @uploadSuccess="uploadSuccess"
+                  @uploadError="uploadError"
+                ></uploadItem>
+              </el-form-item>
+            </el-form>
+          </el-scrollbar>
+          <!-- 按钮区 -->
+          <div class="submit-btn-box">
+            <submit-btn :size="size" @btn="saveUpload()" :status="load.upload">保存</submit-btn>
+            <el-button :size="size" @click="layout.upload = false">取消</el-button>
+          </div>
+        </fade-in>
+      </template>
+
     </wlExplorer>
   </div>
 </template>
@@ -64,6 +121,9 @@
 <script>
 import fadeIn from "vue-explorer-canfront/src/components/fade-in"; // 导入文件管理器
 import submitBtn from "vue-explorer-canfront/src/components/submit-btn"; // 导入防抖提交组件
+import fileView from "@/components/FileView/file-view.vue"; // 导入预览组件
+import cascaderLoad from "@/components/FileView/cascader-load.vue"; // 引入滑入组件
+import uploadItem from "@/components/FileView/upload-item"; // 导入导入组件
 import {closeOtherLayout, arrayToTree} from "@/utils/exts/explorer"; // 导入关闭其他弹出类视图函数
 import {listinfo} from '@/applications/mixins/listinfo';
 import localCache from '@/applications/common/LocalCache'
@@ -77,6 +137,8 @@ export default {
   components: {
     fadeIn,
     submitBtn,
+    fileView,
+    cascaderLoad,
   },
   data() {
     const _GB = 1024 * 1024;
@@ -108,9 +170,6 @@ export default {
       fade: {
         folder: false,
       }, // 弹出类视图管理
-      uploadHeaders: {
-        Authorization: "Bearer " + localCache.getToken()
-      },
       type: {
         folder: 1,
         img: 2,
@@ -127,7 +186,9 @@ export default {
         match: "name",
         suffix: "SuffixName",
       }, // 文件管理器配置项
-      path: {}, // 路径数据
+      uploadHeaders: {
+        Authorization: "Bearer " + localCache.getToken()
+      },
       folder_form: {
         ParentId: "",
         Name: "",
@@ -136,30 +197,25 @@ export default {
         handle: [],
         Describe: "",
       }, // 文件夹表单
-      folder_rules: {
-        ParentId: [
-          { required: true, message: "请选择文件路径", trigger: "blur" },
-        ],
-        Name: [
-          { required: true, message: "请填写文件夹名称", trigger: "blur" },
-        ],
-      }, // 文件夹表单验证
-      child_act_saved: {}, // 存储子组件数据，用于编辑更新
-      tree_select_prop: {
-        label: "Name",
-        children: "Children",
-      }, // 树形下拉框配置项
       uploadOptions: {
         aa: 1212,
       }, // 上传文件附加参数
       fields: [],
       fileFields: [],
       fileFieldNames: {},
-
-
-      /*rource_type: {
-        self: 1, // 自建
-      },*/ // 数据来源类型
+      usePreview: true,
+      layout: {
+        view: false, // 预览视图
+        upload: false // 上传视图
+      }, // 视图管理
+      previewType: '',
+      previewOptions: {},
+      useUpload: true,
+      size: "medium",
+      upload_selected: "", // 所选上传文件目标路径
+      uploadReg: false, //  是否校验上传文件
+      uploadUrl: "http://api.supperuser.vip/passport/attachments/upload",
+      uploadLimit: 50, // 上传个数限制
     };
   },
   created() {
@@ -328,96 +384,87 @@ export default {
         })
       })
     },
-    // 提交文件夹表单
-    submitFolderFromold(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.load.folder = true;
-          setTimeout(() => {
-            this.load.folder = false;
-            // let res_data = data.Data;
-            let res_data = this.folder_form; // 由表单数据模拟服务器返回数据，此处应有服务器返回对应实体
-            res_data.EditTime = res_data.CreateTime = "2019-11-11T11:11:11";
-            res_data.Type = 1;
-            if (!this.folder_form.Id) {
-              // 新增
-              if (this.folder_form.ParentId === this.path.id) {
-                // 新增到当前路径
-                this.file_table_data.unshift(res_data);
-              } else {
-                // 新增其他路径
-                let _new_data = {
-                  id: res_data.Id,
-                  pid: res_data.ParentId,
-                  path: res_data.Name,
-                };
-                this.$refs["wl-explorer-cpt"].updateHistoryData(
-                  { Id: res_data.ParentId },
-                  [_new_data]
-                );
-              }
-            } else {
-              // 编辑
-              this.child_act_saved.Name = res_data.Name;
-              this.child_act_saved.Describe = res_data.Describe;
-            }
-            this.fade.folder = false;
-            this.$message({
-              showClose: true,
-              message: "操作成功",
-              type: "success",
-            });
-          }, 1000);
-        } else {
-          return false;
-        }
-      });
-    },
     // 删除文件
     fileDel(data) {
-      let cannot_del_data = []; // 收集不可删除数据
-      let normal_data_file = []; // 收集可删除文件
-      let normal_data_folder = []; // 收集可删除文件夹
-      data.forEach((i) => {
-        i.RourceType !== this.rource_type.self
-          ? cannot_del_data.push(i) // 不可删除数据
-          : i.Type === this.type.folder
-          ? normal_data_folder.push(i.Id) // 可删除文件夹
-          : normal_data_file.push(i.Id); // 可删除文件
-      });
-      // 不可删除数据进行提示
-      if (cannot_del_data.length > 0) {
-        let _msg = '<p class="title">以下文件或文件夹不可删除，已自动过滤</p>';
-        cannot_del_data.forEach((i) => {
-          _msg += `<p class="msg">${i.Name}</p>`;
-        });
-        this.$message({
-          dangerouslyUseHTMLString: true,
-          showClose: true,
-          message: _msg,
-          type: "warning",
-          customClass: "mulit-msg",
-        });
+    },
+    // 预览文件
+    previewFile(row) {
+      let previewType = this.fileTypeItem(row, 'type');
+      //previewType = 'image';
+      //previewType = 'audio';
+      //previewType = 'video';
+      //previewType = 'xlsx';
+
+      this.previewType = previewType;
+      //row.url = 'http://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/22/%E5%BF%85-%E8%A6%81%E7%82%B9.png';
+      //row.url = 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/27/%E4%BA%8C%E5%AD%97%E9%80%89%E6%8B%A9%E9%A2%98%E8%AF%AD%E9%9F%B3.mp3';
+      //row.url = 'http://1254153797.vod2.myqcloud.com/41f91735vodsh1254153797/11bbe9245285890808875998543/BPgvrA4wHkkA.mp4';
+      //row.url = 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/09/17/%E7%AB%A0%E8%8A%82.xlsx';
+      switch (previewType) {
+        case 'video':
+          this.previewOptions = {sources: [{type: "video/mp4", src: row.url}]};
+          break;
+        default :
+              console.log(row, 'rrrrrr');
+          this.previewOptions = {url: row.filepath};
       }
-      if (normal_data_folder.length === 0 && normal_data_file.length === 0)
-        return;
-      // 可删除数据正常删除
-      let _data = {
-        FolderIds: normal_data_folder,
-        FolderFileIds: normal_data_file,
+
+
+      this.$emit("preview", row, this.showPreview());
+    },
+    // 显示上传界面
+    showUpload() {
+      this.upload_selected =  this.file.id;
+      this.uoload_data = {
+        parentPathId: this.file.pid,
+        pathId: this.file.id,
+        isCurrentFolder: true
       };
-      /*delFileApi(_data).then(({ data }) => {
-        if (data.StatusCode === apiok) {
-          this.file_table_data = this.file_table_data.filter(
-            (i) => ![...normal_data_file, ...normal_data_folder].includes(i.Id)
-          );
-          this.$message({
-            showClose: true,
-            message: data.Message,
-            type: "success",
-          });
-        }
-      });*/
+      if (this.useUpload) {
+        this.layout.upload = true;
+        this.$emit("closeFade");
+      } else {
+        this.$emit("showUpload");
+      }
+    },
+    // 关闭上传界面
+    closeUpload() {
+      this.layout.upload = false;
+    },
+    // 文件上传路径修改
+    uploadPathChange([val]) {
+        console.log(val, 'bbbbbbbbbbbbnnnnnn');
+      const pathId = val[this.selfProps.pathId];
+      this.uoload_data = {
+        parentPathId: val[this.selfProps.pathPid],
+        pathId,
+        isCurrentFolder: pathId == this.file.id
+      };
+    },
+    // 文件上传提交操作
+    saveUpload() {
+        console.log(this.uoload_data, 'fffffffwwwww', this.handleUpload);
+      //this.$emit("upload", this.uoload_data, this.handleUpload);
+    },
+    // 手动上传文件
+    handleUpload() {
+      this.$refs["upload-item"].toUpload();
+    },
+    // 文件上传成功回调
+    uploadSuccess(res) {
+      this.$emit("uploadSuccess", res);
+      this.closeUpload();
+    },
+    // 文件上传前回调
+    uploadBefore(file) {
+      this.$emit("uploadBefore", file, this.file);
+    },
+    // 文件上传失败回调
+    uploadError(err) {
+      this.$emit("uploadError", err);
+      this.load.upload = false;
+    },
+    uploadRegFuc() {
     },
   }
 };
