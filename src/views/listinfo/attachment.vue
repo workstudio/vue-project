@@ -25,10 +25,7 @@
       @del="fileDel"
       @closeFade="closeOtherLayout(fade)"
 
-      :header-dropdown="headerHandle"
-
       :upload-options="uploadOptions"
-      :all-path="all_folder_list"
     >
       <!-- 操作文件夹滑入区 -->
       <fadeIn v-show="fade.folder">
@@ -53,39 +50,6 @@
               :inputInfos.sync="inputInfos"
               :is="elemForms[formField.type]">
             </component>
-            <!--<el-form-item label="系统类别" prop="system">
-              <el-select v-model="folder_form.system" placeholder="请选择" @change="">
-                <el-option
-                  v-for="(option, optionKey) in fileSystem"
-                  :key="optionKey"
-                  :label="option"
-                  :value="optionKey">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="文件路径" prop="ParentId">
-              <cascaderLoad
-                class="u-full"
-                nodeKey="Id"
-                placeholder="请选择文件路径"
-                v-if="cModel"
-                :attachmentPathModel="cModel"
-                :rootPaths="rootPaths"
-                :props="tree_select_prop"
-                v-model="folder_form.ParentId"
-              ></cascaderLoad>
-            </el-form-item>
-            <el-form-item label="文件夹名称 " prop="Name">
-              <el-input v-model="folder_form.Name" placeholder="请输入文件夹名称"></el-input>
-            </el-form-item>
-            <el-form-item label="备注说明" prop="Describe">
-              <el-input
-                :rows="3"
-                type="textarea"
-                v-model="folder_form.Describe"
-                placeholder="请输入备注说明"
-              ></el-input>
-            </el-form-item>-->
           </el-form>
         </el-scrollbar>
         <div class="submit-btn-box">
@@ -100,7 +64,6 @@
 <script>
 import fadeIn from "vue-explorer-canfront/src/components/fade-in"; // 导入文件管理器
 import submitBtn from "vue-explorer-canfront/src/components/submit-btn"; // 导入防抖提交组件
-import cascaderLoad from "vue-explorer-canfront/src/components/cascader-load.vue";
 import {closeOtherLayout, arrayToTree} from "@/utils/exts/explorer"; // 导入关闭其他弹出类视图函数
 import {listinfo} from '@/applications/mixins/listinfo';
 import localCache from '@/applications/common/LocalCache'
@@ -114,7 +77,6 @@ export default {
   components: {
     fadeIn,
     submitBtn,
-    cascaderLoad,
   },
   data() {
     const _GB = 1024 * 1024;
@@ -149,8 +111,6 @@ export default {
       uploadHeaders: {
         Authorization: "Bearer " + localCache.getToken()
       },
-      headerHandle: [],//[{ name: "权限", command: "auth" }], // 头部按钮更多操作-自定义权限
-      all_folder_list: [], // 所有文件夹列表
       type: {
         folder: 1,
         img: 2,
@@ -160,28 +120,12 @@ export default {
       fileProps: {
         name: "name",
         match: "name",
-        splic: true,
         suffix: "extname",
-        pathId: "Id",
-        pathPid: "ParentId",
-        pathName: "Name",
-        pathChildren: "Children", // String 路径数据 children字段
-        pathConnector: "\\", // String 路径父子数据拼接连接符,默认为'\'
-        pathParents: "Parents", // String 路径数据所有直系祖先节点自增长identityId逗号拼接
-        pathIdentityId: "IdentityId", // String 路径数据自增长id
       }, // 文件管理器配置项
       pathProps: {
         name: "path",
         match: "name",
-        splic: true,
         suffix: "SuffixName",
-        pathId: "Id",
-        pathPid: "ParentId",
-        pathName: "Name",
-        pathChildren: "Children", // String 路径数据 children字段
-        pathConnector: "\\", // String 路径父子数据拼接连接符,默认为'\'
-        pathParents: "Parents", // String 路径数据所有直系祖先节点自增长identityId逗号拼接
-        pathIdentityId: "IdentityId", // String 路径数据自增长id
       }, // 文件管理器配置项
       path: {}, // 路径数据
       folder_form: {
@@ -475,13 +419,6 @@ export default {
         }
       });*/
     },
-
-    // 判断是否文件夹函数
-    //:folderType="rource_type"
-    //:is-folder-fn="isFolderFn"
-    /*isFolderFn(row) {
-      return row.Type === this.type.folder;
-    },*/
   }
 };
 </script>
