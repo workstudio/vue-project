@@ -3,7 +3,8 @@
     <el-cascader
       :options="options"
       :props="props"
-      :value="currentValue"
+      @change="handleFormChange"
+      v-model="selectValue"
       :show-all-levels="false"
       clearable></el-cascader>
   </el-form-item>
@@ -42,8 +43,6 @@ export default {
               let elems = response.data;
               let nodes = [];
               elems.forEach(info => {
-                  console.log(info, '===index');
-
                 nodes.push({
                   value: info[keyField],
                   label: info[nameField],
@@ -51,25 +50,25 @@ export default {
                 });
               });
               resolve(nodes);
-              console.log('hhafffffffff', response, nodes);
+              //console.log('hhafffffffff', response, nodes);
             })
           }, 1000);
         }
       },
-      currentValue: this.inputInfos[this.field],
+      //currentValue: this.inputInfos[this.field],
+
+      selectValue: this.inputInfos[this.field],
     }
   },
   computed: {
+    input() {
+        console.log(this.selectValue);
+      let vLength = this.selectValue.length;
+      return vLength ? this.selectValue[vLength - 1] : 0;
+    },
     options() {
+      return this.elem.infos ? this.elem.infos : [];
     }
   },
-  created() {
-  },
-  props: {
-    attachmentPathModel: {type: Function},
-    rootPaths: {type: Object},
-  },
-  methods: {
-  }
 };
 </script>

@@ -362,9 +362,7 @@ export default {
       this.child_act_saved = act;
       this.folder_form = { ...act };
     },
-    //addData() {
     submitFolderFrom(formName) {
-      //this.$refs['dataForm'].validate((valid) => {
       this.$refs[formName].validate((valid) => {
         if (!valid) {
             return ;
@@ -425,7 +423,7 @@ export default {
       };*/
       if (this.useUpload) {
         this.layout.upload = true;
-        this.closeOtherLayout();//fade);
+        this.closeOtherLayout(this.fade);
       } else {
         //this.$emit("showUpload");
       }
