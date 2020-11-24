@@ -24,18 +24,8 @@ export default {
         checkStrictly: true,
         lazyLoad (node, resolve) {
           const { level } = node;
-          console.log(level, 'aaaa', node, 'nnnnnnnnmmm', resolve);
 
           setTimeout(() => {
-            /*const nodes = Array.from({ length: level + 1 })
-              .map(item => ({
-                value: ++parent_id,
-                label: `选项${parent_id}`,
-                leaf: level >= 2
-              }));
-              console.log(nodes, 'naaffffff');
-            // 通过调用resolve将子节点数据返回，通知组件数据加载完成
-            //resolve(nodes);*/
             let model = _self.getModel(_self.elem.loadApp, _self.elem.loadResource);;
             model.$fetch({query: {parent_id: node.value, action: 'list', 'point_scene': 'keyvalue'}}).then(response => {
               let keyField = response.key;
@@ -50,7 +40,6 @@ export default {
                 });
               });
               resolve(nodes);
-              //console.log('hhafffffffff', response, nodes);
             })
           }, 1000);
         }
@@ -62,7 +51,7 @@ export default {
   },
   computed: {
     input() {
-        console.log(this.selectValue);
+        console.log(this.selectValue, 'ccccvalue');
       let vLength = this.selectValue.length;
       return vLength ? this.selectValue[vLength - 1] : 0;
     },

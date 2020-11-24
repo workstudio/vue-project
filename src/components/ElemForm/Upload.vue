@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="upload-box">
+    <div class="upload-box" ref="upload-item">
       <!-- 自定义内容区 -->
       <slot></slot>
       <!-- 文件上传区 :disabled="disUpload"-->
@@ -20,6 +20,7 @@
         :on-error="handleError"
         :on-exceed="handleExceed"
         :on-success="handleSuccess"
+
         >
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">
@@ -59,11 +60,15 @@
  * --------> 手动上传模式均需要在父组件调用子组件方法，在父组件引入此组件时，给此组件加ref，然后this.$refs.[""].toUpload()即可!
  * --------> 此组件请使用v-if展示。使用范例：claim-apply.vue。
  */
+import localCache from '@/applications/common/LocalCache'
 
 export default {
   data() {
     return {
       fileList: [], // 已上传文件
+      uploadHeaders: {
+        Authorization: "Bearer " + localCache.getToken()
+      },
     };
   },
   props: {
@@ -116,6 +121,7 @@ export default {
     handleExceed() {
       this.$message.error("超出文件上传个数限制，最大上传个数为：1！");
     },
+
   },
   computed: {
     // 上传参数

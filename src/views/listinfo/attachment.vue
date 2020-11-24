@@ -16,16 +16,11 @@
       :fileProps="fileProps"
       size="small"
       @handleFolder="handleFolder"
-      @upload="fileUpload"
       @showUpload="showUpload"
       @closeUpload="closeUpload"
-      @download="download"
       @search="fileSearch"
       @previewFile="previewFile"
-      @preview="preview"
       @del="fileDel"
-
-      :upload-options="uploadOptions"
     >
       <!-- 操作文件夹滑入区 -->
       <fadeIn v-show="fade.folder">
@@ -69,6 +64,7 @@
           @close="layout.view = false"
         ></file-view>
       </template>
+
       <!-- 文件上传区 -->
       <template v-if="useUpload">
         <fade-in v-show="layout.upload">
@@ -80,7 +76,16 @@
               label-position="top"
               class="template_form rule-form"
             >
-              <el-form-item label="文件路径">
+              <component
+                :ref="'upload-' + field"
+                v-for="(formField, field) in fileFormFields"
+                :key="field"
+                :field="field"
+                :elem="formField"
+                :inputInfos.sync="fileInputInfos"
+                :is="elemForms[formField.type]">
+              </component>
+              <!--<el-form-item label="文件路径">
                 <cascaderLoad
                   class="u-full"
                   :size="size"
@@ -98,13 +103,12 @@
                   :url="uploadUrl"
                   :limit="uploadLimit"
                   :regFuc="uploadRegFuc"
-                  :options="uploadOptions"
                   :headers="uploadHeaders"
                   @beforeUpload="uploadBefore"
                   @uploadSuccess="uploadSuccess"
                   @uploadError="uploadError"
                 ></uploadItem>
-              </el-form-item>
+              </el-form-item>-->
             </el-form>
           </el-scrollbar>
           <!-- 按钮区 -->
@@ -123,11 +127,10 @@
 import fadeIn from "vue-explorer-canfront/src/components/fade-in"; // 导入文件管理器
 import submitBtn from "vue-explorer-canfront/src/components/submit-btn"; // 导入防抖提交组件
 import fileView from "@/components/FileView/file-view.vue"; // 导入预览组件
-import cascaderLoad from "@/components/FileView/cascader-load.vue"; // 引入滑入组件
-import uploadItem from "@/components/FileView/upload-item"; // 导入导入组件
+//import cascaderLoad from "@/components/FileView/cascader-load.vue"; // 引入滑入组件
+//import uploadItem from "@/components/FileView/upload-item"; // 导入导入组件
 import {closeOtherLayout, arrayToTree} from "@/utils/exts/explorer"; // 导入关闭其他弹出类视图函数
 import {listinfo} from '@/applications/mixins/listinfo';
-import localCache from '@/applications/common/LocalCache'
 
 import elemForms from '@/components/ElemForm'
 const apiok = 200;
@@ -139,21 +142,23 @@ export default {
     fadeIn,
     submitBtn,
     fileView,
-    cascaderLoad,
-    uploadItem,
+    //cascaderLoad,
+    //uploadItem,
   },
   data() {
-    const _GB = 1024 * 1024;
     // const vm = this;
     return {
       elemForms: elemForms,
+
       fileList: [],
       fileSystem: {local: '本地文件系统', oss: '阿里云OSS'},
       currentSystem: 'oss',
       showIndex: false,
       rootPaths: {},
       formFields: {},
+      fileFormFields: {},
       inputInfos: {},
+      fileInputInfos: {},
       pathDetail: {},
       listFileQuery: {
         page: 1,
@@ -172,12 +177,6 @@ export default {
       fade: {
         folder: false,
       }, // 弹出类视图管理
-      type: {
-        folder: 1,
-        img: 2,
-        video: 3,
-        other: 4,
-      }, // 文件类型
       fileProps: {
         name: "name",
         match: "name",
@@ -188,9 +187,6 @@ export default {
         match: "name",
         suffix: "SuffixName",
       }, // 文件管理器配置项
-      uploadHeaders: {
-        Authorization: "Bearer " + localCache.getToken()
-      },
       folder_form: {
         ParentId: "",
         Name: "",
@@ -199,9 +195,6 @@ export default {
         handle: [],
         Describe: "",
       }, // 文件夹表单
-      uploadOptions: {
-        aa: 1212,
-      }, // 上传文件附加参数
       fields: [],
       fileFields: [],
       fileFieldNames: {},
@@ -268,7 +261,6 @@ export default {
         let data = [];
           this.fileFields.forEach(index => {
               data[index] = info[index].value;
-              data.Type = 0;
           })
         datas.push(data);
       })
@@ -276,13 +268,12 @@ export default {
     },
   },
   methods: {
-    preview() {
-    },
     getFileList() {
       this.listLoading = true
       let attachmentModel = this.getModel('passport', 'attachment');
       this.listFileQuery.path_id = this.pathDetail.id ? this.pathDetail.id : 0;
       this.fetchRequest(attachmentModel, {query: this.listFileQuery, action: 'list'}).then(response => {
+        this.fileFormFields = response.addFormFields;
         this.fileList = response.data;
         this.fileFieldNames = response.fieldNames;
 
@@ -322,13 +313,6 @@ export default {
         this.rootPaths = response;
       })
     },
-    /**
-     * @name 上传文件提交操作
-     */
-    fileUpload(file, cb) {
-      this.uploadOptions.bb = 1;
-      cb();
-    },
     download(data, func) {
       console.log(data, func);
     },
@@ -339,10 +323,13 @@ export default {
      */
     fileSearch(pathData) {
       this.listQuery.parent_id = pathData.id;
-      this.path = pathData;
+      //this.path = pathData;
       this.getList();
-      this.getPathDetail(pathData.id);
+      if (pathData.id != this.pathDetail.id) {
+        this.getPathDetail(pathData.id);
+      }
     },
+
     // 获取文件夹列表
     /**
      * 编辑文件夹
@@ -380,7 +367,7 @@ export default {
             type: 'success',
             duration: 2000
           });
-          return this.$emit('handleFilter');
+          return this.fileSearch();
         })
       })
     },
@@ -413,6 +400,7 @@ export default {
 
       //this.$emit("preview", row, this.showPreview());
     },
+
     // 显示上传界面
     showUpload() {
       /*this.upload_selected =  this.file.id;
@@ -432,6 +420,18 @@ export default {
     closeUpload() {
       this.layout.upload = false;
     },
+    // 打开预览组件
+    showPreview() {
+      this.layout.view = true;
+    },
+
+
+    // 文件上传提交操作
+    saveUpload() {
+      console.log(this.uoload_data, 'fffffffwwwww', this.handleUpload);
+      console.log(this.$refs["upload-files"], 'aaaa');
+      this.$refs["upload-files"][0].toUpload(this.uoload_data);
+    },
     // 文件上传路径修改
     uploadPathChange([val]) {
         console.log(val, 'bbbbbbbbbbbbnnnnnn');
@@ -442,15 +442,7 @@ export default {
         isCurrentFolder: pathId == this.file.id
       };
     },
-    // 文件上传提交操作
-    saveUpload() {
-        console.log(this.uoload_data, 'fffffffwwwww', this.handleUpload);
-      //this.$emit("upload", this.uoload_data, this.handleUpload);
-    },
-    // 手动上传文件
-    handleUpload() {
-      this.$refs["upload-item"].toUpload();
-    },
+
     // 文件上传成功回调
     uploadSuccess(res) {
       this.$emit("uploadSuccess", res);
@@ -466,10 +458,6 @@ export default {
       this.load.upload = false;
     },
     uploadRegFuc() {
-    },
-    // 打开预览组件
-    showPreview() {
-      this.layout.view = true;
     },
   }
 };
