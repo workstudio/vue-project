@@ -8,7 +8,6 @@
       :rootPaths="rootPaths"
       :pathDetail="pathDetail"
       :pathColumns="pathColumns"
-      :attachmentPathModel="cModel"
       :fileColumns="fileColumns"
       :pathDatas="pathDatas"
       :fileDatas="fileDatas"
@@ -20,7 +19,7 @@
       @closeUpload="closeUpload"
       @search="fileSearch"
       @previewFile="previewFile"
-      @del="fileDel"
+      @deleteSelection="deleteSelection"
     >
       <!-- 操作文件夹滑入区 -->
       <fadeIn v-show="fade.folder">
@@ -173,10 +172,11 @@ export default {
       },
       load: {
         folder: false,
-      }, // loading管理
-      fade: {
-        folder: false,
-      }, // 弹出类视图管理
+        //del: false, // 删除
+        //move: false, // 移动
+        upload: false // 上传
+      }, // loading状态
+      fade: {folder: false}, // 弹出类视图管理
       fileProps: {
         name: "name",
         match: "name",
@@ -211,6 +211,12 @@ export default {
       uploadReg: false, //  是否校验上传文件
       uploadUrl: "http://api.supperuser.vip/passport/attachments/upload",
       uploadLimit: 50, // 上传个数限制
+
+      uoload_data: {
+        pathId: null,
+        parentPathId: null,
+        isCurrentFolder: true
+      } // 上传提交操作抛出的信息
     };
   },
   created() {
@@ -221,6 +227,9 @@ export default {
     //this.getFileList()
   },
   computed:{
+    attachmentModel() {
+      return this.getModel('passport', 'attachment');
+    },
     fileColumns() {
       let datas = [];
       let fields = [];
@@ -270,9 +279,8 @@ export default {
   methods: {
     getFileList() {
       this.listLoading = true
-      let attachmentModel = this.getModel('passport', 'attachment');
       this.listFileQuery.path_id = this.pathDetail.id ? this.pathDetail.id : 0;
-      this.fetchRequest(attachmentModel, {query: this.listFileQuery, action: 'list'}).then(response => {
+      this.fetchRequest(this.attachmentModel, {query: this.listFileQuery, action: 'list'}).then(response => {
         this.fileFormFields = response.addFormFields;
         this.fileList = response.data;
         this.fileFieldNames = response.fieldNames;
@@ -367,12 +375,27 @@ export default {
             type: 'success',
             duration: 2000
           });
-          return this.fileSearch();
+          return this.fileSearch(this.pathDetail);
         })
       })
     },
     // 删除文件
-    fileDel(data) {
+    deleteSelection(type, data) {
+      let model = type == 'path' ? this.cModel : this.attachmentModel;
+        model.$delete({params: {}, data: {'id': data}}).then(response => {
+        if (response === false) {
+          return ;
+        }
+        //this.list.unshift(this.inputInfos)
+        this.dialogFormVisible = false
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success',
+          duration: 2000
+        });
+        return this.fileSearch(this.pathDetail);
+      })
     },
     // 预览文件
     previewFile(row, previewType) {
