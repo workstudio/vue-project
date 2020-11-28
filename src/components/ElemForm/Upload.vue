@@ -12,8 +12,8 @@
         with-credentials
         :action="url"
         :limit="limit"
-        :data="upOptions"
-        :headers="headers"
+        :data="options"
+        :headers="uploadHeaders"
         :file-list="fileList"
         :auto-upload="autoUpload"
         :before-upload="beforeUpload"
@@ -69,11 +69,11 @@ export default {
       uploadHeaders: {
         Authorization: "Bearer " + localCache.getToken()
       },
+      upOptions: {test: 'test'},
     };
   },
   props: {
     // 上传头信息
-    headers: Object,
     // 上传地址
     url: {
       type: String,
@@ -98,7 +98,8 @@ export default {
   },
   methods: {
     // 手动上传
-    toUpload() {
+    toUpload(options) {
+      this.upOptions = options;
       this.$refs.upload.submit();
     },
     // 上传前验证
@@ -124,10 +125,6 @@ export default {
 
   },
   computed: {
-    // 上传参数
-    upOptions() {
-      return this.options;
-    }
   },
 };
 </script>

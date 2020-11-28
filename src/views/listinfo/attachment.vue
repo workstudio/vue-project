@@ -5,7 +5,6 @@
       :fileSystem="fileSystem"
       :currentSystem="currentSystem"
       :showIndex="showIndex"
-      :rootPaths="rootPaths"
       :pathDetail="pathDetail"
       :pathColumns="pathColumns"
       :fileColumns="fileColumns"
@@ -80,34 +79,12 @@
                 v-for="(formField, field) in fileFormFields"
                 :key="field"
                 :field="field"
+                :url="uploadUrl"
+                :options="fileInputInfos"
                 :elem="formField"
                 :inputInfos.sync="fileInputInfos"
                 :is="elemForms[formField.type]">
               </component>
-              <!--<el-form-item label="文件路径">
-                <cascaderLoad
-                  class="u-full"
-                  :size="size"
-                  :rootPaths="rootPaths"
-                  :attachmentPathModel="cModel"
-                  v-model="upload_selected"
-                  @change="uploadPathChange"
-                ></cascaderLoad>
-              </el-form-item>
-              <el-form-item label="导入文件">
-                <uploadItem
-                  ref="upload-item"
-                  :size="size"
-                  :reg="uploadReg"
-                  :url="uploadUrl"
-                  :limit="uploadLimit"
-                  :regFuc="uploadRegFuc"
-                  :headers="uploadHeaders"
-                  @beforeUpload="uploadBefore"
-                  @uploadSuccess="uploadSuccess"
-                  @uploadError="uploadError"
-                ></uploadItem>
-              </el-form-item>-->
             </el-form>
           </el-scrollbar>
           <!-- 按钮区 -->
@@ -153,7 +130,6 @@ export default {
       fileSystem: {local: '本地文件系统', oss: '阿里云OSS'},
       currentSystem: 'oss',
       showIndex: false,
-      rootPaths: {},
       formFields: {},
       fileFormFields: {},
       inputInfos: {},
@@ -180,7 +156,7 @@ export default {
       fileProps: {
         name: "name",
         match: "name",
-        suffix: "extname",
+        suffix: "extension",
       }, // 文件管理器配置项
       pathProps: {
         name: "path",
@@ -209,26 +185,21 @@ export default {
       size: "medium",
       upload_selected: "", // 所选上传文件目标路径
       uploadReg: false, //  是否校验上传文件
-      uploadUrl: "http://api.supperuser.vip/passport/attachments/upload",
       uploadLimit: 50, // 上传个数限制
-
-      uoload_data: {
-        pathId: null,
-        parentPathId: null,
-        isCurrentFolder: true
-      } // 上传提交操作抛出的信息
     };
   },
   created() {
     this.closeOtherLayout = closeOtherLayout;
     this.getList();
     this.getPathDetail(0);
-    this.getPathList();
     //this.getFileList()
   },
   computed:{
     attachmentModel() {
       return this.getModel('passport', 'attachment');
+    },
+    uploadUrl() {
+      return this.attachmentModel.getUploadUrl();
     },
     fileColumns() {
       let datas = [];
@@ -314,11 +285,6 @@ export default {
       this.getRequest(this.cModel, {query: {}, params: {keyField: pathId}}).then(response => {
         this.pathDetail = response;
         this.getFileList()
-      })
-    },
-    getPathList() {
-      this.fetchRequest(this.cModel, {query: {parent_id: 0, action: 'list', 'point_scene': 'keyvalue'}}).then(response => {
-        this.rootPaths = response;
       })
     },
     download(data, func) {
@@ -426,12 +392,6 @@ export default {
 
     // 显示上传界面
     showUpload() {
-      /*this.upload_selected =  this.file.id;
-      this.uoload_data = {
-        parentPathId: this.file.pid,
-        pathId: this.file.id,
-        isCurrentFolder: true
-      };*/
       if (this.useUpload) {
         this.layout.upload = true;
         this.closeOtherLayout(this.fade);
@@ -451,9 +411,12 @@ export default {
 
     // 文件上传提交操作
     saveUpload() {
-      console.log(this.uoload_data, 'fffffffwwwww', this.handleUpload);
-      console.log(this.$refs["upload-files"], 'aaaa');
-      this.$refs["upload-files"][0].toUpload(this.uoload_data);
+      let params = this.fileInputInfos;
+      if (params.path_id || params.path_id === 0) {
+        this.$refs["upload-files"][0].toUpload(params);
+        return true;
+      }
+      this.$notify({title: '参数有误', message: '请选择目录', type: 'error', duration: 1000});
     },
     // 文件上传路径修改
     uploadPathChange([val]) {

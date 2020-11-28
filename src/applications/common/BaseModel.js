@@ -19,7 +19,7 @@ export default class BaseModel extends Model {
     let data = {};
     for (let field in formFields) {
       let item = formFields[field];
-      let inputValue = input[field] ? input[field] : '';
+      let inputValue = input[field] || input[field] === 0 ? input[field] : '';
       data[field] = inputValue;
     }
     return data;

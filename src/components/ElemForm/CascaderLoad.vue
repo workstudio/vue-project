@@ -56,7 +56,19 @@ export default {
       return vLength ? this.selectValue[vLength - 1] : 0;
     },
     options() {
-      return this.elem.infos ? this.elem.infos : [];
+      let infos = this.elem.infos;
+      if (!infos) {
+        return [{value: 0, label: 'sss', leaf: false}];
+      }
+      let options = [];
+      infos.data.forEach(info => {
+        options.push({
+          value: info[infos.key],
+          label: info[infos.name],
+          leaf: false,
+        });
+      });
+      return options;
     }
   },
 };
