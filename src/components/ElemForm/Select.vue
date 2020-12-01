@@ -1,6 +1,6 @@
 <template>
   <el-form-item :label="elem.options.name" prop="field">
-    <el-select v-model="input" placeholder="请选择" @change="handleFormChange">
+    <el-select v-model="input" placeholder="请选择" @change="handleFormChange" :disabled="disabled">
       <el-option
         v-for="(option, optionKey) in elem.infos"
         :key="optionKey"
@@ -18,8 +18,14 @@ export default {
   mixins: [form],
   data() {
     return {
+      disabled: false,
       input: this.inputInfos[this.field],
     }
   },
+  methods: {
+    setDisabled() {
+      this.disabled = true;
+    }
+  }
 }
 </script>

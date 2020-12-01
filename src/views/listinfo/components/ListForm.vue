@@ -159,9 +159,7 @@ export default {
         if (valid) {
           let keyField = this.model.keyField;
           let params = {};
-          //const tempData = Object.assign({}, this.inputInfos)
           //tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          //updateArticle(tempData).then(() => {
           let data = this.model.formatDirtData(this.inputInfos, this.currentRow, this.updateFormFields);
           this.model.$update({params: {keyField: this.currentRow[keyField].valueSource, action: 'update'}, data: data}).then(response => {
             if (response === false) {

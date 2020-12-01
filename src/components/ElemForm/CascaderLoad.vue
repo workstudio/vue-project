@@ -1,6 +1,7 @@
 <template>
   <el-form-item :label="elem.options.name" prop="field">
     <el-cascader
+      ref="cascaderelem"
       :options="options"
       :props="props"
       @change="handleFormChange"
@@ -36,6 +37,7 @@ export default {
                 nodes.push({
                   value: info[keyField],
                   label: info[nameField],
+                  extField: info[extField],
                   leaf: false,
                 });
               });
@@ -47,12 +49,17 @@ export default {
       //currentValue: this.inputInfos[this.field],
 
       selectValue: this.inputInfos[this.field],
+      selectNode: [],
+      lastNode: {},
     }
   },
   computed: {
     input() {
         console.log(this.selectValue, 'ccccvalue');
+      this.selectNode = this.$refs["cascaderelem"].getCheckedNodes();
+        console.log(this.selectNode, 'ffffffffeee');
       let vLength = this.selectValue.length;
+      this.lastNode = vLength ? this.selectNode[vLength - 1] : {};
       return vLength ? this.selectValue[vLength - 1] : 0;
     },
     options() {
@@ -65,11 +72,24 @@ export default {
         options.push({
           value: info[infos.key],
           label: info[infos.name],
+          extField: info[infos.extField],
           leaf: false,
         });
       });
+        console.log(infos, options, 'oooooo');
       return options;
     }
   },
+  methods: {
+    dealFormChange(value) {
+        console.log(value, 'ffffffffffaaaa');
+      let datas = {
+        value: value,
+        selectNode: this.selectNode,
+        lastNode: this.lastNode,
+      }
+      this.$emit('dealFormChange', this.formName, this.field, datas);
+    }
+  }
 };
 </script>

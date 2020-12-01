@@ -26,18 +26,21 @@
           <p>{{folder_form.Id?'编辑':'新增'}}文件夹</p>
         </h3>
         <el-scrollbar class="scroll">
-          <el-form
-            size="medium"
-            ref="folder_form"
-            label-position="top"
-            :model="folder_form"
-            class="folder_form rule-form"
+          <el-form 
+            size="medium" 
+            ref="folder_form" 
+            label-position="top" 
+            :model="folder_form" 
+            class="folder_form rule-form" 
             @keyup.enter.native="submitFolderFrom('folder_form')"
           >
             <component
+              :ref="'path-' + field"
               v-for="(formField, field) in formFields"
               :key="field"
+              formName="path"
               :field="field"
+              @dealFormChange="dealFormChange"
               :elem="formField"
               :inputInfos.sync="inputInfos"
               :is="elemForms[formField.type]">
@@ -76,6 +79,8 @@
             >
               <component
                 :ref="'upload-' + field"
+                formName="upload"
+                @dealFormChange="dealFormChange"
                 v-for="(formField, field) in fileFormFields"
                 :key="field"
                 :field="field"
@@ -444,6 +449,22 @@ export default {
       this.load.upload = false;
     },
     uploadRegFuc() {
+    },
+
+    dealFormChange(formName, field, currentData) {
+      console.log(formName, field, currentData, 'rrrrrrrrrrrrrrr');
+      if (formName == 'upload' && field == 'path_id') {
+        this.pathChange(currentData);
+      }
+    },
+    pathChange(currentData) {
+      let currentValue = currentData.value;
+      let extField = currentData.lastNode.data ? currentData.lastNode.extField : '';
+      if (currentValue == 0) {
+      } else {
+          console.log(this.$refs["upload-system"]);
+        this.$refs["upload-system"][0].setDisabled();
+      }
     },
   }
 };
