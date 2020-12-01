@@ -8,4 +8,4 @@ let settings = {
 import local from './local';
 import current from './current';
 
-module.exports = Object.assign(settings, current, local);
+export default Object.assign(settings, current, local);
