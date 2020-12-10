@@ -5,7 +5,14 @@ let settings = {
   title: 'Vue Admin Template',
 }
 
-import local from './local';
-import current from './current';
+//import local from './local';
+//import current from './current';
 
-module.exports = Object.assign(settings, current, local);
+module.exports = {
+  //resturl: 'http://passport.test.supperuser.vip',
+  resturl: process.env.VUE_APP_BASE_API,
+  userType: '',
+  title: 'local',
+}
+
+//module.exports = Object.assign(settings, current, local);
