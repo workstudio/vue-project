@@ -8,7 +8,7 @@ let settings = {
 //import local from './local';
 //import current from './current';
 
-module.exports = {
+export default {
   //resturl: 'http://passport.test.supperuser.vip',
   resturl: process.env.VUE_APP_BASE_API,
   userType: '',
