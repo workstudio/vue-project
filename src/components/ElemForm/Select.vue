@@ -23,9 +23,12 @@ export default {
     }
   },
   methods: {
-    setDisabled() {
-      this.disabled = true;
-    }
+    setDisabled(value = true) {
+      this.disabled = value;
+    },
+    setPointValue(value) {
+      this.input = value;
+    },
   }
 }
 </script>

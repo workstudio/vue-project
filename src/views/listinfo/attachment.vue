@@ -85,7 +85,7 @@
                 :key="field"
                 :field="field"
                 :url="uploadUrl"
-                :options="fileInputInfos"
+                :model="attachmentModel"
                 :elem="formField"
                 :inputInfos.sync="fileInputInfos"
                 :is="elemForms[formField.type]">
@@ -416,6 +416,7 @@ export default {
 
     // 文件上传提交操作
     saveUpload() {
+        console.log(this.fileInputInfos, 'iiiiiiii');
       let params = this.fileInputInfos;
       if (params.path_id || params.path_id === 0) {
         this.$refs["upload-files"][0].toUpload(params);
@@ -456,14 +457,30 @@ export default {
       if (formName == 'upload' && field == 'path_id') {
         this.pathChange(currentData);
       }
+      if (formName == 'path' && field == 'parent_id') {
+        this.parentChange(currentData);
+      }
+
     },
     pathChange(currentData) {
       let currentValue = currentData.value;
-      let extField = currentData.lastNode.data ? currentData.lastNode.extField : '';
       if (currentValue == 0) {
+        this.$refs["upload-system"][0].setDisabled(false);
       } else {
-          console.log(this.$refs["upload-system"]);
         this.$refs["upload-system"][0].setDisabled();
+        let extField = currentData.lastNode.data ? currentData.lastNode.data.extField : '';
+        this.$refs["upload-system"][0].setPointValue(extField);
+      }
+    },
+    parentChange(currentData) {
+      let currentValue = currentData.value;
+      if (currentValue == 0) {
+        this.$refs["path-system"][0].setDisabled(false);
+      } else {
+          console.log(currentData, 'cccccccc');
+        this.$refs["path-system"][0].setDisabled();
+        let extField = currentData.lastNode.data ? currentData.lastNode.data.extField : '';
+        this.$refs["path-system"][0].setPointValue(extField);
       }
     },
   }

@@ -33,7 +33,6 @@ export const form = {
       this.dealFormChange(this.input);
     },
     dealFormChange() {
-        alert('ffff');
     },
   },
 }

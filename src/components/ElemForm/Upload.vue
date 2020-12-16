@@ -1,18 +1,17 @@
 <template>
   <div>
-    <div class="upload-box" ref="upload-item">
+    <div class="upload-box " ref="upload-item">
       <!-- 自定义内容区 -->
       <slot></slot>
       <!-- 文件上传区 :disabled="disUpload"-->
       <el-upload
-        class="upload-demo"
+        class="upload-demo avatar-uploader"
         ref="upload"
         drag
         multiple
         with-credentials
         :action="url"
         :limit="limit"
-        :data="options"
         :headers="uploadHeaders"
         :file-list="fileList"
         :auto-upload="autoUpload"
@@ -20,6 +19,10 @@
         :on-error="handleError"
         :on-exceed="handleExceed"
         :on-success="handleSuccess"
+
+        :http-request="uploadSectionFile"
+        :on-preview="handlePictureCardPreview"
+        :on-remove="handleRemove"
 
         >
         <i class="el-icon-upload"></i>
@@ -61,15 +64,23 @@
  * --------> 此组件请使用v-if展示。使用范例：claim-apply.vue。
  */
 import localCache from '@/applications/common/LocalCache'
+import axios from 'axios';
+import {client} from '@/utils/exts/oss.js';
 
 export default {
   data() {
     return {
       fileList: [], // 已上传文件
       uploadHeaders: {
-        Authorization: "Bearer " + localCache.getToken()
+        Authorization: "Bearer " + localCache.getToken(),
+        'Content-Type': 'multipart/form-data'
       },
-      upOptions: {test: 'test'},
+
+      dialogImageUrl: '',
+      dialogVisible: false,
+      dataObj: {}, //存签名信息
+
+      upOptions: {},
     };
   },
   props: {
@@ -79,8 +90,8 @@ export default {
       type: String,
       default: "" // 通用上传地址
     },
+    model: {type: Function},  
     // 上传参数
-    options: Object,
     // 自动上传
     autoUpload: {
       type: Boolean,
@@ -110,6 +121,23 @@ export default {
       // 自定义校验
       if (this.regFuc) return this.regFuc(file);
     },
+    /**
+     * [beforeUpload 上传图片前执行获取秘钥]
+     * @return {[type]} [description]
+     */
+    /*beforeUpload() {
+      return new Promise((resolve, reject) => {
+        //从后台获取第一步所需的数据
+        //getOssToken 获取OSS秘钥的接口地址
+        this.$axios.get(getOssToken, {}).then(response => {
+          this.dataObj = response.data
+          resolve(true)
+        }).catch(err => {
+          console.log(err)
+          reject(false)
+        })
+      })
+    },*/
     // 上传成功回调
     handleSuccess(res, file,fileList) {
       this.$emit("uploadSuccess", res, file, fileList);
@@ -121,6 +149,94 @@ export default {
     // 文件超出限制
     handleExceed() {
       this.$message.error("超出文件上传个数限制，最大上传个数为：1！");
+    },
+    /*handleExceed: function () {
+      //_.$alert('请先删除选择的图片或视频，再上传', '提示', {
+        type: 'warning'
+      });
+    },*/
+  
+  
+  
+    //methods
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    /*handleRemove(res, file) {
+      var self = this;
+      self.ad_url = '';
+      var liItem = document.getElementsByClassName('hide-video-box')[0];
+      liItem.innerHTML = '';
+    },*/
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+  
+    uploadSectionFile(params) {
+      let self = this;
+      let file = params.file;
+      let fileType = file.type;
+      let isImage = fileType.indexOf('image') != -1;
+      let isVideo = fileType.indexOf('video') != -1;
+      let file_url = self.$refs.upload.uploadFiles[0].url;
+      let size = file.size / 1024 / 1024 < 2;
+      
+      //if (size >= 2) {
+        //self.$refs.upload.uploadFiles = []; 
+        //return;
+      //}
+
+      console.log(this.upOptions, 'oooooo');
+        //this.uploadLocal(file);
+        console.log(fileNames, file);
+      console.log(client({}), 'uuuu', this.upOptions);
+    
+      //fileNames上传文件的名称
+      //file.file上传文件的内容
+      /*client(this.dataObj).multipartUpload(fileNames, file.file).then(result => {
+        //下面是如果对返回结果再进行处理，根据项目需要
+        self.$message({
+          message: '上传成功',
+          type: 'success'
+        });
+      }).catch(err => {
+        self.$message.error('上传失败');
+      })*/
+    },
+    uploadLocal(file) {
+      let self = this;
+      let formData = new FormData();
+        console.log(formData);
+      formData.append('file', file);
+      for (let option in this.upOptions) {
+        formData.append(option, this.upOptions[option]);
+      }
+  
+      axios.post(self.url, formData, {headers: this.uploadHeaders}).then(function (res) {
+        if (res.result === '0000') {
+          self.ad_url = res.data[0];
+          //创建一个显示video的容器
+          if (isVideo) {
+            var liItem = document.getElementsByClassName('el-upload-list__item')[0];
+            videoDiv.style.width = '278px';
+            videoDiv.style.height = '415px';
+            liItem.prepend(videoDiv);
+          }
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
+          return;
+        }
+        this.$notify({title: '成功', message: '更新成功', type: 'success', duration: 2000});
+        self.$refs.upload.uploadFiles = []; 
+      })
+      .catch(function (err) {
+        console.error(err);
+      });
     },
 
   },

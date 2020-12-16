@@ -72,7 +72,9 @@ export default {
   
     //fileNames上传文件的名称
     //file.file上传文件的内容
-    client(this.dataObj).multipartUpload(fileNames, file.file).then(result => {
+      console.log(fileNames, file);
+    console.log(client({}), 'uuuu');
+    /*client(this.dataObj).multipartUpload(fileNames, file.file).then(result => {
       //下面是如果对返回结果再进行处理，根据项目需要
       self.$message({
         message: '上传成功',
@@ -80,7 +82,7 @@ export default {
       });
     }).catch(err => {
       self.$message.error('上传失败');
-    })
+    })*/
   }
   
 }

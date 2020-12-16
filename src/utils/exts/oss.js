@@ -1,6 +1,13 @@
 const OSS = require('ali-oss')
 
 export function client(data) {
+  data = {
+    accessKeyId: "LTAI4G5NpvfZdHjTCknaQp5a",
+    accessKeySecret: "QYpCDL2scJNS5rg2UIKJsvgrUZXwVU",
+    securityToken: "",
+    region: "oss-cn-beijing",
+    bucket: "tmfile"
+  }
   //后端提供数据
   return new OSS({
     accessKeyId: data.accessKeyId,
