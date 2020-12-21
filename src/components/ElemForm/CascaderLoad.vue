@@ -31,6 +31,7 @@ export default {
             model.$fetch({query: {parent_id: node.value, action: 'list', 'point_scene': 'keyvalue'}}).then(response => {
               let keyField = response.key;
               let nameField = response.name;
+              let extField = response.extField;
               let elems = response.data;
               let nodes = [];
               elems.forEach(info => {
@@ -55,9 +56,7 @@ export default {
   },
   computed: {
     input() {
-        console.log(this.selectValue, 'ccccvalue');
       this.selectNode = this.$refs["cascaderelem"].getCheckedNodes();
-        console.log(this.selectNode, 'ffffffffeee');
       let vLength = this.selectValue.length;
       this.lastNode = vLength ? this.selectNode[vLength - 1] : {};
       return vLength ? this.selectValue[vLength - 1] : 0;

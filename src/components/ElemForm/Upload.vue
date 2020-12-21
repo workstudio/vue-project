@@ -112,6 +112,7 @@ export default {
     toUpload(options) {
       this.upOptions = options;
       this.$refs.upload.submit();
+      //this.$emit("search", options.path_id);
     },
     // 上传前验证
     beforeUpload(file) {
@@ -181,28 +182,68 @@ export default {
       let isVideo = fileType.indexOf('video') != -1;
       let file_url = self.$refs.upload.uploadFiles[0].url;
       let size = file.size / 1024 / 1024 < 2;
+        
+        console.log(file, 'ffffffffff', this.upOptions);
       
       //if (size >= 2) {
         //self.$refs.upload.uploadFiles = []; 
         //return;
       //}
-
-      console.log(this.upOptions, 'oooooo');
-        //this.uploadLocal(file);
-        console.log(fileNames, file);
-      console.log(client({}), 'uuuu', this.upOptions);
-    
-      //fileNames上传文件的名称
-      //file.file上传文件的内容
-      /*client(this.dataObj).multipartUpload(fileNames, file.file).then(result => {
-        //下面是如果对返回结果再进行处理，根据项目需要
-        self.$message({
-          message: '上传成功',
-          type: 'success'
-        });
-      }).catch(err => {
-        self.$message.error('上传失败');
-      })*/
+            //self.recordThirdAttachment({});
+            //return ;
+      let system = this.upOptions.system ? this.upOptions.system : '';
+      switch (system) {
+        case 'oss':
+          let extension = self.baseMethod.getExtName(file.name);
+          let filepath = this.upOptions.path_full + '/' + self.baseMethod.uuid() + extension;
+          console.log(filepath, 'llllllll');
+          client(this.dataObj).multipartUpload(filepath, file).then(result => {
+              console.log(result);
+            //下面是如果对返回结果再进行处理，根据项目需要
+            self.$message({
+              message: '上传成功',
+              type: 'success'
+            });
+            let uploadInfos = {
+              'name': file.name,
+              filepath: filepath,
+              mime_type: file.type,
+              extion: extension.substring(1),
+            };
+            self.recordThirdAttachment(uploadInfos);
+          }).catch(err => {
+            self.$message.error('上传失败');
+          })
+          break;
+        case 'local':
+          this.uploadLocal(file);
+          break;
+        default:
+          this.$notify({title: '文件类型有误', message: '文件类型有误，请重新选择', type: 'error', duration: 2000});
+      }
+    },
+    recordThirdAttachment(infos) {
+    /*infos = {
+extion: "jpg",
+filepath: "/6dc4191f-ad54-48bb-87c6-14f494c12f9f.jpg",
+mime_type: "image/jpeg",
+name: "米芾离骚经a3.jpg"
+    }*/
+    console.log(infos, 'oooooooooo');
+      let self = this;
+      for (let option in this.upOptions) {
+        infos[option] = this.upOptions[option];
+      }
+      console.log(infos, 'iiiiiiiiiiifffff');
+      this.model.$create({params: {}, data: infos}).then(response => {
+      console.log('nnnnnnnnnnnn', response);
+        if (response === false) {
+          return ;
+        }
+        this.closeOtherLayout(this.fade);
+        //return this.fileSearch(data.parent_id);
+      })
+  
     },
     uploadLocal(file) {
       let self = this;
@@ -214,24 +255,21 @@ export default {
       }
   
       axios.post(self.url, formData, {headers: this.uploadHeaders}).then(function (res) {
-        if (res.result === '0000') {
-          self.ad_url = res.data[0];
+          console.log(res, 'uuuuulllll');
+        if (res.data.code == 200) {
+          //self.ad_url = res.data[0];
           //创建一个显示video的容器
-          if (isVideo) {
+          /*if (isVideo) {
             var liItem = document.getElementsByClassName('el-upload-list__item')[0];
             videoDiv.style.width = '278px';
             videoDiv.style.height = '415px';
             liItem.prepend(videoDiv);
-          }
-          this.$notify({
-            title: '成功',
-            message: '更新成功',
-            type: 'success',
-            duration: 2000
-          })
+          }*/
+          self.$notify({title: '成功', message: '上传成功', type: 'success', duration: 2000});
+          
           return;
         }
-        this.$notify({title: '成功', message: '更新成功', type: 'success', duration: 2000});
+        self.$notify({title: '失败', message: '上传文件失败，请重新操作', type: 'error', duration: 2000});
         self.$refs.upload.uploadFiles = []; 
       })
       .catch(function (err) {

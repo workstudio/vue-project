@@ -87,6 +87,7 @@
                 :url="uploadUrl"
                 :model="attachmentModel"
                 :elem="formField"
+                @search="fileSearch"
                 :inputInfos.sync="fileInputInfos"
                 :is="elemForms[formField.type]">
               </component>
@@ -300,12 +301,11 @@ export default {
      * file: Object 文件属性
      * update: Boolean 数据是否需要更新（不需要表示已存在）
      */
-    fileSearch(pathData) {
-      this.listQuery.parent_id = pathData.id;
-      //this.path = pathData;
+    fileSearch(pathId, forceUpdate = false) {
+      this.listQuery.parent_id = pathId;
       this.getList();
-      if (pathData.id != this.pathDetail.id) {
-        this.getPathDetail(pathData.id);
+      if (pathId != this.pathDetail.id || forceUpdate) {
+        this.getPathDetail(pathId);
       }
     },
 
@@ -339,14 +339,15 @@ export default {
             return ;
           }
           //this.list.unshift(this.inputInfos)
-          this.dialogFormVisible = false
+          //this.dialogFormVisible = false
           this.$notify({
             title: '成功',
             message: '创建成功',
             type: 'success',
             duration: 2000
           });
-          return this.fileSearch(this.pathDetail);
+          this.closeOtherLayout(this.fade);
+          return this.fileSearch(data.parent_id);
         })
       })
     },
@@ -365,7 +366,7 @@ export default {
           type: 'success',
           duration: 2000
         });
-        return this.fileSearch(this.pathDetail);
+        return this.fileSearch(this.pathDetail.id);
       })
     },
     // 预览文件
@@ -386,7 +387,6 @@ export default {
           this.previewOptions = {sources: [{type: "video/mp4", src: row.url}]};
           break;
         default :
-              console.log(row, 'rrrrrr');
           this.previewOptions = {url: row.filepath};
       }
 
@@ -416,7 +416,6 @@ export default {
 
     // 文件上传提交操作
     saveUpload() {
-        console.log(this.fileInputInfos, 'iiiiiiii');
       let params = this.fileInputInfos;
       if (params.path_id || params.path_id === 0) {
         this.$refs["upload-files"][0].toUpload(params);
@@ -426,7 +425,6 @@ export default {
     },
     // 文件上传路径修改
     uploadPathChange([val]) {
-        console.log(val, 'bbbbbbbbbbbbnnnnnn');
       const pathId = val[this.selfProps.pathId];
       this.uoload_data = {
         parentPathId: val[this.selfProps.pathPid],
@@ -453,7 +451,6 @@ export default {
     },
 
     dealFormChange(formName, field, currentData) {
-      console.log(formName, field, currentData, 'rrrrrrrrrrrrrrr');
       if (formName == 'upload' && field == 'path_id') {
         this.pathChange(currentData);
       }
@@ -463,12 +460,16 @@ export default {
 
     },
     pathChange(currentData) {
+    console.log(currentData, 'ccccc');
       let currentValue = currentData.value;
       if (currentValue == 0) {
+        this.fileInputInfos.path_full = '';
         this.$refs["upload-system"][0].setDisabled(false);
       } else {
         this.$refs["upload-system"][0].setDisabled();
-        let extField = currentData.lastNode.data ? currentData.lastNode.data.extField : '';
+        let extField = currentData.selectNode[0] ? currentData.selectNode[0].data.extField : '';
+        this.fileInputInfos.path_full = currentData.selectNode[0] ? currentData.selectNode[0].data.extField2 : '';
+        this.fileInputInfos.system = extField;
         this.$refs["upload-system"][0].setPointValue(extField);
       }
     },
@@ -477,9 +478,8 @@ export default {
       if (currentValue == 0) {
         this.$refs["path-system"][0].setDisabled(false);
       } else {
-          console.log(currentData, 'cccccccc');
         this.$refs["path-system"][0].setDisabled();
-        let extField = currentData.lastNode.data ? currentData.lastNode.data.extField : '';
+        let extField = currentData.selectNode[0] ? currentData.selectNode[0].data.extField : '';
         this.$refs["path-system"][0].setPointValue(extField);
       }
     },
