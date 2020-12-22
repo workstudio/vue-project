@@ -39,6 +39,7 @@ export default {
                   value: info[keyField],
                   label: info[nameField],
                   extField: info[extField],
+                  extField2: info[extField2],
                   leaf: false,
                 });
               });
@@ -72,16 +73,15 @@ export default {
           value: info[infos.key],
           label: info[infos.name],
           extField: info[infos.extField],
+          extField2: info[infos.extField2],
           leaf: false,
         });
       });
-        console.log(infos, options, 'oooooo');
       return options;
     }
   },
   methods: {
     dealFormChange(value) {
-        console.log(value, 'ffffffffffaaaa');
       let datas = {
         value: value,
         selectNode: this.selectNode,

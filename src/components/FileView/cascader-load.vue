@@ -20,8 +20,6 @@ export default {
         checkStrictly: true,
         lazyLoad (node, resolve) {
           const { level } = node;
-          console.log(level, 'aaaa', node, 'nnnnnnnnmmm', resolve);
-
           setTimeout(() => {
             /*const nodes = Array.from({ length: level + 1 })
               .map(item => ({
@@ -29,7 +27,6 @@ export default {
                 label: `选项${parent_id}`,
                 leaf: level >= 2
               }));
-              console.log(nodes, 'naaffffff');
             // 通过调用resolve将子节点数据返回，通知组件数据加载完成
             //resolve(nodes);*/
             _self.attachmentPathModel.$fetch({query: {parent_id: node.value, action: 'list', 'point_scene': 'keyvalue'}}).then(response => {
@@ -38,7 +35,6 @@ export default {
               let elems = response.data;
               let nodes = [];
               elems.forEach(info => {
-                  console.log(info, '===index');
 
                 nodes.push({
                   value: info[keyField],
@@ -47,7 +43,6 @@ export default {
                 });
               });
               resolve(nodes);
-              console.log('hhafffffffff', response, nodes);
             })
           }, 1000);
         }

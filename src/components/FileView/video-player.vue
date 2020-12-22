@@ -58,10 +58,8 @@ export default {
   },
   computed: {
     playerOptions() {
-        console.log(this.options);
       let returnObj = { ...this.selfOptions, ...this.options };
-        console.log('ffff', returnObj);
-        return returnObj;
+      return returnObj;
     },
     player() {
       return this.$refs.videoPlayer.player;

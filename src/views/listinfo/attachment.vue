@@ -88,6 +88,9 @@
                 :model="attachmentModel"
                 :elem="formField"
                 @search="fileSearch"
+                @beforeUpload="uploadBefore"
+                @uploadSuccess="uploadSuccess"
+                @uploadError="uploadError"
                 :inputInfos.sync="fileInputInfos"
                 :is="elemForms[formField.type]">
               </component>
@@ -258,7 +261,9 @@ export default {
       this.listLoading = true
       this.listFileQuery.path_id = this.pathDetail.id ? this.pathDetail.id : 0;
       this.fetchRequest(this.attachmentModel, {query: this.listFileQuery, action: 'list'}).then(response => {
-        this.fileFormFields = response.addFormFields;
+        if (Object.keys(this.fileFormFields).length == 0) {
+          this.fileFormFields = response.addFormFields;
+        }
         this.fileList = response.data;
         this.fileFieldNames = response.fieldNames;
 
@@ -302,6 +307,7 @@ export default {
      * update: Boolean 数据是否需要更新（不需要表示已存在）
      */
     fileSearch(pathId, forceUpdate = false) {
+      this.layout.upload = false;
       this.listQuery.parent_id = pathId;
       this.getList();
       if (pathId != this.pathDetail.id || forceUpdate) {
@@ -384,7 +390,7 @@ export default {
       //row.url = 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/09/17/%E7%AB%A0%E8%8A%82.xlsx';
       switch (previewType) {
         case 'video':
-          this.previewOptions = {sources: [{type: "video/mp4", src: row.url}]};
+          this.previewOptions = {sources: [{type: "video/mp4", src: row.filepath}]};
           break;
         default :
           this.previewOptions = {url: row.filepath};
@@ -460,7 +466,6 @@ export default {
 
     },
     pathChange(currentData) {
-    console.log(currentData, 'ccccc');
       let currentValue = currentData.value;
       if (currentValue == 0) {
         this.fileInputInfos.path_full = '';
