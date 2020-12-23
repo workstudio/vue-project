@@ -69,6 +69,10 @@ import Topbar from './Topbar'
 
 export default {
   mixins: [currentUser],
+  data() {
+    return {
+    }
+  },
   components: {
     Topbar,
     Breadcrumb,
