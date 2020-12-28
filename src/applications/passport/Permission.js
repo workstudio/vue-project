@@ -4,6 +4,7 @@ conf.http.url = '/passport/permissions'
 
 export default class Permission extends BaseModel {
   static entity = 'permissions'
+  static keyField = 'code'
 
   static methodConf = conf
 }
