@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       disabled: false,
-      input: this.inputInfos[this.field],
+      input: this.inputInfos[this.field] + '',
     }
   },
   methods: {
@@ -27,7 +27,7 @@ export default {
       this.disabled = value;
     },
     setPointValue(value) {
-      this.input = value;
+      this.input = value + '';
     },
   }
 }

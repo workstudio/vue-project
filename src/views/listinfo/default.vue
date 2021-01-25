@@ -18,6 +18,7 @@
           <component
             :row="row"
             :field="field"
+            :model="cModel"
             :is="elemLists[row[field].showType]">
           </component>
         </template>

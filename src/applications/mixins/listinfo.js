@@ -49,8 +49,7 @@ export const listinfo = {
       let actionType = params.actionType;
   	  switch (actionType) {
       case 'update':
-        this.handleUpdate(params.datas);
-        return this.handleFilter();
+        return this.handleUpdate(params.datas);
         break;
       case 'delete':
         return this.handleFilter();
