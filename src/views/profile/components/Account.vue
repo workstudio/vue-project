@@ -1,7 +1,7 @@
 <template>
   <el-form>
-    <el-form-item label="Name">
-      <el-input v-model.trim="user.name" />
+    <el-form-item label="Nickname">
+      <el-input v-model.trim="user.nickname" />
     </el-form-item>
     <el-form-item label="Email">
       <el-input v-model.trim="user.email" />
@@ -13,6 +13,10 @@
 </template>
 
 <script>
+import elemLists from '@/components/ElemList'
+import elemButtons from '@/components/ElemButton'
+import {view} from '@/applications/mixins/view';
+
 export default {
   props: {
     user: {

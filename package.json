@@ -72,13 +72,14 @@
     "tui-editor": "1.3.3",
     "vue": "2.6.10",
     "vue-count-to": "1.0.13",
+    "vue-explorer-canfront": "0.0.5",
     "vue-gecode": "0.0.6",
     "vue-i18n": "7.3.2",
     "vue-router": "3.0.6",
     "vue-splitpane": "1.0.4",
     "vuedraggable": "2.20.0",
     "vuex": "3.1.0",
-    "vue-explorer-canfront": "0.0.5",
+    "wangeditor": "^4.6.4",
     "xlsx": "0.14.1"
   },
   "devDependencies": {

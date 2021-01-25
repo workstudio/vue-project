@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="destroyOnClose">
-      <el-form ref="dataForm" :rules="rules" :model="inputInfos" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="destroyOnClose" width	="90%">
+      <el-form ref="dataForm" :rules="rules" :model="inputInfos" label-position="left" label-width="70px" style="width: 1200px; margin-left:30px;">
         <component
           v-for="(formField, field) in formFields"
           v-if="loadSurvey"
@@ -84,7 +84,7 @@ export default {
       let data = {};
       for (let field in this.formFields) {
         let item = this.formFields[field];
-        data[field] = item.defaultValue ? item.defaultValue : '220000';
+        data[field] = item.defaultValue ? item.defaultValue : '';
       }
       return data;
     }*/
@@ -107,7 +107,7 @@ export default {
       this.dialogFormVisible = true
       for (let field in this.formFields) {
         let item = this.formFields[field];
-        this.inputInfos[field] = item.defaultValue ? item.defaultValue : '220000';
+        this.inputInfos[field] = item.defaultValue ? item.defaultValue : '';
       }
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -144,7 +144,7 @@ export default {
       let data = {};
       for (let field in row) {
         let item = row[field];
-        this.inputInfos[field] = item.valueSource ? item.valueSource : '220000';
+        this.inputInfos[field] = item.valueSource ? item.valueSource : '';
       }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
@@ -158,7 +158,6 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           let keyField = this.model.keyField;
-          let params = {};
           //tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
           let data = this.model.formatDirtData(this.inputInfos, this.currentRow, this.updateFormFields);
           this.model.$update({params: {keyField: this.currentRow[keyField].valueSource, action: 'update'}, data: data}).then(response => {

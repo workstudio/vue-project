@@ -25,7 +25,25 @@ export const listinfo = {
       this.$refs.listForm.handleAdd();
     },
     handleUpdate(row) {
-      this.$refs.listForm.handleUpdate(row);
+      let model = this.cModel;
+      if (model.fetchDetail) {
+        let keyField = model.keyField;
+        model.$get({params: {keyField: row[keyField].valueSource}}).then(response => {
+          if (response === false) {
+            this.$notify({
+              title: '错误',
+              message: '信息有误',
+              type: 'error',
+              duration: 2000
+            });
+            return ;
+          }
+            console.log(response);
+          this.$refs.listForm.handleUpdate(response.data);
+        })
+      } else {
+        this.$refs.listForm.handleUpdate(row);
+      }
     },
     dealAction(params) {
       let actionType = params.actionType;

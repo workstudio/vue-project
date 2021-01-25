@@ -5,6 +5,7 @@ import DataModel from '@/applications/common/DataModel'
 export default class BaseModel extends Model {
   static moduleConf = {}
   static keyField = 'id'
+  static fetchDetail = false;
 
   constructor() {
     super()

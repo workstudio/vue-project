@@ -1,48 +1,43 @@
 <template>
   <el-card style="margin-bottom:20px;">
-    <div slot="header" class="clearfix"><span>About me{{test}}</span></div>
+    <div slot="header" class="clearfix"><span>个人信息</span></div>
 
     <div class="user-profile">
       <div class="box-center">
-        <pan-thumb :image="user.avatar" :height="'100px'" :width="'100px'" :hoverable="false">
-          <div>Hello</div>
-          {{ user.name }}
-        </pan-thumb>
+        <!--<pan-thumb :image="user.avatar" :height="'100px'" :width="'100px'" :hoverable="false">
+          <div>Hello</div>{{user.name}}
+        </pan-thumb>-->
+        <el-upload
+          class="avatar-uploader"
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="imageUrl" :src="imageUrl" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
       </div>
       <div class="box-center">
-        <div class="user-name text-center">{{ user.name }}</div>
-        <div class="user-role text-center text-muted">{{ user.name | uppercaseFirst }}</div>
+        <div class="user-name text-center">{{user.mobile}}</div>
+        <div class="user-name text-center">{{ user.name }} ( {{user.nickname}} )</div>
+        <div class="user-role text-center text-muted">{{currentRole}}</div>
       </div>
     </div>
 
     <div class="user-bio">
       <div class="user-education user-bio-section">
-        <div class="user-bio-section-header"><svg-icon icon-class="education" /><span>Education</span></div>
+        <div class="user-bio-section-header"><svg-icon icon-class="education" /><span>个人简介</span></div>
         <div class="user-bio-section-body">
-          <div class="text-muted">
-            JS in Computer Science from the University of Technology
-          </div>
+          <div class="text-muted">{{user.profile}}</div>
         </div>
       </div>
 
       <div class="user-skills user-bio-section">
-        <div class="user-bio-section-header"><svg-icon icon-class="skill" /><span>Skills</span></div>
+        <div class="user-bio-section-header"><svg-icon icon-class="skill" /><span>角色</span></div>
         <div class="user-bio-section-body">
-          <div class="progress-item">
-            <span>Vue</span>
-            <el-progress :percentage="70" />
-          </div>
-          <div class="progress-item">
-            <span>JavaScript</span>
-            <el-progress :percentage="18" />
-          </div>
-          <div class="progress-item">
-            <span>Css</span>
-            <el-progress :percentage="12" />
-          </div>
-          <div class="progress-item">
-            <span>ESLint</span>
-            <el-progress :percentage="100" status="success" />
+          <div class="progress-item" v-for="(item, index) in roles" :key="index">
+            <span>{{item.name}}</span>
+            <span>{{item.description}}</span>
           </div>
         </div>
       </div>
@@ -55,6 +50,11 @@ import PanThumb from '@/components/PanThumb'
 
 export default {
   components: { PanThumb },
+    data() {
+      return {
+        imageUrl: this.user.avatar,
+      };
+    },
   props: {
     user: {
       type: Object,
@@ -71,8 +71,35 @@ export default {
   computed: {
     test() {
       console.log(this.user);
-    }
+    },
+	roles() {
+	  return this.localCache.getCache('roleDetails');
+	},
+	currentRole() {
+	  return this.localCache.getCache('currentRole');
+	},
+	currentRoleDetail() {
+	  let rDetail = this.roles[this.currentRole] ? this.roles[this.currentRole] : {};
+	  return rDetail;
+	}
   },
+    methods: {
+      handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      }
+    }
 }
 </script>
 
@@ -134,4 +161,27 @@ export default {
     }
   }
 }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>
