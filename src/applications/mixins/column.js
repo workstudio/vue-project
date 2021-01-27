@@ -10,6 +10,7 @@ export const column = {
   },
   props: {
     row: {type: Object, default() {}},
+    fieldItem: {type: Object, default() {}},
     field: {type: String, default: ''},
     model: null,
   },
