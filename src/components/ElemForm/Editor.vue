@@ -23,6 +23,7 @@ export default {
       this.input = html;
       this.handleFormChange();
     }
+      editor.config.uploadImgServer = '/upload-img'
       console.log(this.input, 'fffffffff');
     editor.create()
     editor.txt.html(this.input)

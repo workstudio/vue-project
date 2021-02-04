@@ -1,6 +1,6 @@
 <template>
   <el-form-item :label="elem.options.name" prop="field">
-    <el-select v-model="input" placeholder="请选择" @change="handleFormChange" :disabled="disabled">
+    <el-select v-model="input" placeholder="请选择" @change="handleFormChange" :disabled="disabled" clearable filterable>
       <el-option
         v-for="(option, optionKey) in elem.infos"
         :key="optionKey"

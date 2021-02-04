@@ -48,8 +48,8 @@ export function formatAsyncRoutes(permissions) {
     if (!route) {
         continue;
     }
-    if (permission.childrenInfos) {
-      route.children = formatAsyncRoutes(permission.childrenInfos);
+    if (permission.subInfos) {
+      route.children = formatAsyncRoutes(permission.subInfos);
     }
     routes.push(route);
   }

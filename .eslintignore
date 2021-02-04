@@ -1,5 +1,6 @@
 build/*.js
 mock
+static
 src
 config
 public

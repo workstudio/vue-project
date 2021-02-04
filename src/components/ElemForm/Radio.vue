@@ -13,7 +13,7 @@ export default {
   mixins: [form],
   data () {
     return {
-      input: this.inputInfos[this.field],
+      input: this.inputInfos[this.field] + '',
     };
   },
 }

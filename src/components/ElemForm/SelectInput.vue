@@ -22,18 +22,30 @@ export default {
   mixins: [form],
   data() {
     return {
-      input: this.inputInfos[this.field],
-      select: '',
+      input: this.inputInfos[this.field] + '',
+      select: this.initSelect(),
       disabled: true,
     }
   },
+  computed: {
+  },
   methods: {
-    handleSelect() {
+    initSelect() {
+      let currentValue = this.inputInfos[this.field];
+      if (currentValue == '' || currentValue == 1) {
+        return currentValue + '';
+      }
+      this.disabled = false;
+      return 3 + '';
+    },
+    handleSelect(value) {
+      this.input = value;
       if (this.elem.infos[this.select] == '自定义') {
         this.disabled = false;
       } else {
         this.disabled = true;
       }
+      this.handleFormChange();
     },
   },
 }
