@@ -4,6 +4,7 @@
     ref="cascadersimple"
     :options="elem.infos"
     :props="elem.props"
+    :placeholder="elem.options.name"
     :value="currentValue"
     v-model="selectValue"
     @change="handleFormChange"
