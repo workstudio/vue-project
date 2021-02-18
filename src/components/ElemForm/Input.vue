@@ -1,6 +1,6 @@
 <template>
   <el-form-item :label="elem.options.name" prop="field">
-      <el-input v-model="input" :placeholder="'请输入内容' + elem.options.name" @change="handleFormChange"></el-input>
+      <el-input v-model="input" :placeholder="'请输入内容' + elem.options.name" @change="handleFormChange" :type="type" :rows="rows"></el-input>
   </el-form-item>
 </template>
 
@@ -12,6 +12,8 @@ export default {
   data() {
     return {
       input: this.inputInfos[this.field],
+      type: this.elem.typeExt ? this.elem.typeExt : '',
+      rows: this.elem.rows ? this.elem.rows : 1,
     }
   },
   computed: {

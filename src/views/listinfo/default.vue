@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <list-search @handleAdd="handleAdd" @handleFilter="handleFilter" :currentResource="currentResource" :searchFields="searchFields" :listQuery="listQuery"></list-search>
+    <list-search @handleAdd="handleAdd" @handleFilter="handleFilter" :currentResource="currentResource" :searchFields="searchFields" :listQuery="listQuery" :model="cModel"></list-search>
 
     <el-table
       :key="tableKey"
@@ -50,6 +50,7 @@
     <pagination v-show="pageMeta.total>0" :total="pageMeta.total" :page.sync="listQuery.page" :limit.sync="listQuery.per_page" @pagination="getList" />
 
     <list-form ref="listForm" @handleFilter="handleFilter" :model="cModel" :updateFormFields="updateFormFields" :addFormFields="addFormFields" :fieldNames="fieldNames"></list-form>
+    <list-authority ref="listAuthority" @handleFilter="handleFilter" :model="cModel" :updateFormFields="updateFormFields" :fieldNames="fieldNames"></list-authority>
 
     <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
       <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
@@ -69,6 +70,7 @@ import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils/base'
 import ListSearch from './components/ListSearch'
 import ListForm from './components/ListForm'
+import ListAuthority from './components/ListAuthority'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import {listinfo} from '@/applications/mixins/listinfo';
 //import {fetchData} from '@/applications/mixins/fetchData';
@@ -81,6 +83,7 @@ export default {
   components: {
     ListSearch,
     ListForm,
+    ListAuthority,
     Pagination,
   },
   directives: { waves },

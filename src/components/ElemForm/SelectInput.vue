@@ -1,7 +1,7 @@
 <template>
   <el-form-item :label="elem.options.name" prop="field">
     <div style="margin-top: 15px;">
-      <el-input placeholder="请输入内容" v-model="input" :disabled="disabled" class="input-with-select" @change="handleFormChange">
+      <el-input placeholder="请输入内容" v-model="input" :disabled="disabledInput" class="input-with-select" @change="handleFormChange">
         <el-select v-model="select" slot="prepend" placeholder="请选择" @change="handleSelect">
           <el-option
             v-for="(option, optionKey) in elem.infos"
@@ -22,34 +22,40 @@ export default {
   mixins: [form],
   data() {
     return {
-      input: this.inputInfos[this.field] + '',
+      disabledInput: true,
       select: this.initSelect(),
+      input: this.inputInfos[this.field] + '',
       disabled: true,
     }
   },
   computed: {
   },
+  mounted: function() {
+    this.handleSelect(this.input);
+  },
   methods: {
     initSelect() {
-      let currentValue = this.inputInfos[this.field];
-      if (currentValue == '' || currentValue == 1) {
-        return currentValue + '';
+      let currentValue = this.inputInfos[this.field] + '';
+      for (let option in this.elem.infos) {
+        if (currentValue == option) {
+          return currentValue;
+        }
       }
-      this.disabled = false;
-      return 3 + '';
+      return this.elem.customValue + '';
     },
     handleSelect(value) {
       this.input = value;
-      if (this.elem.infos[this.select] == '自定义') {
-        this.disabled = false;
+      if (this.elem.customValue == this.select) {
+        this.disabledInput = false;
       } else {
-        this.disabled = true;
+        this.disabledInput = true;
       }
       this.handleFormChange();
     },
   },
 }
 </script>
+
 
 <style>
   .el-select .el-input {

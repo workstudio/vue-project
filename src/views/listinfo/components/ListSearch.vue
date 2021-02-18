@@ -20,6 +20,7 @@
         v-for="button in currentResource[4]"
         :key="button.action"
         :elem="button"
+        :model="model"
         @dealAction="dealAction"
         :is="elemButtons[button.action]">
       </component>

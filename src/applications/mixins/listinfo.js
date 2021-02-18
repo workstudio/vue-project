@@ -24,6 +24,9 @@ export const listinfo = {
     handleAdd() {
       this.$refs.listForm.handleAdd();
     },
+    handleAuthority(datas) {
+      this.$refs.listAuthority.handleAuthority(datas);
+    },
     handleUpdate(row) {
       let model = this.cModel;
       if (model.fetchDetail) {
@@ -48,6 +51,10 @@ export const listinfo = {
     dealAction(params) {
       let actionType = params.actionType;
   	  switch (actionType) {
+      case 'authority':
+        return this.handleAuthority(params.datas);
+        break;
+      case 'delete':
       case 'update':
         return this.handleUpdate(params.datas);
         break;

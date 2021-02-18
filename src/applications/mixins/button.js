@@ -15,7 +15,7 @@ export const button = {
     field: {type: String, default: ''},
     value: {type: String, default: ''},
     index: null,
-    model: null,
+    model: {type: Function},  
     row: {type: Object, default() {}},
   },
   computed:{
