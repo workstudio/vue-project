@@ -13,13 +13,14 @@
       @sort-change="sortChange"
     >
 
-      <el-table-column  v-for="(fieldItem, field) in fieldNames" :key="field" :align="fieldItem.align" :min-width="fieldItem.width" :label="fieldItem.name" :prop="field" sortable="custom" :class-name="getSortClass(field)">
+      <el-table-column  v-for="(fieldItem, field) in fieldNames" :key="field" :align="fieldItem.align" :min-width="fieldItem.width" :label="fieldItem.name" :prop="field" sortable="custom" :class-name="getSortClass(field)" v-if="fieldItem.hidden!=1">
         <template slot-scope="{row}">
           <component
             :row="row"
             :field="field"
             :fieldItem="fieldItem"
             :model="cModel"
+            @dealAction="dealAction"
             :is="elemLists[row[field].showType]">
           </component>
         </template>
@@ -52,15 +53,8 @@
     <list-form ref="listForm" @handleFilter="handleFilter" :model="cModel" :updateFormFields="updateFormFields" :addFormFields="addFormFields" :fieldNames="fieldNames"></list-form>
     <list-authority ref="listAuthority" @handleFilter="handleFilter" :model="cModel" :updateFormFields="updateFormFields" :fieldNames="fieldNames"></list-authority>
 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">{{ $t('table.confirm') }}</el-button>
-      </span>
-    </el-dialog>
+    <list-table ref="popTable"></list-table>
+    <pop-form ref="popForm"></pop-form>
   </div>
 </template>
 
@@ -71,6 +65,8 @@ import { parseTime } from '@/utils/base'
 import ListSearch from './components/ListSearch'
 import ListForm from './components/ListForm'
 import ListAuthority from './components/ListAuthority'
+import ListTable from './components/ListTable'
+import PopForm from './components/PopForm'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import {listinfo} from '@/applications/mixins/listinfo';
 //import {fetchData} from '@/applications/mixins/fetchData';
@@ -83,7 +79,9 @@ export default {
   components: {
     ListSearch,
     ListForm,
+    PopForm,
     ListAuthority,
+    ListTable,
     Pagination,
   },
   directives: { waves },

@@ -1,14 +1,13 @@
 <template>
   <span class="filter-item">
-    <span class="demonstration">{{elem.label}}</span>
     <el-date-picker
       v-model="input"
       type="datetimerange"
       :picker-options="pickerOptions"
       value-format="yyyy-MM-dd HH:mm:ss"
       range-separator="至"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期"
+      :start-placeholder="'起始-' + elem.options.name"
+      :end-placeholder="'截止-' + elem.options.name"
       @change="handleChange"
       align="right">
     </el-date-picker>

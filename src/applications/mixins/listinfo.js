@@ -27,6 +27,12 @@ export const listinfo = {
     handleAuthority(datas) {
       this.$refs.listAuthority.handleAuthority(datas);
     },
+    handlePopTable(elems) {
+      this.$refs.popTable.handlePopTable(elems);
+    },
+    handlePopForm(elems) {
+      this.$refs.popForm.handlePopForm(elems);
+    },
     handleUpdate(row) {
       let model = this.cModel;
       if (model.fetchDetail) {
@@ -60,6 +66,12 @@ export const listinfo = {
         break;
       case 'delete':
         return this.handleFilter();
+        break;
+      case 'popTable':
+        return this.handlePopTable(params.datas);
+        break;
+      case 'popForm':
+        return this.handlePopForm(params.datas);
         break;
       }
     },
