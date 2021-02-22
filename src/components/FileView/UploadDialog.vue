@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="dialogVisible" :append-to-body="appendToBody">
+  <el-dialog :visible.sync="dialogUpload" :append-to-body="appendToBody">
       <!-- 文件上传区 -->
       <template v-if="useUpload">
           <h3 class="edit-header">上传文件</h3>
@@ -125,7 +125,7 @@ export default {
       uploadLimit: 50, // 上传个数限制
 
 
-      dialogVisible: false,
+      dialogUpload: false,
       formLabelWidth: '60px',
       searchParam: {
         page: 1,
@@ -165,6 +165,10 @@ export default {
     this.getList();
     this.getPathDetail(0);
     //this.getFileList()
+  },
+  props: {
+    isOnly: {type: Boolean, default: false},
+    appendToBody: {type: Boolean, default: false}
   },
   computed:{
     attachmentModel() {
@@ -453,12 +457,12 @@ export default {
     },
     showDialog(params) {
       const { fileType, lineType } = params;
-      this.dialogVisible = true;
+      this.dialogUpload = true;
       // file_type: 资源类型['video' => '视频', 'audio' => '音频', 'apk' => '应用', 'image' => '图片', 'document' => '文档', 'other' => '其他']
       this.searchParam.file_type = fileType;
       // line_type: 业务线([1 => 线上教育, 2 => 碑帖, 3 => 智能笔]
       this.searchParam.line_type = lineType;
-          console.log(this.dialogVisible, 'dddd');
+          console.log(this.dialogUpload, 'dddd');
       this.selectList = [];
       this.fetchData();
     },
@@ -468,7 +472,7 @@ export default {
         return;
       }
       this.$emit('confirm', this.selectList);
-      this.dialogVisible = false;
+      this.dialogUpload = false;
     },
     fetchData() {
         return {};
