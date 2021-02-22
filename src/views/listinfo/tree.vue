@@ -66,8 +66,8 @@
 //import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils/base'
-import ListSearch from './components/ListSearch'
-import ListForm from './components/ListForm'
+import ListSearch from '@/views/common/ListSearch'
+import ListForm from '@/views/common/ListForm'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import {listinfo} from '@/applications/mixins/listinfo';
 //import {fetchData} from '@/applications/mixins/fetchData';

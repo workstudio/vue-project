@@ -76,7 +76,7 @@ function formatRoute(permission) {
     route.component = Middle;
   } 
   if (display == 3) {
-    let routePath = permission.route_path ? permission.route_path : permission.action + '/default';
+    let routePath = permission.route_path ? permission.route_path : (permission.action == 'add' || permission.action == 'edit' ? 'change/detail' : permission.action + '/default');
 
     let rComponent = _pviewsImport(`${routePath}`);
     route.component = rComponent;
