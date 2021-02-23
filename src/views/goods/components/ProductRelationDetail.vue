@@ -36,8 +36,8 @@
 </template>
 
 <script>
-  import {fetchListAll as fetchSubjectList} from '@/api/subject'
-  import {fetchList as fetchPrefrenceAreaList} from '@/api/prefrenceArea'
+  //import {fetchListAll as fetchSubjectList} from '@/api/subject'
+  //import {fetchList as fetchPrefrenceAreaList} from '@/api/prefrenceArea'
 
   export default {
     name: "ProductRelationDetail",

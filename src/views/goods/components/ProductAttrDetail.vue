@@ -1,17 +1,21 @@
 <template>
   <div style="margin-top: 50px">
     <el-form :model="value" ref="productAttrForm" label-width="120px" style="width: 720px" size="small">
-      <el-form-item label="属性类型：">
-        <el-select v-model="value.productAttributeCategoryId"
-                   placeholder="请选择属性类型"
-                   @change="handleProductAttrChange">
-          <el-option
-            v-for="item in productAttributeCategoryOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
+      <el-form-item label="商品参数：">
+        <el-card shadow="never" class="cardBg">
+          <div v-for="(item,index) in selectProductParam" :class="{littleMarginTop:index!==0}">
+            <div class="paramInputLabel">{{item.name}}:</div>
+            <el-select v-if="item.inputType===1" class="paramInput" v-model="selectProductParam[index].value">
+              <el-option
+                v-for="item in getParamInputList(item.inputList)"
+                :key="item"
+                :label="item"
+                :value="item">
+              </el-option>
+            </el-select>
+            <el-input v-else class="paramInput" v-model="selectProductParam[index].value"></el-input>
+          </div>
+        </el-card>
       </el-form-item>
       <el-form-item label="商品规格：">
         <el-card shadow="never" class="cardBg">
@@ -115,35 +119,6 @@
           </div>
         </el-card>
       </el-form-item>
-      <el-form-item label="商品参数：">
-        <el-card shadow="never" class="cardBg">
-          <div v-for="(item,index) in selectProductParam" :class="{littleMarginTop:index!==0}">
-            <div class="paramInputLabel">{{item.name}}:</div>
-            <el-select v-if="item.inputType===1" class="paramInput" v-model="selectProductParam[index].value">
-              <el-option
-                v-for="item in getParamInputList(item.inputList)"
-                :key="item"
-                :label="item"
-                :value="item">
-              </el-option>
-            </el-select>
-            <el-input v-else class="paramInput" v-model="selectProductParam[index].value"></el-input>
-          </div>
-        </el-card>
-      </el-form-item>
-      <el-form-item label="商品相册：">
-        <multi-upload v-model="selectProductPics"></multi-upload>
-      </el-form-item>
-      <el-form-item label="规格参数：">
-        <el-tabs v-model="activeHtmlName" type="card">
-          <el-tab-pane label="电脑端详情" name="pc">
-            <tinymce :width="595" :height="300" v-model="value.detailHtml"></tinymce>
-          </el-tab-pane>
-          <el-tab-pane label="移动端详情" name="mobile">
-            <tinymce :width="595" :height="300" v-model="value.detailMobileHtml"></tinymce>
-          </el-tab-pane>
-        </el-tabs>
-      </el-form-item>
       <el-form-item style="text-align: center">
         <el-button size="medium" @click="handlePrev">上一步，填写商品促销</el-button>
         <el-button type="primary" size="medium" @click="handleNext">下一步，选择商品关联</el-button>
@@ -153,15 +128,15 @@
 </template>
 
 <script>
-  import {fetchList as fetchProductAttrCateList} from '@/api/productAttrCate'
-  import {fetchList as fetchProductAttrList} from '@/api/productAttr'
+  //import {fetchList as fetchProductAttrCateList} from '@/api/productAttrCate'
+  //import {fetchList as fetchProductAttrList} from '@/api/productAttr'
   import SingleUpload from '@/components/Upload/singleUpload'
   import MultiUpload from '@/components/Upload/multiUpload'
-  import Tinymce from '@/components/Tinymce'
+  //import Tinymce from '@/components/Tinymce'
 
   export default {
     name: "ProductAttrDetail",
-    components: {SingleUpload, MultiUpload, Tinymce},
+    components: {SingleUpload, MultiUpload},//, Tinymce},
     props: {
       value: Object,
       isEdit: {
@@ -171,20 +146,13 @@
     },
     data() {
       return {
-        //编辑模式时是否初始化成功
-        hasEditCreated:false,
-        //商品属性分类下拉选项
-        productAttributeCategoryOptions: [],
-        //选中的商品属性
-        selectProductAttr: [],
-        //选中的商品参数
-        selectProductParam: [],
-        //选中的商品属性图片
-        selectProductAttrPics: [],
-        //可手动添加的商品属性
-        addProductAttrValue: '',
-        //商品富文本详情激活类型
-        activeHtmlName: 'pc'
+        hasEditCreated:false, //编辑模式时是否初始化成功
+        productAttributeCategoryOptions: [], //商品属性分类下拉选项
+        selectProductAttr: [], //选中的商品属性
+        selectProductParam: [], //选中的商品参数
+        selectProductAttrPics: [], //选中的商品属性图片
+        addProductAttrValue: '', //可手动添加的商品属性
+        activeHtmlName: 'pc' //商品富文本详情激活类型
       }
     },
     computed: {
@@ -255,6 +223,7 @@
         this.hasEditCreated=true;
       },
       getProductAttrCateList() {
+          return ;
         let param = {pageNum: 1, pageSize: 100};
         fetchProductAttrCateList(param).then(response => {
           this.productAttributeCategoryOptions = [];

@@ -67,7 +67,7 @@ function formatRoute(permission) {
     //component: Layout,
     name: permission.name,
     title: permission.name,
-    meta: {title: permission.name, icon: 'table', resource: resourceCode, app: permission.app}
+    meta: {title: permission.name, icon: 'table', resource: resourceCode, app: permission.app, action: permission.action}
   }
   if (display == 1) {
     route.component = Layout;

@@ -4,15 +4,23 @@
       <el-step title="填写商品基本"></el-step>
       <el-step title="填写商品属性和SKU"></el-step>
     </el-steps>
-    <div style="margin-top: 50px">
-      <list-form ref="listForm" :model="cModel" :updateFormFields="updateFormFields" :addFormFields="addFormFields" :fieldNames="fieldNames"></list-form>
-    </div>
     <product-info-detail
       v-show="showStatus[0]"
+      :model="cModel"
+      :updateFormFields="updateFormFields"
+      :addFormFields="addFormFields"
+      :fieldNames="fieldNames"
       v-model="productParam"
       :is-edit="isEdit"
       @nextStep="nextStep">
     </product-info-detail>
+    <product-attr-detail
+      v-show="showStatus[1]"
+      v-model="productParam"
+      :is-edit="isEdit"
+      @nextStep="nextStep"
+      @prevStep="prevStep">
+    </product-attr-detail>
     <!--<product-sale-detail
       v-show="showStatus[1]"
       v-model="productParam"
@@ -20,13 +28,6 @@
       @nextStep="nextStep"
       @prevStep="prevStep">
     </product-sale-detail>
-    <product-attr-detail
-      v-show="showStatus[2]"
-      v-model="productParam"
-      :is-edit="isEdit"
-      @nextStep="nextStep"
-      @prevStep="prevStep">
-    </product-attr-detail>
     <product-relation-detail
       v-show="showStatus[3]"
       v-model="productParam"
@@ -38,11 +39,14 @@
 </template>
 <script>
 import '@/styles/mall/index.scss'
+
+import {fetchData} from '@/applications/mixins/fetchData';
+import ListForm from '@/views/common/ListForm'
 import ProductInfoDetail from './components/ProductInfoDetail';
 //import ProductSaleDetail from './ProductSaleDetail';
-//import ProductAttrDetail from './ProductAttrDetail';
+import ProductAttrDetail from './components/ProductAttrDetail';
 //import ProductRelationDetail from './ProductRelationDetail';
-import {createProduct,getProduct,updateProduct} from '@/api/product';
+//import {createProduct,getProduct,updateProduct} from '@/api/product';
 
 const defaultProductParam = {
   albumPics: '',
@@ -106,8 +110,9 @@ const defaultProductParam = {
   weight: 0
 };
 export default {
+  'mixins': [fetchData],
   name: 'ProductDetail',
-  components: {ProductInfoDetail},//, ProductSaleDetail, ProductAttrDetail, ProductRelationDetail},
+  components: {ListForm, ProductInfoDetail, ProductAttrDetail},//, ProductSaleDetail, ProductRelationDetail},
   props: {
     isEdit: {
       type: Boolean,
@@ -116,16 +121,36 @@ export default {
   },
   data() {
     return {
+      addFormFields: {},
+      updateFormFields: {},
+      fieldNames: {},
+      action: this.$route.meta.action,
+
       active: 0,
       productParam: Object.assign({}, defaultProductParam),
       showStatus: [true, false, false, false]
     }
   },
-  created(){
-    if(this.isEdit){
-      getProduct(this.$route.query.id).then(response=>{
-        this.productParam=response.data;
-      });
+  created() {
+    if (this.action == 'add') {
+      this.cModel.$create({params: {}, data: {point_scene: 'get_formelem'}}).then(response => {
+        if (response === false) {
+          return ;
+        }
+          console.log(response);
+        this.addFormFields = response.formFields;
+        this.fieldNames = response.fieldNames;
+        //this.list.unshift(this.inputInfos)
+        this.dialogFormVisible = false
+        this.$notify({
+          title: '成功',
+          message: '创建成功',
+          type: 'success',
+          duration: 2000
+        });
+        return this.$emit('handleFilter');
+      })
+    } else if (this.action == 'edit') {
     }
   },
   methods: {
