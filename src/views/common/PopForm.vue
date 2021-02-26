@@ -28,13 +28,16 @@
 </template>
 
 <script>
+import {fetchData} from '@/applications/mixins/fetchData';
 import elemForms from '@/components/ElemForm'
 
 export default {
+  'mixins': [fetchData],
   name: 'ListForm',
   data() {
     return {
       elemForms: elemForms,
+      formFields: {},
 
       //radio: 3,
       //input: '',
@@ -51,9 +54,9 @@ export default {
     }
   },
   computed: {
-    formFields() {
+    /*formFields() {
       return this.addFormFields;
-    },
+    },*/
     rules() {
       return this.addFormFields;
     },
@@ -65,13 +68,26 @@ export default {
       //this.resetTemp()
       this.formType = 'add'
       this.popFormVisible = true
+      let model = this.getModel('infocms', 'goods');
+      model.$create({params: {}, data: {point_scene: 'get_formelem'}}).then(response => {
+        if (response === false) {
+          return ;
+        }
+        this.formFields = response.formFields;
+        this.fieldNames = response.fieldNames;
       for (let field in this.formFields) {
         let item = this.formFields[field];
         this.inputInfos[field] = item.defaultValue ? item.defaultValue : '';
       }
+          console.log(this.formFields, 'ffffffffffffffffffff');
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
+
+        return ;
+      })
+      
+      
     },
     addData() {
       this.$refs['dataForm'].validate((valid) => {

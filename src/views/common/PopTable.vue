@@ -1,6 +1,14 @@
 <template>
   <div class="app-container">
-    <list-search @handleAdd="handleAdd" @handleFilter="handleFilter" :currentResource="currentResource" :searchFields="searchFields" :listQuery="listQuery" :model="cModel"></list-search>
+    <el-dialog :visible.sync="dialogPopTableVisible" title="Reading statistics">
+      <!--<el-table :data="pvData" border fit highlight-current-row style="width: 100%">
+        <el-table-column prop="key" label="Channel" />
+        <el-table-column prop="pv" label="Pv" />
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogPvVisible = false">{{ $t('table.confirm') }}</el-button>
+      </span>-->
+    <list-search :currentResource="currentResource" :searchFields="searchFields" :listQuery="listQuery" :model="cModel"></list-search>
 
     <el-table
       :key="tableKey"
@@ -49,45 +57,27 @@
     </el-table>
 
     <pagination v-show="pageMeta.total>0" :total="pageMeta.total" :page.sync="listQuery.page" :limit.sync="listQuery.per_page" @pagination="getList" />
-
-    <list-form ref="listForm" @handleFilter="handleFilter" :model="cModel" :updateFormFields="updateFormFields" :addFormFields="addFormFields" :fieldNames="fieldNames"></list-form>
-    <list-authority ref="listAuthority" @handleFilter="handleFilter" :model="cModel" :updateFormFields="updateFormFields" :fieldNames="fieldNames"></list-authority>
-
-    <pop-table ref="popTable"></pop-table>
-    <pop-form ref="popForm"></pop-form>
+    </el-dialog>
   </div>
 </template>
-
 <script>
-//import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
-import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils/base'
-import ListSearch from '@/views/common/ListSearch'
-import ListForm from '@/views/common/ListForm'
-import ListAuthority from '@/views/common/ListAuthority'
-import PopTable from '@/views/common/PopTable'
-import PopForm from '@/views/common/PopForm'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import {listinfo} from '@/applications/mixins/listinfo';
-//import {fetchData} from '@/applications/mixins/fetchData';
-import elemLists from '@/components/ElemList'
+import ListSearch from '@/views/common/ListSearch'
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elemButtons from '@/components/ElemButton'
+import elemSearchs from '@/components/ElemSearch'
 
 export default {
-  name: 'Default',
+  name: 'PopTable',
   mixins: [listinfo],
   components: {
     ListSearch,
-    ListForm,
-    PopForm,
-    ListAuthority,
-    PopTable,
     Pagination,
   },
-  directives: { waves },
   data() {
     return {
-      downloadLoading: false,
+      dialogPopTableVisible: false,
+      pvData: [],
       sortElem: {},
       searchFields: {},
       pageLinks: {},
@@ -99,10 +89,13 @@ export default {
       },
     }
   },
-  created() {
-    this.getList()
+  props:{                     
   },
   methods: {
+    handlePopTable(elems) {
+      this.dialogPopTableVisible = true
+      this.getList();
+    },
     getList() {
       this.listQuery.sort_elem = JSON.stringify(this.sortElem);
       this.sortElem = {};
@@ -122,10 +115,6 @@ export default {
           this.listLoading = false
         }, 1.5 * 1000)
       })
-    },
-    handleFilter() {
-      this.listQuery.page = 1;
-      this.getList()
     },
     sortChange(data) {
       const { prop, order } = data

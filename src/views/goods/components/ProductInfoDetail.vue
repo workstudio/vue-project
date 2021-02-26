@@ -1,7 +1,7 @@
 <template>
   <div style="margin-top: 50px">
     <!--<el-form ref="dataForm" :rules="rules" :model="inputInfos" label-position="left" label-width="70px" style="width: 1200px; margin-left:30px;">-->
-    <el-form :model="value" :rules="rules" ref="productInfoForm" label-width="120px" style="width: 600px" size="small">
+    <el-form :model="inputInfos" :rules="rules" ref="productInfoForm" label-width="120px" style="width: 600px" size="small">
       <component
         v-for="(formField, field) in formFields"
         :key="field"
@@ -29,9 +29,9 @@ export default {
     addFormFields: {type: Object},
     updateFormFields: {type: Object},
     fieldNames: {type: Object},
+    currentInfo: {type: Object},
     title: {type: String, default: ''},
     //showBack: {type: String, default: ''},
-    value: Object,
     isEdit: {
       type: Boolean,
       default: false
@@ -71,17 +71,8 @@ export default {
       return this.addFormFields;
     },
     //商品的编号
-    productId(){
-      return this.value.id;
-    }
   },
   watch: {
-    productId:function(newValue){
-      if(!this.isEdit)return;
-      if(this.hasEditCreated)return;
-      if(newValue===undefined||newValue==null||newValue===0)return;
-      this.handleEditCreated();
-    },
     selectProductCateValue: function (newValue) {
       if (newValue != null && newValue.length === 2) {
         this.value.productCategoryId = newValue[1];
@@ -116,7 +107,7 @@ export default {
     handleNext(formName){
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$emit('nextStep');
+          this.$emit('nextStep', this.inputInfos);
         } else {
           this.$message({
             message: '验证失败',

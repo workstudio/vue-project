@@ -58,6 +58,10 @@ export default {
     //cascaderLoad,
     //uploadItem,
   },
+  props: {
+    isOnly: {type: Boolean, default: false},
+    appendToBody: {type: Boolean, default: false}
+  },
   data() {
     // const vm = this;
     return {

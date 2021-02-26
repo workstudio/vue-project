@@ -10,27 +10,26 @@
       :updateFormFields="updateFormFields"
       :addFormFields="addFormFields"
       :fieldNames="fieldNames"
-      v-model="productParam"
+      :currentInfo="currentInfo"
       :is-edit="isEdit"
       @nextStep="nextStep">
     </product-info-detail>
     <product-attr-detail
       v-show="showStatus[1]"
-      v-model="productParam"
+      :model="cModel"
       :is-edit="isEdit"
+      :currentInfo="currentInfo"
       @nextStep="nextStep"
       @prevStep="prevStep">
     </product-attr-detail>
     <!--<product-sale-detail
       v-show="showStatus[1]"
-      v-model="productParam"
       :is-edit="isEdit"
       @nextStep="nextStep"
       @prevStep="prevStep">
     </product-sale-detail>
     <product-relation-detail
       v-show="showStatus[3]"
-      v-model="productParam"
       :is-edit="isEdit"
       @prevStep="prevStep"
       @finishCommit="finishCommit">
@@ -41,78 +40,16 @@
 import '@/styles/mall/index.scss'
 
 import {fetchData} from '@/applications/mixins/fetchData';
-import ListForm from '@/views/common/ListForm'
 import ProductInfoDetail from './components/ProductInfoDetail';
-//import ProductSaleDetail from './ProductSaleDetail';
 import ProductAttrDetail from './components/ProductAttrDetail';
+//import ProductSaleDetail from './ProductSaleDetail';
 //import ProductRelationDetail from './ProductRelationDetail';
 //import {createProduct,getProduct,updateProduct} from '@/api/product';
 
-const defaultProductParam = {
-  albumPics: '',
-  brandId: null,
-  brandName: '',
-  deleteStatus: 0,
-  description: '',
-  detailDesc: '',
-  detailHtml: '',
-  detailMobileHtml: '',
-  detailTitle: '',
-  feightTemplateId: 0,
-  flashPromotionCount: 0,
-  flashPromotionId: 0,
-  flashPromotionPrice: 0,
-  flashPromotionSort: 0,
-  giftPoint: 0,
-  giftGrowth: 0,
-  keywords: '',
-  lowStock: 0,
-  name: '',
-  newStatus: 0,
-  note: '',
-  originalPrice: 0,
-  pic: '',
-  //会员价格{memberLevelId: 0,memberPrice: 0,memberLevelName: null}
-  memberPriceList: [],
-  //商品满减
-  productFullReductionList: [{fullPrice: 0, reducePrice: 0}],
-  //商品阶梯价格
-  productLadderList: [{count: 0,discount: 0,price: 0}],
-  previewStatus: 0,
-  price: 0,
-  productAttributeCategoryId: null,
-  //商品属性相关{productAttributeId: 0, value: ''}
-  productAttributeValueList: [],
-  //商品sku库存信息{lowStock: 0, pic: '', price: 0, sale: 0, skuCode: '', spData: '', stock: 0}
-  skuStockList: [],
-  //商品相关专题{subjectId: 0}
-  subjectProductRelationList: [],
-  //商品相关优选{prefrenceAreaId: 0}
-  prefrenceAreaProductRelationList: [],
-  productCategoryId: null,
-  productCategoryName: '',
-  productSn: '',
-  promotionEndTime: '',
-  promotionPerLimit: 0,
-  promotionPrice: null,
-  promotionStartTime: '',
-  promotionType: 0,
-  publishStatus: 0,
-  recommandStatus: 0,
-  sale: 0,
-  serviceIds: '',
-  sort: 0,
-  stock: 0,
-  subTitle: '',
-  unit: '',
-  usePointLimit: 0,
-  verifyStatus: 0,
-  weight: 0
-};
 export default {
   'mixins': [fetchData],
   name: 'ProductDetail',
-  components: {ListForm, ProductInfoDetail, ProductAttrDetail},//, ProductSaleDetail, ProductRelationDetail},
+  components: {ProductInfoDetail, ProductAttrDetail},//, ProductSaleDetail, ProductRelationDetail},
   props: {
     isEdit: {
       type: Boolean,
@@ -127,8 +64,8 @@ export default {
       action: this.$route.meta.action,
 
       active: 0,
-      productParam: Object.assign({}, defaultProductParam),
-      showStatus: [true, false, false, false]
+      currentInfo: {},
+      showStatus: [true, false],
     }
   },
   created() {
@@ -137,18 +74,9 @@ export default {
         if (response === false) {
           return ;
         }
-          console.log(response);
         this.addFormFields = response.formFields;
         this.fieldNames = response.fieldNames;
-        //this.list.unshift(this.inputInfos)
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '成功',
-          message: '创建成功',
-          type: 'success',
-          duration: 2000
-        });
-        return this.$emit('handleFilter');
+        return ;
       })
     } else if (this.action == 'edit') {
     }
@@ -166,7 +94,8 @@ export default {
         this.showStatus[this.active] = true;
       }
     },
-    nextStep() {
+    nextStep(info) {
+      this.currentInfo = info;
       if (this.active < this.showStatus.length - 1) {
         this.active++;
         this.hideAll();
@@ -180,7 +109,7 @@ export default {
         type: 'warning'
       }).then(() => {
         if(isEdit){
-          updateProduct(this.$route.query.id,this.productParam).then(response=>{
+          updateProduct(this.$route.query.id,this.inputInfos).then(response=>{
             this.$message({
               type: 'success',
               message: '提交成功',
@@ -189,7 +118,7 @@ export default {
             this.$router.back();
           });
         }else{
-          createProduct(this.productParam).then(response=>{
+          createProduct(this.inputInfos).then(response=>{
             this.$message({
               type: 'success',
               message: '提交成功',
@@ -208,5 +137,3 @@ export default {
     width: 900px;
   }
 </style>
-
-

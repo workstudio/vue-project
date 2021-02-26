@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <el-form-item :label="elem.options.name" prop="field">
     <div class="upload-wrap">
       <el-radio-group v-model="uploadInfo.selectId" size="mini">
         <ul v-if="uploadInfo.fileList.length" class="upload-list">
@@ -27,14 +27,17 @@
     </div>
     <asset-dialog ref="assetDialog" @confirm="getFileList" :appendToBody="appendToBody"></asset-dialog>
     <upload-dialog ref="uploadDialog" @confirm="getFileList" :appendToBody="appendToBody"></upload-dialog>
-  </div>
+  </el-form-item>
 </template>
 <script>
+import {form} from '@/applications/mixins/form';
+
 import AssetDialog from '@/components/FileView/AssetDialog';
 import UploadDialog from '@/components/FileView/UploadDialog';
 import FileItem from '@/components/FileView/FileItem';
 
 export default {
+  mixins: [form],
   components: {
     AssetDialog,
     UploadDialog,
@@ -74,7 +77,6 @@ export default {
           label: '笔画分解'
         }
       ],
-      value: ''
     };
   },
   created() {},
