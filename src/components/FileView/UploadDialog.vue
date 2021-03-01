@@ -1,40 +1,40 @@
 <template>
   <el-dialog :visible.sync="dialogVisible" :append-to-body="appendToBody" width="90%">
-      <!-- 文件上传区 -->
-      <template v-if="useUpload">
-          <h3 class="edit-header">上传文件</h3>
-          <el-scrollbar class="scroll">
-            <el-form
-              :size="size"
-              ref="template_form"
-              label-position="top"
-              class="template_form rule-form"
-            >
-              <component
-                :ref="'upload-' + field"
-                formName="upload"
-                @dealFormChange="dealFormChange"
-                v-for="(formField, field) in fileFormFields"
-                :key="field"
-                :field="field"
-                :url="uploadUrl"
-                :model="attachmentModel"
-                :elem="formField"
-                @search="fileSearch"
-                @beforeUpload="uploadBefore"
-                @uploadSuccess="uploadSuccess"
-                @uploadError="uploadError"
-                :inputInfos.sync="fileInputInfos"
-                :is="elemForms[formField.type]">
-              </component>
-            </el-form>
-          </el-scrollbar>
-          <!-- 按钮区 -->
-          <div class="submit-btn-box">
-            <submit-btn :size="size" @btn="saveUpload()" :status="load.upload">保存</submit-btn>
-            <el-button :size="size" @click="layout.upload = false">取消</el-button>
-          </div>
-      </template>
+    <!-- 文件上传区 -->
+    <template v-if="useUpload">
+        <h3 class="edit-header">上传文件</h3>
+        <el-scrollbar class="scroll">
+          <el-form
+            :size="size"
+            ref="template_form"
+            label-position="top"
+            class="template_form rule-form"
+          >
+            <component
+              :ref="'upload-' + field"
+              formName="upload"
+              @dealFormChange="dealFormChange"
+              v-for="(formField, field) in fileFormFields"
+              :key="field"
+              :field="field"
+              :url="uploadUrl"
+              :model="attachmentModel"
+              :elem="formField"
+              @search="fileSearch"
+              @beforeUpload="uploadBefore"
+              @uploadSuccess="uploadSuccess"
+              @uploadError="uploadError"
+              :inputInfos.sync="fileInputInfos"
+              :is="elemForms[formField.type]">
+            </component>
+          </el-form>
+        </el-scrollbar>
+        <!-- 按钮区 -->
+        <div class="submit-btn-box">
+          <submit-btn :size="size" @btn="saveUpload()" :status="load.upload">保存</submit-btn>
+          <el-button :size="size" @click="layout.upload = false">取消</el-button>
+        </div>
+    </template>
   </el-dialog>
 </template>
 
@@ -456,15 +456,8 @@ export default {
       }
     },
     showDialog(params) {
-      const { fileType, lineType } = params;
       this.dialogVisible = true;
-      // file_type: 资源类型['video' => '视频', 'audio' => '音频', 'apk' => '应用', 'image' => '图片', 'document' => '文档', 'other' => '其他']
-      this.searchParam.file_type = fileType;
-      // line_type: 业务线([1 => 线上教育, 2 => 碑帖, 3 => 智能笔]
-      this.searchParam.line_type = lineType;
-          console.log(this.dialogVisible, 'dddd');
-      this.selectList = [];
-      this.fetchData();
+      //this.fetchData();
     },
     confirm() {
       if (!this.selectList.length) {
@@ -474,19 +467,9 @@ export default {
       this.$emit('confirm', this.selectList);
       this.dialogVisible = false;
     },
-    fetchData() {
-        return {};
-
-      Api.getAssetsList(this.searchParam).then((response) => {
-        this.tableData = response.data.infos.map((item) => {
-          return Bean.assetBean(item);
-        });
-        this.total = response.data.totalNum;
-      });
-    },
     pageNoChange(val) {
       this.searchParam.page = val;
-      this.fetchData();
+      //this.fetchData();
     },
     selectionChange(val) {
       this.selectList = val;
@@ -498,7 +481,7 @@ export default {
     },
     onSubmit() {
       this.searchParam.page = 1;
-      this.fetchData();
+      //this.fetchData();
     },
     showPreviewDialog(item) {
       this.$refs.previewDialog.showDialog({

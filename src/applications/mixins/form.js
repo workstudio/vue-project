@@ -16,6 +16,7 @@ export const form = {
     field: {type: String, default: ''},
     formName: {type: String, default: ''},
     value: {type: String, default: ''},
+    model: {type: Function},  
   },
   computed:{
   },

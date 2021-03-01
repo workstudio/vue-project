@@ -7,6 +7,7 @@
           v-if="loadSurvey"
           :key="field"
           :field="field"
+          :model="model"
           :elem="formField"
           :inputInfos.sync="inputInfos"
           :is="elemForms[formField.type]">

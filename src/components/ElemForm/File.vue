@@ -14,16 +14,8 @@
           </file-item>
         </ul>
       </el-radio-group>
-                      <el-button
-                    type="primary"
-                    @click="handleChangeFile('image', 'gif_resource_id', 'gifResourceName')"
-                    >选择文件</el-button
-                >
-                                <el-button
-                    type="primary"
-                    @click="handleUploadFile('image', 'gif_resource_id', 'gifResourceName')"
-                    >上传文件</el-button
-                >
+      <el-button type="primary" @click="handleChangeFile('image', 'gif_resource_id', 'gifResourceName')">选择文件</el-button>
+      <el-button type="primary" @click="handleUploadFile('image', 'gif_resource_id', 'gifResourceName')">上传文件</el-button>
     </div>
     <!--<asset-dialog ref="assetDialog" @confirm="getFileList" :appendToBody="appendToBody"></asset-dialog>-->
     <pop-table ref="popTable" :appendToBody="appendToBody"></pop-table>
@@ -97,14 +89,8 @@ export default {
       this.$refs.popTable.handlePopTable(elems);
     },
     handleUploadFile() {
-      const { type } = this.uploadInfo;
-      let fileType = '';
-      if (type === 'radio') {
-        fileType = 'image';
-      } else if (type === 'video') {
-        fileType = 'video';
-      }
-      this.$refs.uploadDialog.showDialog({ fileType: fileType, lineType: 3 });
+        console.log(this.model, this.field, 'llllllllll');
+      this.$refs.uploadDialog.showDialog({});
     },
     handleRemove(index) {
       this.uploadInfo.fileList.splice(index, 1);
