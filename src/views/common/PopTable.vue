@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-dialog :visible.sync="dialogPopTableVisible" title="Reading statistics">
+    <el-dialog :visible.sync="dialogPopTableVisible" title="Reading statistics" :append-to-body="appendToBody" width="90%">
       <!--<el-table :data="pvData" border fit highlight-current-row style="width: 100%">
         <el-table-column prop="key" label="Channel" />
         <el-table-column prop="pv" label="Pv" />
@@ -19,7 +19,12 @@
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"
+      @selection-change="handleSelectionChange"
     >
+    <el-table-column v-if="haveSelection"
+      type="selection"
+      width="55">
+    </el-table-column>
 
       <el-table-column  v-for="(fieldItem, field) in fieldNames" :key="field" :align="fieldItem.align" :min-width="fieldItem.width" :label="fieldItem.name" :prop="field" sortable="custom" :class-name="getSortClass(field)" v-if="fieldItem.hidden!=1">
         <template slot-scope="{row}">
@@ -33,28 +38,12 @@
           </component>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" min-width="180" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <component
-            v-for="button in currentResource[5]"
-            :key="button.action"
-            :elem="button"
-            :model="cModel"
-            :row="row"
-            :index="$index"
-            @dealAction="dealAction"
-            :is="elemButtons[button.action]">
-          </component>
-          <!--<el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-            {{ $t('table.publish') }}
-          </el-button>
-          <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-            {{ $t('table.draft') }}
-          </el-button>-->
-        </template>
-      </el-table-column>
 
     </el-table>
+  <div style="margin-top: 20px">
+    <el-button @click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
+    <el-button @click="toggleSelection()">取消选择</el-button>
+  </div>
 
     <pagination v-show="pageMeta.total>0" :total="pageMeta.total" :page.sync="listQuery.page" :limit.sync="listQuery.per_page" @pagination="getList" />
     </el-dialog>
@@ -76,6 +65,7 @@ export default {
   },
   data() {
     return {
+      haveSelection: true,
       dialogPopTableVisible: false,
       pvData: [],
       sortElem: {},
@@ -90,6 +80,7 @@ export default {
     }
   },
   props:{                     
+    appendToBody: {type: Boolean, default: false}
   },
   methods: {
     handlePopTable(elems) {
@@ -134,7 +125,10 @@ export default {
         return 'ascending';
       }
       return 'descending'
-    }
+    },
+    handleSelectionChange: function(selectionElems) {
+      console.log(selectionElems, 'sssssssss');
+    },
   }
 }
 </script>

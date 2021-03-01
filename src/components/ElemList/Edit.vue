@@ -3,10 +3,10 @@
   <el-popover trigger="hover" placement="top" v-if="withPop">
     <p>完整信息: {{row[field].valueSource}}</p>
     <div slot="reference" class="name-wrapper">
-      <el-input type="textarea" v-model="currentValue" class="edit-input" size="small" @blur="changeInput" :rows="rows" />
+      <el-input type="textarea" v-model="currentValue" class="edit-input" size="small" @blur="handleRowChange" :rows="rows" />
     </div>
   </el-popover>
-  <el-input v-else type="textarea" v-model="currentValue" class="edit-input" size="small" @blur="changeInput" :rows="rows" />
+  <el-input v-else type="textarea" v-model="currentValue" class="edit-input" size="small" @blur="handleRowChange" :rows="rows" />
   </div>
 </template>
 

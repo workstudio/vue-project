@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="dialogVisible" :append-to-body="appendToBody">
+  <el-dialog :visible.sync="dialogVisible" :append-to-body="appendToBody" width="90%">
       <!-- 文件上传区 -->
       <template v-if="useUpload">
           <h3 class="edit-header">上传文件</h3>

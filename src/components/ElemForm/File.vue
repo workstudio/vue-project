@@ -25,21 +25,24 @@
                     >上传文件</el-button
                 >
     </div>
-    <asset-dialog ref="assetDialog" @confirm="getFileList" :appendToBody="appendToBody"></asset-dialog>
+    <!--<asset-dialog ref="assetDialog" @confirm="getFileList" :appendToBody="appendToBody"></asset-dialog>-->
+    <pop-table ref="popTable" :appendToBody="appendToBody"></pop-table>
     <upload-dialog ref="uploadDialog" @confirm="getFileList" :appendToBody="appendToBody"></upload-dialog>
   </el-form-item>
 </template>
 <script>
 import {form} from '@/applications/mixins/form';
 
-import AssetDialog from '@/components/FileView/AssetDialog';
+//import AssetDialog from '@/components/FileView/AssetDialog';
+import PopTable from '@/views/common/PopTable';
 import UploadDialog from '@/components/FileView/UploadDialog';
 import FileItem from '@/components/FileView/FileItem';
 
 export default {
   mixins: [form],
   components: {
-    AssetDialog,
+    //AssetDialog,
+    PopTable,
     UploadDialog,
     FileItem
   },
@@ -89,7 +92,9 @@ export default {
       } else if (type === 'video') {
         fileType = 'video';
       }
-      this.$refs.assetDialog.showDialog({ fileType: fileType, lineType: 3 });
+      //this.$refs.popTable.showDialog({ fileType: fileType, lineType: 3 });
+      let elems = {};
+      this.$refs.popTable.handlePopTable(elems);
     },
     handleUploadFile() {
       const { type } = this.uploadInfo;

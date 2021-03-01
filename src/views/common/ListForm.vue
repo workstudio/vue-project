@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="destroyOnClose" width	="90%">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="destroyOnClose" width="90%">
       <el-form ref="dataForm" :rules="rules" :model="inputInfos" label-position="left" label-width="70px" style="width: 1200px; margin-left:30px;">
         <component
           v-for="(formField, field) in formFields"
