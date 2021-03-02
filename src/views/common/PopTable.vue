@@ -14,10 +14,10 @@
       @sort-change="sortChange"
       @selection-change="handleSelectionChange"
     >
-    <el-table-column v-if="haveSelection"
-      type="selection"
-      width="55">
-    </el-table-column>
+      <el-table-column v-if="haveSelection"
+        type="selection"
+        width="55">
+      </el-table-column>
 
       <el-table-column  v-for="(fieldItem, field) in fieldNames" :key="field" :align="fieldItem.align" :min-width="fieldItem.width" :label="fieldItem.name" :prop="field" sortable="custom" :class-name="getSortClass(field)" v-if="fieldItem.hidden!=1">
         <template slot-scope="{row}">
@@ -33,13 +33,13 @@
       </el-table-column>
 
     </el-table>
-  <div style="margin-top: 20px">
-    <el-button @click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
-    <el-button @click="toggleSelection()">取消选择</el-button>
-  </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">{{ $t('table.confirm') }}</el-button>
-      </span>
+    <div style="margin-top: 20px" v-if="haveSelection">
+      <el-button @click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
+      <el-button @click="toggleSelection()">取消选择</el-button>
+    </div>
+    <!--<span slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="dialogPvVisible = false">{{ $t('table.confirm') }}</el-button>
+    </span>-->
 
     <pagination v-show="pageMeta.total>0" :total="pageMeta.total" :page.sync="listQuery.page" :limit.sync="listQuery.per_page" @pagination="getList" />
     </el-dialog>
@@ -123,9 +123,6 @@ export default {
         return 'ascending';
       }
       return 'descending'
-    },
-    handleSelectionChange: function(selectionElems) {
-      console.log(selectionElems, 'sssssssss');
     },
   }
 }

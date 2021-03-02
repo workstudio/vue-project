@@ -11,9 +11,14 @@
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"
+      @selection-change="handleSelectionChange"
     >
 
-      <el-table-column  v-for="(fieldItem, field) in fieldNames" :key="field" :align="fieldItem.align" :min-width="fieldItem.width" :label="fieldItem.name" :prop="field" sortable="custom" :class-name="getSortClass(field)" v-if="fieldItem.hidden!=1">
+      <el-table-column v-if="haveSelection"
+        type="selection"
+        width="55">
+      </el-table-column>
+      <el-table-column v-for="(fieldItem, field) in fieldNames" :key="field" :align="fieldItem.align" :min-width="fieldItem.width" :label="fieldItem.name" :prop="field" sortable="custom" :class-name="getSortClass(field)" v-if="fieldItem.hidden!=1">
         <template slot-scope="{row}">
           <component
             :row="row"
@@ -41,6 +46,9 @@
       </el-table-column>
 
     </el-table>
+    <div style="margin-top: 20px" v-if="haveSelection">
+      <el-button v-for="(operationItem, operation) in selectionOperations" :key="operation" @click="dealSelection(operationItem)">{{operationItem.name}}</el-button>
+    </div>
 
     <pagination v-show="pageMeta.total>0" :total="pageMeta.total" :page.sync="listQuery.page" :limit.sync="listQuery.per_page" @pagination="getList" />
 
@@ -110,6 +118,8 @@ export default {
         this.pageMeta = response.meta,
         this.searchFields = response.searchFields,
         this.listQuery.per_page = this.pageMeta.per_page;
+        this.haveSelection = response.haveSelection;
+        this.selectionOperations = response.selectionOperations;
 
         // Just to simulate the time of the request
         setTimeout(() => {

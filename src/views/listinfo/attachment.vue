@@ -306,7 +306,8 @@ export default {
      * file: Object 文件属性
      * update: Boolean 数据是否需要更新（不需要表示已存在）
      */
-    fileSearch(pathId, forceUpdate = false) {
+    fileSearch(pathDetail, forceUpdate = false) {
+      let pathId = pathDetail ? pathDetail.id : 0;
       this.layout.upload = false;
       this.listQuery.parent_id = pathId;
       this.getList();

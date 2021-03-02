@@ -16,6 +16,8 @@ export const listinfo = {
       addFormFields: {},
       updateFormFields: {},
       haveSelection: true,
+      selectionOperations: {},
+      selectionElems: {},
       dialogFormVisible: false,
       list: [],
       fieldNames: {},
@@ -75,6 +77,10 @@ export const listinfo = {
         return this.handlePopForm(params.datas);
         break;
       }
+    },
+    handleSelectionChange: function(selectionElems) {
+      this.selectionElems = selectionElems;
+      console.log(selectionElems, 'sssssssss');
     },
   }
 }
