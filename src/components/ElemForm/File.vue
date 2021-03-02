@@ -14,8 +14,8 @@
           </file-item>
         </ul>
       </el-radio-group>
-      <el-button type="primary" @click="handleChangeFile('image', 'gif_resource_id', 'gifResourceName')">选择文件</el-button>
-      <el-button type="primary" @click="handleUploadFile('image', 'gif_resource_id', 'gifResourceName')">上传文件</el-button>
+      <el-button type="primary" @click="handleSelectFile()">选择文件</el-button>
+      <el-button type="primary" @click="handleUploadFile()">上传文件</el-button>
     </div>
     <!--<asset-dialog ref="assetDialog" @confirm="getFileList" :appendToBody="appendToBody"></asset-dialog>-->
     <pop-table ref="popTable" :appendToBody="appendToBody"></pop-table>
@@ -79,22 +79,13 @@ export default {
   },
   created() {},
   methods: {
-    handleChangeFile() {
-      const { type } = this.uploadInfo;
-      let fileType = '';
-      if (type === 'radio') {
-        fileType = 'image';
-      } else if (type === 'video') {
-        fileType = 'video';
-      }
-      //this.$refs.popTable.showDialog({ fileType: fileType, lineType: 3 });
-      let elems = {};
-      this.$refs.popTable.handlePopTable(elems);
+    handleSelectFile() {
+      let params = {row: {}, operation: {app: 'passport', resource: 'attachment', params:{}}};
+      this.$refs.popTable.handlePopTable(params);
     },
     handleUploadFile() {
-        console.log(this.model, this.field, 'llllllllll');
-      //this.$refs.uploadDialog.showDialog({});
-      this.$refs.popForm.handlePopForm({model: this.model, field: this.field});
+      let params = {row: {}, operation: {app: 'passport', resource: 'attachment', params:{}}, relate: {model: this.model, field: this.field}};
+      this.$refs.popForm.handlePopForm(params);
     },
     handleRemove(index) {
       this.uploadInfo.fileList.splice(index, 1);

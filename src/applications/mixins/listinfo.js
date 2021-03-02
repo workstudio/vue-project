@@ -15,6 +15,7 @@ export const listinfo = {
 
       addFormFields: {},
       updateFormFields: {},
+      haveSelection: true,
       dialogFormVisible: false,
       list: [],
       fieldNames: {},

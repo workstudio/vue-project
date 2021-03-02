@@ -1,13 +1,6 @@
 <template>
   <div class="app-container">
     <el-dialog :visible.sync="dialogPopTableVisible" title="Reading statistics" :append-to-body="appendToBody" width="90%">
-      <!--<el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">{{ $t('table.confirm') }}</el-button>
-      </span>-->
     <list-search :currentResource="currentResource" :searchFields="searchFields" :listQuery="listQuery" :model="cModel"></list-search>
 
     <el-table
@@ -44,6 +37,9 @@
     <el-button @click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
     <el-button @click="toggleSelection()">取消选择</el-button>
   </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogPvVisible = false">{{ $t('table.confirm') }}</el-button>
+      </span>
 
     <pagination v-show="pageMeta.total>0" :total="pageMeta.total" :page.sync="listQuery.page" :limit.sync="listQuery.per_page" @pagination="getList" />
     </el-dialog>
@@ -53,8 +49,6 @@
 import {listinfo} from '@/applications/mixins/listinfo';
 import ListSearch from '@/views/common/ListSearch'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import elemButtons from '@/components/ElemButton'
-import elemSearchs from '@/components/ElemSearch'
 
 export default {
   name: 'PopTable',
@@ -65,12 +59,12 @@ export default {
   },
   data() {
     return {
-      haveSelection: true,
       dialogPopTableVisible: false,
       pvData: [],
       sortElem: {},
       searchFields: {},
       pageLinks: {},
+      model: {},
       pageMeta: {total: 0},
       listQuery: {
         page: 1,
@@ -83,18 +77,22 @@ export default {
     appendToBody: {type: Boolean, default: false}
   },
   methods: {
-    handlePopTable(elems) {
+    handlePopTable(params) {
       this.dialogPopTableVisible = true
-      this.getList();
+      let row = params.row;
+      let operation = params.operation;
+      this.model = this.getModel(operation.app, operation.resource);
+      this.getList(row, operation);
     },
-    getList() {
+    getList(row, operation) {
       this.listQuery.sort_elem = JSON.stringify(this.sortElem);
       this.sortElem = {};
       this.listLoading = true
-      this.fetchRequest(this.cModel, {query: this.listQuery, action: 'list'}).then(response => {
+      let listQuery = Object.assign(this.listQuery, operation.params);
+      this.fetchRequest(this.model, {query: listQuery, action: 'list'}).then(response => {
         this.list = response.data;
-        this.addFormFields = response.addFormFields;
-        this.updateFormFields = response.updateFormFields;
+        //this.addFormFields = response.addFormFields;
+        //this.updateFormFields = response.updateFormFields;
         this.fieldNames = response.fieldNames;
         this.pageLinks = response.links,
         this.pageMeta = response.meta,

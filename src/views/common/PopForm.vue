@@ -46,7 +46,6 @@ export default {
       textMap: {
         create: 'Create'
       },
-      formType: 'add',
       destroyOnClose: false,
       loadSurvey: true,
       currentRow: {},
@@ -65,30 +64,29 @@ export default {
     appendToBody: {type: Boolean, default: false}
   },
   methods: {
-    handlePopForm() {
-      //this.resetTemp()
-      this.formType = 'add'
+    handlePopForm(params) {
       this.popFormVisible = true
-      let model = this.getModel('passport', 'attachment');
-      model.$create({params: {}, data: {point_scene: 'get_formelem'}}).then(response => {
+      let row = params.row;
+      let operation = params.operation;
+      this.model = this.getModel(operation.app, operation.resource);
+      //this.getList(row, operation);
+      this.model.$create({params: {}, data: {point_scene: 'get_formelem'}}).then(response => {
         if (response === false) {
           return ;
         }
         this.formFields = response.formFields;
         this.fieldNames = response.fieldNames;
-      for (let field in this.formFields) {
-        let item = this.formFields[field];
-        this.inputInfos[field] = item.defaultValue ? item.defaultValue : '';
-      }
-          console.log(this.formFields, 'ffffffffffffffffffff');
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+        for (let field in this.formFields) {
+          let item = this.formFields[field];
+          this.inputInfos[field] = item.defaultValue ? item.defaultValue : '';
+        }
+        console.log(this.formFields, 'ffffffffffffffffffff');
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
 
         return ;
       })
-      
-      
     },
     addData() {
       this.$refs['dataForm'].validate((valid) => {
