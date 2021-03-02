@@ -37,12 +37,6 @@
             @dealAction="dealAction"
             :is="elemButtons[button.action]">
           </component>
-          <!--<el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-            {{ $t('table.publish') }}
-          </el-button>
-          <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-            {{ $t('table.draft') }}
-          </el-button>-->
         </template>
       </el-table-column>
 

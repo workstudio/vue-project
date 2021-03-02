@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="popFormVisible" :destroy-on-close="destroyOnClose" width="90%">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="popFormVisible" :destroy-on-close="destroyOnClose" width="90%" :append-to-body="appendToBody">
       <el-form ref="dataForm" :rules="rules" :model="inputInfos" label-position="left" label-width="70px" style="width: 1200px; margin-left:30px;">
         <component
           v-for="(formField, field) in formFields"
@@ -62,13 +62,14 @@ export default {
     },
   },
   props:{                     
+    appendToBody: {type: Boolean, default: false}
   },
   methods: {
     handlePopForm() {
       //this.resetTemp()
       this.formType = 'add'
       this.popFormVisible = true
-      let model = this.getModel('infocms', 'goods');
+      let model = this.getModel('passport', 'attachment');
       model.$create({params: {}, data: {point_scene: 'get_formelem'}}).then(response => {
         if (response === false) {
           return ;

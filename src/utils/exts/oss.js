@@ -1,4 +1,5 @@
 const OSS = require('ali-oss')
+import {globalSettings} from '@/utils/base'
 
 export function client(data) {
   data = {

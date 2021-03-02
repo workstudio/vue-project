@@ -19,7 +19,8 @@
     </div>
     <!--<asset-dialog ref="assetDialog" @confirm="getFileList" :appendToBody="appendToBody"></asset-dialog>-->
     <pop-table ref="popTable" :appendToBody="appendToBody"></pop-table>
-    <upload-dialog ref="uploadDialog" @confirm="getFileList" :appendToBody="appendToBody"></upload-dialog>
+    <!--<upload-dialog ref="uploadDialog" @confirm="getFileList" :appendToBody="appendToBody"></upload-dialog>-->
+    <pop-form ref="popForm" :appendToBody="appendToBody"></pop-form>
   </el-form-item>
 </template>
 <script>
@@ -27,7 +28,8 @@ import {form} from '@/applications/mixins/form';
 
 //import AssetDialog from '@/components/FileView/AssetDialog';
 import PopTable from '@/views/common/PopTable';
-import UploadDialog from '@/components/FileView/UploadDialog';
+//import UploadDialog from '@/components/FileView/UploadDialog';
+import PopForm from '@/views/common/PopForm';
 import FileItem from '@/components/FileView/FileItem';
 
 export default {
@@ -35,7 +37,8 @@ export default {
   components: {
     //AssetDialog,
     PopTable,
-    UploadDialog,
+    //UploadDialog,
+    PopForm,
     FileItem
   },
   props: {
@@ -90,7 +93,8 @@ export default {
     },
     handleUploadFile() {
         console.log(this.model, this.field, 'llllllllll');
-      this.$refs.uploadDialog.showDialog({});
+      //this.$refs.uploadDialog.showDialog({});
+      this.$refs.popForm.handlePopForm({model: this.model, field: this.field});
     },
     handleRemove(index) {
       this.uploadInfo.fileList.splice(index, 1);
