@@ -18,23 +18,24 @@
       <el-button type="primary" @click="handleUploadFile()">上传文件</el-button>
     </div>
     <pop-table ref="popTable" :appendToBody="appendToBody"></pop-table>
-    <pop-form ref="popForm" :appendToBody="appendToBody"></pop-form>
+    <!--<pop-form ref="popForm" :appendToBody="appendToBody"></pop-form>-->
+    <pop-upload ref="popUpload" :appendToBody="appendToBody"></pop-upload>
   </el-form-item>
 </template>
 <script>
 import {form} from '@/applications/mixins/form';
 
 import PopTable from '@/views/common/PopTable';
-import PopForm from '@/views/common/PopForm';
+//import PopForm from '@/views/common/PopForm';
+import PopUpload from '@/views/common/PopUpload';
 import FileItem from '@/components/FileView/FileItem';
 
 export default {
   mixins: [form],
   components: {
-    //AssetDialog,
     PopTable,
-    //UploadDialog,
-    PopForm,
+    //PopForm,
+    PopUpload,
     FileItem
   },
   props: {
@@ -81,7 +82,7 @@ export default {
     },
     handleUploadFile() {
       let params = {row: {}, operation: {app: 'passport', resource: 'attachment', params:{}}, relate: {model: this.model, field: this.field}};
-      this.$refs.popForm.handlePopForm(params);
+      this.$refs.popUpload.handlePopUpload(params);
     },
     handleRemove(index) {
       this.uploadInfo.fileList.splice(index, 1);
