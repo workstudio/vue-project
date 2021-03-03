@@ -2,7 +2,7 @@ const OSS = require('ali-oss')
 import {globalSettings} from '@/utils/base'
 
 export function client(ossCode) {
-  data = globalSettings.oss[ossCode];
+  let data = globalSettings.oss[ossCode];
   //后端提供数据
   return new OSS({
     accessKeyId: data.accessKeyId,

@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       disabled: false,
-      input: this.inputInfos[this.field] + '',
+      input: this.inputInfos[this.field] ? this.inputInfos[this.field] + '' : null,
     }
   },
   methods: {

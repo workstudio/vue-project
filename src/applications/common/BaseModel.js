@@ -19,9 +19,9 @@ export default class BaseModel extends Model {
   static formatAddDirtData(input, formFields) {
     let data = {};
     for (let field in formFields) {
-      let item = formFields[field];
-      let inputValue = input[field] || input[field] === 0 ? input[field] : '';
-      data[field] = inputValue;
+      if (input[field] || input[field] === 0 || input[field] === '') {
+        data[field] = input[field];
+      }
     }
     return data;
   }
@@ -31,11 +31,13 @@ export default class BaseModel extends Model {
     for (let field in formFields) {
       let item = formFields[field];
       let inputValue = input[field] ? input[field] : '';
-      let sourceValue = source[field] ? source[field].valueSource : '';
-      if (inputValue == sourceValue) {
-        continue;
+      if (inputValue || inputValue === 0 || inputValue === '') {
+        let sourceValue = source[field] ? source[field].valueSource : '';
+        if (inputValue == sourceValue) {
+          continue;
+        }
+        data[field] = inputValue;
       }
-      data[field] = inputValue;
     }
     return data;
   }

@@ -1,5 +1,5 @@
 <template>
-  <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="deleteInfo(row, index)">
+  <el-button size="mini" type="danger" @click="deleteInfo(row, index)">
     {{ $t('table.delete') }}
   </el-button>
 </template>

@@ -354,7 +354,7 @@ export default {
             duration: 2000
           });
           this.closeOtherLayout(this.fade);
-          return this.fileSearch(data.parent_id);
+          return this.fileSearch({id: data.parent_id});
         })
       })
     },
@@ -373,7 +373,7 @@ export default {
           type: 'success',
           duration: 2000
         });
-        return this.fileSearch(this.pathDetail.id);
+        return this.fileSearch(this.pathDetail, true);
       })
     },
     // 预览文件

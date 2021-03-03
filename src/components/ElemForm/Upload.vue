@@ -186,10 +186,11 @@ export default {
       //}
       let system = this.upOptions.system ? this.upOptions.system : '';
       switch (system) {
-        case 'oss':
+        case 'tmfile':
+        case 'ossfile':
           let extension = self.baseMethod.getExtName(file.name);
           let filepath = this.upOptions.path_full + '/' + self.baseMethod.uuid() + extension;
-          client(this.dataObj).multipartUpload(filepath, file).then(result => {
+          client(system).multipartUpload(filepath, file).then(result => {
             //下面是如果对返回结果再进行处理，根据项目需要
             self.$message({
               message: '上传成功',

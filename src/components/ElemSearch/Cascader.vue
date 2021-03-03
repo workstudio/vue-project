@@ -9,7 +9,6 @@
     v-model="selectValue"
     @change="handleChange"
     clearable></el-cascader>
-  </el-form-item>
   </span>
 </template>
 
