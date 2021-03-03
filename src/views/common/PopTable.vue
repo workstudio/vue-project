@@ -34,8 +34,7 @@
 
     </el-table>
     <div style="margin-top: 20px" v-if="haveSelection">
-      <el-button @click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
-      <el-button @click="toggleSelection()">取消选择</el-button>
+      <el-button v-for="(operationItem, operation) in selectionOperations" :key="operation" @click="dealSelection(operationItem)">{{operationItem.name}}</el-button>
     </div>
     <!--<span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="dialogPvVisible = false">{{ $t('table.confirm') }}</el-button>
@@ -98,6 +97,8 @@ export default {
         this.pageMeta = response.meta,
         this.searchFields = response.searchFields,
         this.listQuery.per_page = this.pageMeta.per_page;
+        this.haveSelection = response.haveSelection;
+        this.selectionOperations = response.selectionOperations;
 
         // Just to simulate the time of the request
         setTimeout(() => {

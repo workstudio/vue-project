@@ -15,7 +15,7 @@ export const listinfo = {
 
       addFormFields: {},
       updateFormFields: {},
-      haveSelection: true,
+      haveSelection: false,
       selectionOperations: {},
       selectionElems: {},
       dialogFormVisible: false,
@@ -80,7 +80,9 @@ export const listinfo = {
     },
     handleSelectionChange: function(selectionElems) {
       this.selectionElems = selectionElems;
-      console.log(selectionElems, 'sssssssss');
     },
+    dealSelection(operation) {
+      console.log(operation, 'ffffffffffffff', this.selectionElems);
+    }
   }
 }

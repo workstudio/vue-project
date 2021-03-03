@@ -17,18 +17,14 @@
       <el-button type="primary" @click="handleSelectFile()">选择文件</el-button>
       <el-button type="primary" @click="handleUploadFile()">上传文件</el-button>
     </div>
-    <!--<asset-dialog ref="assetDialog" @confirm="getFileList" :appendToBody="appendToBody"></asset-dialog>-->
     <pop-table ref="popTable" :appendToBody="appendToBody"></pop-table>
-    <!--<upload-dialog ref="uploadDialog" @confirm="getFileList" :appendToBody="appendToBody"></upload-dialog>-->
     <pop-form ref="popForm" :appendToBody="appendToBody"></pop-form>
   </el-form-item>
 </template>
 <script>
 import {form} from '@/applications/mixins/form';
 
-//import AssetDialog from '@/components/FileView/AssetDialog';
 import PopTable from '@/views/common/PopTable';
-//import UploadDialog from '@/components/FileView/UploadDialog';
 import PopForm from '@/views/common/PopForm';
 import FileItem from '@/components/FileView/FileItem';
 
@@ -80,7 +76,7 @@ export default {
   created() {},
   methods: {
     handleSelectFile() {
-      let params = {row: {}, operation: {app: 'passport', resource: 'attachment', params:{}}};
+      let params = {row: {}, operation: {app: 'passport', resource: 'attachment', params:{point_scene: 'pop'}}};
       this.$refs.popTable.handlePopTable(params);
     },
     handleUploadFile() {
@@ -90,35 +86,6 @@ export default {
     handleRemove(index) {
       this.uploadInfo.fileList.splice(index, 1);
     },
-    // 选择语音文件
-    handleChangeAudioFile() {
-      this.$refs.assetDialog.showDialog({ fileType: 'audio', lineType: 3 });
-    },
-    handleAudioRemove() {
-      this.uploadInfo.audioResource = '';
-    },
-    getFileList(data) {
-      if (this.uploadInfo.type === 'radio' && data[0].fileType === 'audio') {
-        this.uploadInfo.audioResource = data[0];
-        return;
-      }
-      const { fileList } = this.uploadInfo;
-
-      for (let i = 0; i < data.length; i++) {
-        if (fileList.length) {
-          let current = fileList.findIndex((item) => {
-            return item.id === data[i].id;
-          });
-          if (current > -1) {
-            this.uploadInfo.fileList.splice(current, 1);
-          }
-        }
-        this.uploadInfo.fileList.push(data[i]);
-      }
-    },
-    handleDelete() {
-      this.$emit('handleDelete', this.typeIndex, this.current);
-    }
   }
 };
 </script>
