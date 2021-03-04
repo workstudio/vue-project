@@ -28,33 +28,22 @@
         placeholder="请输入内容"
       ></el-input>
     </template>
-    <preview-dialog ref="previewDialog"></preview-dialog>
+    <file-view ref="fileView"></file-view>
   </div>
 </template>
 
 <script>
-import PreviewDialog from '@/components/FileView/PreviewDialog';
+import FileView from '@/components/FileView/FileView';
 
 export default {
   name: 'UploadItem',
   components: {
-    PreviewDialog
+    FileView
   },
   props: {
-    itemInfo: {
-      type: Object,
-      default: () => {
-        return {};
-      }
-    },
-    type: {
-      type: String,
-      default: ''
-    },
-    currentIndex: {
-      type: Number,
-      default: 0
-    }
+    itemInfo: {type: Object, default: () => {return {};}},
+    type: {type: String, default: ''},
+    currentIndex: {type: Number, default: 0}
   },
   data() {
     return {};
@@ -64,7 +53,7 @@ export default {
       this.$emit('handleRemove', this.currentIndex);
     },
     handlePreview() {
-      this.$refs.previewDialog.showDialog(this.itemInfo);
+      this.$refs.fileView.showDialog(this.itemInfo);
     }
   }
 };

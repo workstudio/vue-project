@@ -1,25 +1,44 @@
 <template>
   <el-form-item :label="elem.options.name" prop="field">
+    <div>
+      <el-button type="primary" @click="handleSelectFile()">选择文件</el-button>
+      <el-button type="primary" @click="handleUploadFile()">上传文件</el-button>
+    </div>
     <div class="upload-wrap">
-      <el-radio-group v-model="uploadInfo.selectId" size="mini">
-        <ul v-if="uploadInfo.fileList.length" class="upload-list">
+      <div v-if="elem.maxnum==1" >
+      <el-radio-group v-model="input" size="mini">
+        <ul v-if="uploadInfo.length" class="upload-list">
           <file-item
-            v-for="(item, index) in uploadInfo.fileList"
+            v-for="(item, index) in uploadInfo"
             :key="index"
             :currentIndex="index"
             :itemInfo="item"
-            :type="uploadInfo.type"
+            :type="item.type"
             @handleRemove="handleRemove"
           >
           </file-item>
         </ul>
       </el-radio-group>
-      <el-button type="primary" @click="handleSelectFile()">选择文件</el-button>
-      <el-button type="primary" @click="handleUploadFile()">上传文件</el-button>
+      </div>
+      <div v-else>
+      <el-checkbox-group v-model="input" size="mini">
+        <ul v-if="uploadInfo.length" class="upload-list">
+          <file-item
+            v-for="(item, index) in uploadInfo"
+            :key="index"
+            :currentIndex="index"
+            :itemInfo="item"
+            :type="item.type"
+            @handleRemove="handleRemove"
+          >
+          </file-item>
+        </ul>
+      </el-checkbox-group>
+      </div>
     </div>
     <pop-table ref="popTable" :appendToBody="appendToBody"></pop-table>
     <!--<pop-form ref="popForm" :appendToBody="appendToBody"></pop-form>-->
-    <pop-upload ref="popUpload" :appendToBody="appendToBody"></pop-upload>
+    <pop-upload ref="popUpload" :appendToBody="appendToBody" @uploadSuccess="uploadSuccess"></pop-upload>
   </el-form-item>
 </template>
 <script>
@@ -34,43 +53,18 @@ export default {
   mixins: [form],
   components: {
     PopTable,
-    //PopForm,
     PopUpload,
     FileItem
   },
-  props: {
-    current: {
-      type: Number,
-      default: 0
-    },
-    /*uploadInfo: {
-      type: Object,
-      default: () => {
-        return {};
-      }
-    },*/
-    typeIndex: {
-      type: Number,
-      default: 0
-    }
-  },
   data() {
     return {
+      input: this.inputInfos[this.field] ? this.inputInfos[this.field] + '' : null,
       appendToBody: true,
-      uploadInfo: {fileList: []},
-      options: [
-        {
-          value: '',
-          label: '无'
-        },
-        {
-          value: 'tape',
-          label: '录音'
-        },
-        {
-          value: 'breakup',
-          label: '笔画分解'
-        }
+      uploadInfo: [
+          {fileType: 'image', fileUrl: 'http://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/22/%E5%BF%85-%E8%A6%81%E7%82%B9.png'},
+          {fileType: 'audio', fileUrl: 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/27/%E4%BA%8C%E5%AD%97%E9%80%89%E6%8B%A9%E9%A2%98%E8%AF%AD%E9%9F%B3.mp3'},
+          {fileType: 'video', fileUrl: 'http://1254153797.vod2.myqcloud.com/41f91735vodsh1254153797/11bbe9245285890808875998543/BPgvrA4wHkkA.mp4'},
+      //row.url = 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/09/17/%E7%AB%A0%E8%8A%82.xlsx';
       ],
     };
   },
@@ -83,6 +77,8 @@ export default {
     handleUploadFile() {
       let params = {row: {}, operation: {app: 'passport', resource: 'attachment', params:{}}, relate: {model: this.model, field: this.field}};
       this.$refs.popUpload.handlePopUpload(params);
+    },
+    uploadSuccess() {
     },
     handleRemove(index) {
       this.uploadInfo.fileList.splice(index, 1);

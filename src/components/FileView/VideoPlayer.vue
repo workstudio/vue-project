@@ -1,8 +1,7 @@
 <template>
-  <div class="video-player-box">
-    <h3 class="video-player-h3"><i class="el-icon-circle-close video-player-icon" @click="videoClose"></i></h3>
+    <div>
     <!-- <div class="player"> -->
-    <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsinline="true" :options="playerOptions" @play="onPlayerPlay($event)" @pause="onPlayerPause($event)">
+    <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsinline="true" :options="playerOptions">
     </video-player>
     <!-- </div> -->
   </div>
@@ -30,10 +29,9 @@ export default {
         language: "zh-CN",
         aspectRatio: "16:9", // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
         fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
-        sources: [
-          {
+        sources: [{
             type: "video/mp4",
-            src: "",//http://1254153797.vod2.myqcloud.com/41f91735vodsh1254153797/11bbe9245285890808875998543/BPgvrA4wHkkA.mp4" //你的视频地址（必填）
+            src: "http://1254153797.vod2.myqcloud.com/41f91735vodsh1254153797/11bbe9245285890808875998543/BPgvrA4wHkkA.mp4" //你的视频地址（必填）
           }
         ],
         poster: "", //你的封面地址
@@ -49,7 +47,7 @@ export default {
     };
   },
   props: {
-    options: Object
+    fileInfo: Array
   },
   methods: {
     videoClose() {
@@ -58,14 +56,18 @@ export default {
   },
   computed: {
     playerOptions() {
-      let returnObj = { ...this.selfOptions, ...this.options };
-      return returnObj;
+      //let returnObj = {...this.selfOptions, ...this.fileInfo};
+      let playData = this.selfOptions;
+      playData.sources = [
+        {type: this.fileInfo.mime_type, src: this.fileInfo.filepath}
+      ];
+      return playData;
     },
     player() {
       return this.$refs.videoPlayer.player;
     }
   },
-  components: { videoPlayer }
+  components: {videoPlayer}
 };
 </script>
 

@@ -55,14 +55,12 @@
 
 
       <!-- 文件预览区 -->
-      <template v-if="usePreview">
+      <template>
         <file-view
-          v-show="layout.view"
-          ref="file-view"
+          ref="fileView"
           class="file-view-components"
           :previewType="previewType"
           :previewOptions="previewOptions"
-          @close="layout.view = false"
         ></file-view>
       </template>
 
@@ -111,7 +109,7 @@
 <script>
 import fadeIn from "vue-explorer-canfront/src/components/fade-in"; // 导入文件管理器
 import submitBtn from "vue-explorer-canfront/src/components/submit-btn"; // 导入防抖提交组件
-import fileView from "@/components/FileView/file-view.vue"; // 导入预览组件
+import FileView from "@/components/FileView/FileView.vue"; // 导入预览组件
 //import cascaderLoad from "@/components/FileView/cascader-load.vue"; // 引入滑入组件
 //import uploadItem from "@/components/FileView/upload-item"; // 导入导入组件
 import {closeOtherLayout, arrayToTree} from "@/utils/exts/explorer"; // 导入关闭其他弹出类视图函数
@@ -126,7 +124,7 @@ export default {
   components: {
     fadeIn,
     submitBtn,
-    fileView,
+    FileView,
     //cascaderLoad,
     //uploadItem,
   },
@@ -183,7 +181,6 @@ export default {
       fields: [],
       fileFields: [],
       fileFieldNames: {},
-      usePreview: true,
       layout: {
         view: false, // 预览视图
         upload: false // 上传视图
@@ -378,28 +375,7 @@ export default {
     },
     // 预览文件
     previewFile(row, previewType) {
-      //let previewType = this.fileTypeItem(row, 'type');
-      //previewType = 'image';
-      //previewType = 'audio';
-      //previewType = 'video';
-      //previewType = 'xlsx';
-
-      this.previewType = previewType;
-      //row.url = 'http://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/22/%E5%BF%85-%E8%A6%81%E7%82%B9.png';
-      //row.url = 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/27/%E4%BA%8C%E5%AD%97%E9%80%89%E6%8B%A9%E9%A2%98%E8%AF%AD%E9%9F%B3.mp3';
-      //row.url = 'http://1254153797.vod2.myqcloud.com/41f91735vodsh1254153797/11bbe9245285890808875998543/BPgvrA4wHkkA.mp4';
-      //row.url = 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/09/17/%E7%AB%A0%E8%8A%82.xlsx';
-      switch (previewType) {
-        case 'video':
-          this.previewOptions = {sources: [{type: "video/mp4", src: row.filepath}]};
-          break;
-        default :
-          this.previewOptions = {url: row.filepath};
-      }
-
-      this.showPreview();
-
-      //this.$emit("preview", row, this.showPreview());
+      this.$refs.fileView.showDialog(row);
     },
 
     // 显示上传界面
@@ -414,10 +390,6 @@ export default {
     // 关闭上传界面
     closeUpload() {
       this.layout.upload = false;
-    },
-    // 打开预览组件
-    showPreview() {
-      this.layout.view = true;
     },
 
 
