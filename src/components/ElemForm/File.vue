@@ -12,7 +12,7 @@
             v-for="(item, index) in uploadInfo"
             :key="index"
             :currentIndex="index"
-            :itemInfo="item"
+            :fileInfo="item"
             :type="item.type"
             @handleRemove="handleRemove"
           >
@@ -27,7 +27,7 @@
             v-for="(item, index) in uploadInfo"
             :key="index"
             :currentIndex="index"
-            :itemInfo="item"
+            :fileInfo="item"
             :type="item.type"
             @handleRemove="handleRemove"
           >
@@ -61,9 +61,9 @@ export default {
       input: this.inputInfos[this.field] ? this.inputInfos[this.field] + '' : null,
       appendToBody: true,
       uploadInfo: [
-          {fileType: 'image', fileUrl: 'http://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/22/%E5%BF%85-%E8%A6%81%E7%82%B9.png'},
-          {fileType: 'audio', fileUrl: 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/27/%E4%BA%8C%E5%AD%97%E9%80%89%E6%8B%A9%E9%A2%98%E8%AF%AD%E9%9F%B3.mp3'},
-          {fileType: 'video', fileUrl: 'http://1254153797.vod2.myqcloud.com/41f91735vodsh1254153797/11bbe9245285890808875998543/BPgvrA4wHkkA.mp4'},
+          {extension: 'jpg', filepath: 'http://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/22/%E5%BF%85-%E8%A6%81%E7%82%B9.png'},
+          {extension: 'mp3', filepath: 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/27/%E4%BA%8C%E5%AD%97%E9%80%89%E6%8B%A9%E9%A2%98%E8%AF%AD%E9%9F%B3.mp3'},
+          {extension: 'mp4', filepath: 'http://1254153797.vod2.myqcloud.com/41f91735vodsh1254153797/11bbe9245285890808875998543/BPgvrA4wHkkA.mp4'},
       //row.url = 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/09/17/%E7%AB%A0%E8%8A%82.xlsx';
       ],
     };
@@ -81,7 +81,7 @@ export default {
     uploadSuccess() {
     },
     handleRemove(index) {
-      this.uploadInfo.fileList.splice(index, 1);
+      this.uploadInfo.splice(index, 1);
     },
   }
 };

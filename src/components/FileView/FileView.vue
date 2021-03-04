@@ -51,6 +51,9 @@ export default {
     Aplayer,
     VideoPlayer,
   },
+  props:{                     
+    appendToBody: {type: Boolean, default: false}
+  },
   data() {
     return {
       dialogVisible: false,
@@ -81,7 +84,7 @@ export default {
     showDialog(fileInfo) {
         console.log(fileInfo, 'fffffffffffff');
       this.dialogVisible = true;
-      this.fileType = this.getFileType(fileInfo.extension);
+      this.fileType = this.baseMethod.getFileType(fileInfo.extension);
       this.fileInfo = fileInfo;
       /*if (data.fileType === 'video') {
         const options = {
@@ -130,30 +133,6 @@ export default {
       this.player && this.player.dispose();
       this.player = '';
       this.dialogVisible = false;
-    },
-    getFileType(extension) {
-      let fileTypes = {
-        image: {path: 'img', elems: ["jpg", "jpeg", "png", "gif", "bmp"]},
-        zip: {path: 'zip', elems: ["zip", "rar", "7z"]},
-        video: {path: 'video', elems: ["avi", "mp4", "rmvb", "flv", "mov", "m2v", "mkv"]},
-        audio: {path: 'mp3', elems: ["mp3", "wav", "wmv", "wma"]},
-        xlsx: {path: 'excel', elems: ["xls", "xlsx"]},
-        docx: {path: 'docx', elems: ["doc", "docx"]},
-        pdf: {path: 'pdf', elems: ["pdf"]},
-        ppt: {path: 'ppt', elems: ['ppt']},
-        txt: {path: 'txt', elems: ['txt']},
-        none: {path: 'none', elems: []},
-      };
-
-      let currentTypeKey = 'none';
-      for (let key in fileTypes) {
-        let elems = fileTypes[key].elems;
-        if (fileTypes[key].elems.includes(extension)) {
-          currentTypeKey = key;
-          break;
-        }
-      }
-      return currentTypeKey;
     },
   },
   beforeDestroy() {

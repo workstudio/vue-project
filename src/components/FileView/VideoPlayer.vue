@@ -47,7 +47,7 @@ export default {
     };
   },
   props: {
-    fileInfo: Array
+    fileInfo: Array | Object
   },
   methods: {
     videoClose() {

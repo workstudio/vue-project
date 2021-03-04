@@ -56,12 +56,7 @@
 
       <!-- 文件预览区 -->
       <template>
-        <file-view
-          ref="fileView"
-          class="file-view-components"
-          :previewType="previewType"
-          :previewOptions="previewOptions"
-        ></file-view>
+        <file-view ref="fileView" class="file-view-components"></file-view>
       </template>
 
       <!-- 文件上传区 -->
@@ -185,8 +180,6 @@ export default {
         view: false, // 预览视图
         upload: false // 上传视图
       }, // 视图管理
-      previewType: '',
-      previewOptions: {},
       useUpload: true,
       size: "medium",
       upload_selected: "", // 所选上传文件目标路径

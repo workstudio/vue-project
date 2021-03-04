@@ -1,9 +1,9 @@
 <template>
   <div class="upload-list__item">
     <div class="upload-list__item-inner">
-      <img v-if="itemInfo.fileType === 'image'" :src="itemInfo.fileUrl" />
+      <img v-if="fileType === 'image'" :src="fileInfo.filepath" />
       <i
-        v-else-if="itemInfo.fileType === 'video' || itemInfo.fileType === 'audio'"
+        v-else-if="fileType === 'video' || fileType === 'audio'"
         class="icon el-icon-video-camera"
       ></i>
       <i v-else class="icon el-icon-document"></i>
@@ -12,22 +12,22 @@
         <i class="icon el-icon-delete" @click="handleRemove"></i>
       </span>
     </div>
-    <template>
+    <!--<template>
       <el-radio
         v-if="type === 'radio'"
-        v-model="itemInfo.id"
+        v-model="fileInfo.id"
         class="upload-list__item-radio"
-        :label="itemInfo.id"
+        :label="fileInfo.id"
         name="radio"
-        >{{ itemInfo.name }}</el-radio
+        >{{ fileInfo.name }}</el-radio
       >
       <el-input
         v-else
-        v-model="itemInfo.name"
+        v-model="fileInfo.name"
         class="upload-list__item-input"
         placeholder="请输入内容"
       ></el-input>
-    </template>
+    </template>-->
     <file-view ref="fileView"></file-view>
   </div>
 </template>
@@ -41,19 +41,28 @@ export default {
     FileView
   },
   props: {
-    itemInfo: {type: Object, default: () => {return {};}},
-    type: {type: String, default: ''},
+    fileInfo: {type: Object, default: () => {return {};}},
+
+    //type: {type: String, default: ''},
     currentIndex: {type: Number, default: 0}
   },
   data() {
-    return {};
+    return {
+    };
+  },
+  computed: {
+    fileType() {
+        console.log(this.fileInfo, 'ffffffffff', this.baseMethod.getFileType(this.fileInfo.extension));
+      return this.baseMethod.getFileType(this.fileInfo.extension);
+    }
   },
   methods: {
     handleRemove() {
       this.$emit('handleRemove', this.currentIndex);
     },
     handlePreview() {
-      this.$refs.fileView.showDialog(this.itemInfo);
+        console.log(this.fileInfo,'fffffffff');
+      this.$refs.fileView.showDialog(this.fileInfo);
     }
   }
 };

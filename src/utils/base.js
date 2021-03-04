@@ -1,6 +1,31 @@
 import globalSettings from '../../config/index'
 import objectOperation from './object'
 
+export function getFileType(extension) {
+  let fileTypes = {
+    image: {path: 'img', elems: ["jpg", "jpeg", "png", "gif", "bmp"]},
+    zip: {path: 'zip', elems: ["zip", "rar", "7z"]},
+    video: {path: 'video', elems: ["avi", "mp4", "rmvb", "flv", "mov", "m2v", "mkv"]},
+    audio: {path: 'mp3', elems: ["mp3", "wav", "wmv", "wma"]},
+    xlsx: {path: 'excel', elems: ["xls", "xlsx"]},
+    docx: {path: 'docx', elems: ["doc", "docx"]},
+    pdf: {path: 'pdf', elems: ["pdf"]},
+    ppt: {path: 'ppt', elems: ['ppt']},
+    txt: {path: 'txt', elems: ['txt']},
+    none: {path: 'none', elems: []},
+  };
+
+  let currentTypeKey = 'none';
+  for (let key in fileTypes) {
+    let elems = fileTypes[key].elems;
+    if (fileTypes[key].elems.includes(extension)) {
+      currentTypeKey = key;
+      break;
+    }
+  }
+  return currentTypeKey;
+}
+
 /**
  * 数组随机打乱(洗牌函数)
  * @param arr 需要打乱的数组
