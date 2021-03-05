@@ -91,6 +91,33 @@ export const fetchData = {
       }
       return true;
     },
+    updateAttachmentInfo(infoId, elems, formElems) {
+      let model = this.getModel('passport', 'attachmentInfo');
+      let data = [];
+      for (let field in elems) {
+        let fElem = formElems[field];
+        data = {
+          app: fElem.app,
+          info_table: fElem.resource,
+          info_field: field,
+          info_id: infoId,
+          attachment_id: elems[field],
+        }
+        model.$create({params: {}, data: data}).then(response => {
+          if (response === false) {
+            return ;
+          }
+          //this.list.unshift(this.inputInfos)
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '成功',
+            message: '附加更新成功',
+            type: 'success',
+            duration: 2000
+          });
+        })
+      }
+    },
 
     /*remoteDatas(model, dataKey = 'listinfo', subKey = '') {
       let datas = model.getters('datas');

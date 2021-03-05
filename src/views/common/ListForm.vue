@@ -29,13 +29,16 @@
 </template>
 
 <script>
+import {fetchData} from '@/applications/mixins/fetchData';
 import elemForms from '@/components/ElemForm'
 
 export default {
   name: 'ListForm',
+  'mixins': [fetchData],
   data() {
     return {
       elemForms: elemForms,
+      fileData: [],
 
       //radio: 3,
       //input: '',
@@ -119,7 +122,7 @@ export default {
         if (!valid) {
             return ;
         }
-        let data = this.model.formatAddDirtData(this.inputInfos, this.addFormFields);
+        let data = this.model.formatAddDirtData(this.inputInfos, this.addFormFields, this.getModel('passport', 'attachmentInfo'));
         this.model.$create({params: {}, data: data}).then(response => {
           if (response === false) {
             return ;
@@ -159,9 +162,17 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           let keyField = this.model.keyField;
+          let keyValue = this.currentRow[keyField].valueSource;
           //tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          let data = this.model.formatDirtData(this.inputInfos, this.currentRow, this.updateFormFields);
-          this.model.$update({params: {keyField: this.currentRow[keyField].valueSource, action: 'update'}, data: data}).then(response => {
+          let {data, fileData} = this.model.formatDirtData(this.inputInfos, this.currentRow, this.updateFormFields);
+          this.fileData = fileData;
+          if (!this.baseMethod.emptyObject(fileData)) {
+            console.log(data, fileData, 'oooooooo');
+            this.updateAttachmentInfo(keyValue, fileData, this.updateFormFields);
+          }
+          if (!this.baseMethod.emptyObject(data)) {
+          this.model.$update({params: {keyField: keyValue, action: 'update'}, data: data}).then(response => {
+              console.log(this.fileData, 'ppppp');
             if (response === false) {
               return ;
             }
@@ -176,6 +187,7 @@ export default {
             })
             return this.$emit('handleFilter');
           })
+          } 
         }
       })
     },

@@ -12,7 +12,7 @@
         <i class="icon el-icon-delete" @click="handleRemove"></i>
       </span>
     </div>
-    <template>
+    <template v-if="showSelect">
       <!--<el-checkbox
         v-model="fileInfo.id"
         class="upload-list__item-radio"
@@ -56,8 +56,7 @@ export default {
   },
   props: {
     fileInfo: {type: Object, default: () => {return {};}},
-
-    //type: {type: String, default: ''},
+    showSelect: {type: Boolean, default: false},
     currentIndex: {type: Number, default: 0},
     checkList: {type: Array},
   },

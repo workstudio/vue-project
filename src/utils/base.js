@@ -89,6 +89,10 @@ export function emptyObject(obj) {
   return JSON.stringify(obj) == "{}";
 }
 
+export function isSameArray(arr1, arr2) {
+  return arr1.length === arr2.length && arr1.every(a => arr2.some(b => a === b)) && arr2.every(_b => arr1.some(_a => _a === _b));
+}
+
 export function trim(str) {
   return String.prototype.trim.call(str);
 }

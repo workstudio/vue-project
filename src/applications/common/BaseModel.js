@@ -1,5 +1,6 @@
 import { Model } from '@vuex-orm/core'
 import localCache from '@/applications/common/LocalCache'
+import * as baseMethod from '@/utils/base'
 import DataModel from '@/applications/common/DataModel'
 
 export default class BaseModel extends Model {
@@ -18,28 +19,43 @@ export default class BaseModel extends Model {
 
   static formatAddDirtData(input, formFields) {
     let data = {};
+    let fileData = {};
     for (let field in formFields) {
       if (input[field] || input[field] === 0 || input[field] === '') {
-        data[field] = input[field];
+        if (formFields[field].type == 'file') {
+          console.log(data[field], 'aaaaaaaaa');
+          fileData[field] = inputValue;
+        } else {
+          data[field] = input[field];
+        }
       }
     }
-    return data;
+    return {data: data, fileData: fileData};
   }
 
   static formatDirtData(input, source, formFields) {
     let data = {};
+    let fileData = {};
     for (let field in formFields) {
       let item = formFields[field];
       let inputValue = input[field] ? input[field] : '';
       if (inputValue || inputValue === 0 || inputValue === '') {
-        let sourceValue = source[field] ? source[field].valueSource : '';
-        if (inputValue == sourceValue) {
-          continue;
+        if (formFields[field].type == 'file') {
+          let sourceValue = source[field] ? source[field].valueSource : [];
+          if (baseMethod.isSameArray(sourceValue, inputValue)) {
+            continue;
+          }
+          fileData[field] = inputValue;
+        } else {
+          let sourceValue = source[field] ? source[field].valueSource : '';
+          if (inputValue == sourceValue) {
+            continue;
+          }
+          data[field] = inputValue;
         }
-        data[field] = inputValue;
       }
     }
-    return data;
+    return {data: data, fileData: fileData};
   }
 
   static formatData(rDatas) {

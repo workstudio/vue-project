@@ -5,7 +5,7 @@
       <el-button type="primary" @click="handleUploadFile()">上传文件</el-button>
     </div>
     <div class="upload-wrap">
-      <el-checkbox-group v-model="selectElems" size="mini">
+      <el-checkbox-group v-model="selectElems" size="mini" @change="handleFormChange">
         <ul v-if="uploadInfo.length" class="upload-list">
           <file-item
             v-for="(item, index) in uploadInfo"
@@ -13,6 +13,7 @@
             :currentIndex="index"
             :checkList="selectElems"
             :fileInfo="item"
+            :showSelect="showSelect"
             :type="item.type"
             @handleRemove="handleRemove"
           >
@@ -42,8 +43,9 @@ export default {
   },
   data() {
     return {
-      input: this.inputInfos[this.field] ? this.inputInfos[this.field] + '' : null,
-      selectElems: [],
+      showSelect: true,
+      selectElems: this.inputInfos[this.field] ? this.inputInfos[this.field] : [],
+      //selectElems: [],
       appendToBody: true,
       uploadInfo: [
           {id: 1, name:'ffff', extension: 'jpg', filepath: 'http://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/22/%E5%BF%85-%E8%A6%81%E7%82%B9.png'},
@@ -53,7 +55,11 @@ export default {
       ],
     };
   },
-  created() {},
+  computed: {
+    input() {
+      return this.selectElems;
+    }
+  },
   methods: {
     handleSelectFile() {
       let params = {row: {}, operation: {app: 'passport', resource: 'attachment', params:{point_scene: 'pop'}}};
@@ -92,7 +98,7 @@ export default {
       }
       //this.uploadInfo.concat(selects);
       console.log(selects, 'aaaaaaaaaaaaa', this.uploadInfo);
-    }
+    },
   }
 };
 </script>

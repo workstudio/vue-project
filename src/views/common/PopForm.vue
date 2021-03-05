@@ -53,9 +53,6 @@ export default {
     }
   },
   computed: {
-    /*formFields() {
-      return this.addFormFields;
-    },*/
     rules() {
       return this.addFormFields;
     },
@@ -92,7 +89,7 @@ export default {
         if (!valid) {
             return ;
         }
-        let data = this.model.formatAddDirtData(this.inputInfos, this.addFormFields);
+        let data = this.model.formatAddDirtData(this.inputInfos, this.addFormFields, this.getModel('passport', 'attachmentInfo'));
         this.model.$create({params: {}, data: data}).then(response => {
           if (response === false) {
             return ;
