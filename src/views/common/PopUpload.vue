@@ -15,12 +15,13 @@
             @dealFormChange="dealFormChange"
             v-for="(formField, field) in fileFormFields"
             :key="field"
+            :listType="listType"
             :field="field"
             :url="uploadUrl"
             :model="attachmentModel"
             :elem="formField"
             @beforeUpload="uploadBefore"
-            @uploadSuccess="uploadSuccess"
+            @afterSuccess="afterSuccess"
             @uploadError="uploadError"
             :inputInfos.sync="fileInputInfos"
             :is="elemForms[formField.type]">
@@ -64,16 +65,12 @@ export default {
         folder: false,
         upload: false // 上传
       },
+      listType: 'text',
       fade: {folder: false}, // 弹出类视图管理
       fields: [],
       fileFields: [],
       fileFieldNames: {},
-      usePreview: true,
-      previewType: '',
-      previewOptions: {},
-      useUpload: true,
       size: "medium",
-      upload_selected: "", // 所选上传文件目标路径
       uploadReg: false, //  是否校验上传文件
       uploadLimit: 50, // 上传个数限制
     };
@@ -90,6 +87,8 @@ export default {
     handlePopUpload(params) {
       this.popUploadVisible = true
       let row = params.row;
+      this.listType = params.elem.filetype == 'image' ? 'picture' : 'text';
+        console.log(params, this.listType, 'ffffff');
       let operation = params.operation;
       //this.getList(row, operation);
       this.attachmentModel.$create({params: {}, data: {point_scene: 'get_formelem'}}).then(response => {
@@ -102,7 +101,6 @@ export default {
           let item = this.fileFormFields[field];
           this.fileInputInfos[field] = item.defaultValue ? item.defaultValue : '';
         }
-        console.log(this.fileFormFields, 'ffffffffffffffffffff');
 
         return ;
       })
@@ -128,9 +126,11 @@ export default {
     },
 
     // 文件上传成功回调
-    uploadSuccess(res) {
-      this.$emit("uploadSuccess", res);
+    afterSuccess(res) {
+      this.$emit("afterSuccess", res.fileInfo);
       this.popUploadVisible = false;
+        console.log('aaaaaaaa', this.$refs['template_form']);
+      this.$refs['template_form'].resetFields();
     },
     // 文件上传前回调
     uploadBefore(file) {

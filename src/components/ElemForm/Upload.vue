@@ -16,11 +16,10 @@
         :on-error="handleError"
         :on-exceed="handleExceed"
         :on-success="handleSuccess"
-
+        :list-type="listType"
         :http-request="uploadSectionFile"
         :on-preview="handlePictureCardPreview"
         :on-remove="handleRemove"
-
         >
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">
@@ -81,28 +80,13 @@ export default {
     };
   },
   props: {
-    // 上传头信息
-    // 上传地址
-    url: {
-      type: String,
-      default: "" // 通用上传地址
-    },
+    listType: {type: String, default: 'text'},
+    url: {type: String, default: ""}, // 通用上传地址
     model: {type: Function},  
-    // 上传参数
-    // 自动上传
-    autoUpload: {
-      type: Boolean,
-      default: false
-    },
-    // 上传前校验
-    reg: {
-      type: Boolean,
-      default: true
-    },
-    // 自定义校验函数
-    regFuc: Function,
-    // 上传个数限制
-    limit: Number,
+    autoUpload: {type: Boolean, default: false}, // 自动上传
+    reg: {type: Boolean, default: true}, // 上传前校验
+    regFuc: Function, // 自定义校验函数
+    limit: Number, // 上传个数限制
   },
   methods: {
     // 手动上传
@@ -137,7 +121,7 @@ export default {
       })
     },*/
     // 上传成功回调
-    handleSuccess(res, file,fileList) {
+    handleSuccess(res, file, fileList) {
       this.$emit("uploadSuccess", res, file, fileList);
     },
     // 上传失败回调
@@ -177,7 +161,6 @@ export default {
       let fileType = file.type;
       let isImage = fileType.indexOf('image') != -1;
       let isVideo = fileType.indexOf('video') != -1;
-      let file_url = self.$refs.upload.uploadFiles[0].url;
       let size = file.size / 1024 / 1024 < 2;
         
       //if (size >= 2) {
@@ -225,8 +208,10 @@ export default {
         if (response === false) {
           return ;
         }
-        self.$refs.upload.uploadFiles = []; 
-        self.$emit("search", self.upOptions.path_id);
+          console.log(response);
+        let fileInfo = response.datas;
+        self.fileList.push({name: fileInfo.name, url: fileInfo.filepath});
+        self.$emit("afterSuccess", {pathDetail: {id: self.upOptions.path_id}, fileInfo: fileInfo});
       })
   
       return true;
@@ -250,9 +235,9 @@ export default {
             liItem.prepend(videoDiv);
           }*/
           self.$notify({title: '成功', message: '上传成功', type: 'success', duration: 2000});
-          self.$refs.upload.uploadFiles = []; 
-          
-          self.$emit("search", self.upOptions.path_id);
+          let fileInfo = res.data.datas;
+          self.fileList.push({name: fileInfo.name, url: fileInfo.filepath});
+          self.$emit("afterSuccess", {pathDetail: {id: self.upOptions.path_id}, fileInfo: res.data.datas});
           return;
         }
         self.$notify({title: '失败', message: '上传文件失败，请重新操作', type: 'error', duration: 2000});

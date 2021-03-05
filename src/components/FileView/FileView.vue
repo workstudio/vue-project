@@ -82,7 +82,6 @@ export default {
       }
     },
     showDialog(fileInfo) {
-        console.log(fileInfo, 'fffffffffffff');
       this.dialogVisible = true;
       this.fileType = this.baseMethod.getFileType(fileInfo.extension);
       this.fileInfo = fileInfo;

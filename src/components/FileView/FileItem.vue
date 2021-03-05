@@ -12,6 +12,20 @@
         <i class="icon el-icon-delete" @click="handleRemove"></i>
       </span>
     </div>
+    <template>
+      <!--<el-checkbox
+        v-model="fileInfo.id"
+        class="upload-list__item-radio"
+        :label="fileInfo.id"
+        name="radio"
+        >{{ fileInfo.name }}</el-checkbox>-->
+      <el-checkbox 
+        class="upload-list__item-radio"
+        :label="fileInfo.id"
+        name="radio"
+        >{{ fileInfo.name }}</el-checkbox
+      >
+    </template>
     <!--<template>
       <el-radio
         v-if="type === 'radio'"
@@ -44,15 +58,16 @@ export default {
     fileInfo: {type: Object, default: () => {return {};}},
 
     //type: {type: String, default: ''},
-    currentIndex: {type: Number, default: 0}
+    currentIndex: {type: Number, default: 0},
+    checkList: {type: Array},
   },
   data() {
     return {
+        checked: 1,
     };
   },
   computed: {
     fileType() {
-        console.log(this.fileInfo, 'ffffffffff', this.baseMethod.getFileType(this.fileInfo.extension));
       return this.baseMethod.getFileType(this.fileInfo.extension);
     }
   },
@@ -126,7 +141,7 @@ export default {
   .upload-list__item-radio {
     display: block;
     margin-top: 30px;
-    width: 148px;
+    width: 248px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

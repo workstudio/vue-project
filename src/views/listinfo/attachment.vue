@@ -80,9 +80,9 @@
                 :url="uploadUrl"
                 :model="attachmentModel"
                 :elem="formField"
-                @search="fileSearch"
                 @beforeUpload="uploadBefore"
                 @uploadSuccess="uploadSuccess"
+                @afterSuccess="afterSuccess"
                 @uploadError="uploadError"
                 :inputInfos.sync="fileInputInfos"
                 :is="elemForms[formField.type]">
@@ -105,8 +105,6 @@
 import fadeIn from "vue-explorer-canfront/src/components/fade-in"; // 导入文件管理器
 import submitBtn from "vue-explorer-canfront/src/components/submit-btn"; // 导入防抖提交组件
 import FileView from "@/components/FileView/FileView.vue"; // 导入预览组件
-//import cascaderLoad from "@/components/FileView/cascader-load.vue"; // 引入滑入组件
-//import uploadItem from "@/components/FileView/upload-item"; // 导入导入组件
 import {closeOtherLayout, arrayToTree} from "@/utils/exts/explorer"; // 导入关闭其他弹出类视图函数
 import {listinfo} from '@/applications/mixins/listinfo';
 
@@ -407,8 +405,14 @@ export default {
 
     // 文件上传成功回调
     uploadSuccess(res) {
-      this.$emit("uploadSuccess", res);
+      //this.fileSearch(res.pathDetail);
+      this.$emit("uploadSuccess", res.pathDetail);
       this.closeUpload();
+    },
+    afterSuccess(res) {
+      this.fileSearch(res.pathDetail);
+      this.closeUpload();
+      this.$refs['template_form'].resetFields();
     },
     // 文件上传前回调
     uploadBefore(file) {

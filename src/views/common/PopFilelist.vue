@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-dialog :visible.sync="popFilelistVisible" title="file list" :append-to-body="appendToBody" width="90%">
       <div class="upload-wrap">
-        <ul v-if="fileInfos.length" class="upload-list">
+        <span v-if="fileInfos.length" class="upload-list">
           <file-item
             v-for="(item, index) in fileInfos"
             :key="index"
@@ -10,7 +10,7 @@
             :fileInfo="item"
           >
           </file-item>
-        </ul>
+        </span>
       </div>
     </el-dialog>
   </div>

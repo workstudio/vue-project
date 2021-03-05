@@ -5,28 +5,13 @@
       <el-button type="primary" @click="handleUploadFile()">上传文件</el-button>
     </div>
     <div class="upload-wrap">
-      <div v-if="elem.maxnum==1" >
-      <el-radio-group v-model="input" size="mini">
+      <el-checkbox-group v-model="selectElems" size="mini">
         <ul v-if="uploadInfo.length" class="upload-list">
           <file-item
             v-for="(item, index) in uploadInfo"
             :key="index"
             :currentIndex="index"
-            :fileInfo="item"
-            :type="item.type"
-            @handleRemove="handleRemove"
-          >
-          </file-item>
-        </ul>
-      </el-radio-group>
-      </div>
-      <div v-else>
-      <el-checkbox-group v-model="input" size="mini">
-        <ul v-if="uploadInfo.length" class="upload-list">
-          <file-item
-            v-for="(item, index) in uploadInfo"
-            :key="index"
-            :currentIndex="index"
+            :checkList="selectElems"
             :fileInfo="item"
             :type="item.type"
             @handleRemove="handleRemove"
@@ -34,11 +19,10 @@
           </file-item>
         </ul>
       </el-checkbox-group>
-      </div>
     </div>
-    <pop-table ref="popTable" :appendToBody="appendToBody"></pop-table>
+    <pop-table ref="popTable" @dealSelection="dealSelection" :appendToBody="appendToBody"></pop-table>
     <!--<pop-form ref="popForm" :appendToBody="appendToBody"></pop-form>-->
-    <pop-upload ref="popUpload" :appendToBody="appendToBody" @uploadSuccess="uploadSuccess"></pop-upload>
+    <pop-upload ref="popUpload" :appendToBody="appendToBody" @afterSuccess="afterSuccess"></pop-upload>
   </el-form-item>
 </template>
 <script>
@@ -59,11 +43,12 @@ export default {
   data() {
     return {
       input: this.inputInfos[this.field] ? this.inputInfos[this.field] + '' : null,
+      selectElems: [],
       appendToBody: true,
       uploadInfo: [
-          {extension: 'jpg', filepath: 'http://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/22/%E5%BF%85-%E8%A6%81%E7%82%B9.png'},
-          {extension: 'mp3', filepath: 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/27/%E4%BA%8C%E5%AD%97%E9%80%89%E6%8B%A9%E9%A2%98%E8%AF%AD%E9%9F%B3.mp3'},
-          {extension: 'mp4', filepath: 'http://1254153797.vod2.myqcloud.com/41f91735vodsh1254153797/11bbe9245285890808875998543/BPgvrA4wHkkA.mp4'},
+          {id: 1, name:'ffff', extension: 'jpg', filepath: 'http://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/22/%E5%BF%85-%E8%A6%81%E7%82%B9.png'},
+          {id: 2, name:'ooaffff', extension: 'mp3', filepath: 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/27/%E4%BA%8C%E5%AD%97%E9%80%89%E6%8B%A9%E9%A2%98%E8%AF%AD%E9%9F%B3.mp3'},
+          {id: 3, name:'fsss', extension: 'mp4', filepath: 'http://1254153797.vod2.myqcloud.com/41f91735vodsh1254153797/11bbe9245285890808875998543/BPgvrA4wHkkA.mp4'},
       //row.url = 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/09/17/%E7%AB%A0%E8%8A%82.xlsx';
       ],
     };
@@ -75,14 +60,39 @@ export default {
       this.$refs.popTable.handlePopTable(params);
     },
     handleUploadFile() {
-      let params = {row: {}, operation: {app: 'passport', resource: 'attachment', params:{}}, relate: {model: this.model, field: this.field}};
+      let params = {
+        row: {}, 
+        operation: {app: 'passport', resource: 'attachment', params:{}},
+        elem: this.elem,
+        relate: {model: this.model, field: this.field}
+      };
+        console.log(params, 'ppppppppp');
       this.$refs.popUpload.handlePopUpload(params);
     },
-    uploadSuccess() {
+    afterSuccess(res) {
+      this.uploadInfo.push(res);
+        console.log(res, 'sssssssssss');
     },
     handleRemove(index) {
       this.uploadInfo.splice(index, 1);
+      
     },
+    dealSelection(selects) {
+      let rDatas = [];
+      let data = {};
+      for (let field in selects) {
+        data = {
+          id: selects[field].id.value,
+          filepath: selects[field].filepath.value.filepath,
+          name: selects[field].name.value,
+          extension: selects[field].extension.value,
+        }
+
+        this.uploadInfo.push(data);
+      }
+      //this.uploadInfo.concat(selects);
+      console.log(selects, 'aaaaaaaaaaaaa', this.uploadInfo);
+    }
   }
 };
 </script>

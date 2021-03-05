@@ -80,7 +80,6 @@ export default {
           let item = this.formFields[field];
           this.inputInfos[field] = item.defaultValue ? item.defaultValue : '';
         }
-        console.log(this.formFields, 'ffffffffffffffffffff');
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })

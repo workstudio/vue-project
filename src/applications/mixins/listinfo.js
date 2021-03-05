@@ -82,6 +82,13 @@ export const listinfo = {
       this.selectionElems = selectionElems;
     },
     dealSelection(operation) {
+      //let actionType = operation.
+      switch (operation.operation){
+        case 'select':
+          this.$emit("dealSelection", this.selectionElems);
+          this.dialogPopTableVisible = false;
+          break;
+      }
       console.log(operation, 'ffffffffffffff', this.selectionElems);
     }
   }

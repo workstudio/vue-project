@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     firstFile() {
-        return this.fileInfos.length > 0 ? this.fileInfos[0] : [];
+        return this.fileInfos.length > 0 ? this.fileInfos[0] : false;
     },
     fileInfos(){
       return this.row[this.field].value;
@@ -33,7 +33,6 @@ export default {
   },
   methods: {
     showMoreFile() {
-        alert('fff');
       this.$refs.popFilelist.handlePopFilelist(this.fileInfos);
     }
   }
