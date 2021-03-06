@@ -2,13 +2,13 @@
   <el-form-item :label="elem.options.name" prop="field">
     <div>
       <el-button type="primary" @click="handleSelectFile()">选择文件</el-button>
-      <el-button type="primary" @click="handleUploadFile()">上传文件</el-button>
+      <el-button type="primary" @click="handleUploadFile()">上传文件{{test}}</el-button>
     </div>
     <div class="upload-wrap">
       <el-checkbox-group v-model="selectElems" size="mini" @change="handleFormChange">
-        <ul v-if="uploadInfo.length" class="upload-list">
+        <ul v-if="fileInfos.length" class="upload-list">
           <file-item
-            v-for="(item, index) in uploadInfo"
+            v-for="(item, index) in fileInfos"
             :key="index"
             :currentIndex="index"
             :checkList="selectElems"
@@ -22,7 +22,6 @@
       </el-checkbox-group>
     </div>
     <pop-table ref="popTable" @dealSelection="dealSelection" :appendToBody="appendToBody"></pop-table>
-    <!--<pop-form ref="popForm" :appendToBody="appendToBody"></pop-form>-->
     <pop-upload ref="popUpload" :appendToBody="appendToBody" @afterSuccess="afterSuccess"></pop-upload>
   </el-form-item>
 </template>
@@ -30,7 +29,6 @@
 import {form} from '@/applications/mixins/form';
 
 import PopTable from '@/views/common/PopTable';
-//import PopForm from '@/views/common/PopForm';
 import PopUpload from '@/views/common/PopUpload';
 import FileItem from '@/components/FileView/FileItem';
 
@@ -47,15 +45,13 @@ export default {
       selectElems: this.inputInfos[this.field] ? this.inputInfos[this.field] : [],
       //selectElems: [],
       appendToBody: true,
-      uploadInfo: [
-          {id: 1, name:'ffff', extension: 'jpg', filepath: 'http://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/22/%E5%BF%85-%E8%A6%81%E7%82%B9.png'},
-          {id: 2, name:'ooaffff', extension: 'mp3', filepath: 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/10/27/%E4%BA%8C%E5%AD%97%E9%80%89%E6%8B%A9%E9%A2%98%E8%AF%AD%E9%9F%B3.mp3'},
-          {id: 3, name:'fsss', extension: 'mp4', filepath: 'http://1254153797.vod2.myqcloud.com/41f91735vodsh1254153797/11bbe9245285890808875998543/BPgvrA4wHkkA.mp4'},
-      //row.url = 'https://xsjy-1254153797.cos.ap-shanghai.myqcloud.com/smartpen/courseware/pc/2020/09/17/%E7%AB%A0%E8%8A%82.xlsx';
-      ],
+      fileInfos: this.value,
     };
   },
   computed: {
+    test() {
+      console.log(this.value, this.elem, 'rrrrrrrrrrr');
+    },
     input() {
       return this.selectElems;
     }
@@ -72,16 +68,13 @@ export default {
         elem: this.elem,
         relate: {model: this.model, field: this.field}
       };
-        console.log(params, 'ppppppppp');
       this.$refs.popUpload.handlePopUpload(params);
     },
     afterSuccess(res) {
-      this.uploadInfo.push(res);
-        console.log(res, 'sssssssssss');
+      this.fileInfos.push(res);
     },
     handleRemove(index) {
-      this.uploadInfo.splice(index, 1);
-      
+      this.fileInfos.splice(index, 1);
     },
     dealSelection(selects) {
       let rDatas = [];
@@ -94,10 +87,9 @@ export default {
           extension: selects[field].extension.value,
         }
 
-        this.uploadInfo.push(data);
+        this.fileInfos.push(data);
       }
-      //this.uploadInfo.concat(selects);
-      console.log(selects, 'aaaaaaaaaaaaa', this.uploadInfo);
+      //this.fileInfos.concat(selects);
     },
   }
 };

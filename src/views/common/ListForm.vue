@@ -8,6 +8,7 @@
           :key="field"
           :field="field"
           :model="model"
+          :value="getCurrentValue(field)"
           :elem="formField"
           :inputInfos.sync="inputInfos"
           :is="elemForms[formField.type]">
@@ -104,6 +105,9 @@ export default {
     //showBack: {type: String, default: ''},
   },
   methods: {
+    getCurrentValue(field) {
+      return this.currentRow[field] ? this.currentRow[field].value : '';
+    },
     handleAdd() {
       //this.resetTemp()
       this.dialogStatus = 'add'
