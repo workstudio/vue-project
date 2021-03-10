@@ -25,9 +25,9 @@ Vue.prototype.baseMethod = baseMethod
 import "wl-vue-select/lib/wl-vue-select.css"
 Vue.use(wl);*/
 // 引入文件管理器
-import WlExplorer from "vue-explorer-canfront/src/pages";
-import "vue-explorer-canfront/lib/vue-explorer.css"
-Vue.use(WlExplorer);
+//import WlExplorer from "vue-explorer-canfront/src/pages";
+//import "@/assets/vue-explorer.css"
+//Vue.use(WlExplorer);
 
 
 import './icons' // icon

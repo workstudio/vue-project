@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import submitBtn from "vue-explorer-canfront/src/components/submit-btn"; // 导入防抖提交组件
+import SubmitBtn from "@/components/FileView/SubmitBtn"; // 导入防抖提交组件
 import {listinfo} from '@/applications/mixins/listinfo';
 
 import elemForms from '@/components/ElemForm'
@@ -47,7 +47,7 @@ export default {
   name: "app",
   mixins: [listinfo],
   components: {
-    submitBtn,
+    SubmitBtn,
   },
   props: {
     appendToBody: {type: Boolean, default: false}

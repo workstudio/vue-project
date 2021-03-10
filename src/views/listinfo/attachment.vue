@@ -1,6 +1,6 @@
 <template>
   <div id="filesys">
-    <wlExplorer
+    <WlExplorer
       ref="wl-explorer-cpt"
       :fileSystem="fileSystem"
       :currentSystem="currentSystem"
@@ -97,14 +97,15 @@
         </fade-in>
       </template>
 
-    </wlExplorer>
+    </WlExplorer>
   </div>
 </template>
 
 <script>
-import fadeIn from "vue-explorer-canfront/src/components/fade-in"; // 导入文件管理器
-import submitBtn from "vue-explorer-canfront/src/components/submit-btn"; // 导入防抖提交组件
+import FadeIn from "@/components/FileView/FadeIn"; // 导入文件管理器
+import SubmitBtn from "@/components/FileView/SubmitBtn"; // 导入防抖提交组件
 import FileView from "@/components/FileView/FileView.vue"; // 导入预览组件
+import WlExplorer from "@/components/FileView/WlExplorer.vue"; // 导入预览组件
 import {closeOtherLayout, arrayToTree} from "@/utils/exts/explorer"; // 导入关闭其他弹出类视图函数
 import {listinfo} from '@/applications/mixins/listinfo';
 
@@ -115,9 +116,10 @@ export default {
   name: "app",
   mixins: [listinfo],
   components: {
-    fadeIn,
-    submitBtn,
+    FadeIn,
+    SubmitBtn,
     FileView,
+    WlExplorer,
     //cascaderLoad,
     //uploadItem,
   },
