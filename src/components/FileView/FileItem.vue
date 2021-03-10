@@ -62,7 +62,7 @@ export default {
   },
   data() {
     return {
-        checked: 1,
+      checked: 1,
     };
   },
   computed: {
@@ -75,7 +75,6 @@ export default {
       this.$emit('handleRemove', this.currentIndex);
     },
     handlePreview() {
-        console.log(this.fileInfo,'fffffffff');
       this.$refs.fileView.showDialog(this.fileInfo);
     }
   }

@@ -279,6 +279,7 @@ export default {
     },
     getPathDetail(pathId) {
       if (pathId == 0) {
+        this.pathDetail = {id: 0};
         this.getFileList();
         return ;
       }
@@ -301,6 +302,7 @@ export default {
       this.layout.upload = false;
       this.listQuery.parent_id = pathId;
       this.getList();
+        console.log(pathId, this.pathDetail, 'ssssssssssss');
       if (pathId != this.pathDetail.id || forceUpdate) {
         this.getPathDetail(pathId);
       }

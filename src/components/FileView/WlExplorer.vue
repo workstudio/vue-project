@@ -184,18 +184,8 @@
             :label-class-name="i.labelClassName"
           >
             <template slot-scope="scope">
-              <!-- 非名称列 -->
-              <template v-if="i.prop !== fileSelfProps.name">
-                {{
-                i.formatter
-                ? i.formatter(scope.row, scope.column, scope.row[i.prop],scope.$index)
-                : scope.row[i.prop]
-                }}
-              </template>
-              <!-- 名称列 -->
               <div
-                v-else
-                @click="enterTheLower(scope.row, false)"
+                v-if="i.prop == fileSelfProps.name"
                 class="wl-name-col wl-is-folder"
               >
                 <!-- 不同文件类型图标区 -->
@@ -211,6 +201,16 @@
                   }}
                 </div>
               </div>
+              <div v-else-if="i.prop == 'filepath'">
+                <file-item :fileInfo="scope.row[i.prop][0]"></file-item>
+              </div>
+              <template v-else="i.prop !== fileSelfProps.name">
+                i.formatter
+                ? i.formatter(scope.row, scope.column, scope.row[i.prop],scope.$index)
+                : scope.row[i.prop]
+                }}
+              </template>
+              <!-- 名称列 -->
             </template>
           </el-table-column>
           <slot name="table-column-bottom"></slot>
@@ -223,8 +223,9 @@
         <ul class="wl-list" v-show="!layout.show_list">
           <li class="wl-list-item wl-is-folder" v-for="(i, idx) in fileDatas" :key="i.Id">
             <el-checkbox class="wl-checkbox" @change="listItemCheck($event,i)" v-model="i._checked"></el-checkbox>
-            <div @click="enterTheLower(i, false)">
-              <img :src="fileTypeItem(i, 'path')" class="name-col-icon" alt="文件类型图标" />
+            <div>
+              <!--<img :src="fileTypeItem(i, 'path')" class="name-col-icon" alt="文件类型图标" />-->
+              <file-item :fileInfo="i.filepath[0]"></file-item>
               <p class="list-item-name" :title="i[fileSelfProps.name]">
                 {{
                 i.formatter
@@ -246,10 +247,15 @@
 
 <script>
 import SubmitBtn from "@/components/FileView/SubmitBtn.vue"; // 导入防抖组件
+import FileItem from '@/components/FileView/FileItem';
 const guid = "00000000-0000-0000-0000-000000000000";
+
 export default {
   name: "wlExplorer",
-  components: {SubmitBtn},
+  components: {
+    SubmitBtn,
+    FileItem,
+  },
   data() {
     return {
       uploading: {name: "JS从脱贫到脱发你好长啊", percentage: 0, ing: false}, // 当前上传文件状态
