@@ -2,7 +2,7 @@
   <el-form-item :label="elem.options.name" prop="field">
     <div>
       <el-button type="primary" @click="handleSelectFile()">选择文件</el-button>
-      <el-button type="primary" @click="handleUploadFile()">上传文件{{test}}</el-button>
+      <el-button type="primary" @click="handleUploadFile()">上传文件</el-button>
     </div>
     <div class="upload-wrap">
       <el-checkbox-group v-model="selectElems" size="mini" @change="handleFormChange">
@@ -45,13 +45,10 @@ export default {
       selectElems: this.inputInfos[this.field] ? this.inputInfos[this.field] : [],
       //selectElems: [],
       appendToBody: true,
-      fileInfos: this.value,
+      fileInfos: this.value ? this.value : [],
     };
   },
   computed: {
-    test() {
-      console.log(this.value, this.elem, 'rrrrrrrrrrr');
-    },
     input() {
       return this.selectElems;
     }
@@ -82,7 +79,7 @@ export default {
       for (let field in selects) {
         data = {
           id: selects[field].id.value,
-          filepath: selects[field].filepath.value.filepath,
+          filepath: selects[field].filepath.value[0].filepath,
           name: selects[field].name.value,
           extension: selects[field].extension.value,
         }

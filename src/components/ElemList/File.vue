@@ -25,10 +25,10 @@ export default {
   },
   computed: {
     firstFile() {
-        return this.fileInfos.length > 0 ? this.fileInfos[0] : false;
+      return this.fileInfos.length > 0 ? this.fileInfos[0] : false;
     },
-    fileInfos(){
-      return this.row[this.field].value;
+    fileInfos() {
+      return this.row[this.field].value ? this.row[this.field].value : [];
     }
   },
   methods: {

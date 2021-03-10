@@ -20,16 +20,6 @@ import * as baseMethod from '@/utils/base'
 Vue.prototype.localCache = localCache
 Vue.prototype.baseMethod = baseMethod
 
-// 引入树形下拉框
-/*import wl from "wl-vue-select";
-import "wl-vue-select/lib/wl-vue-select.css"
-Vue.use(wl);*/
-// 引入文件管理器
-//import WlExplorer from "vue-explorer-canfront/src/pages";
-//import "@/assets/vue-explorer.css"
-//Vue.use(WlExplorer);
-
-
 import './icons' // icon
 import './permission' // permission control
 import './utils/exts/error-log' // error log

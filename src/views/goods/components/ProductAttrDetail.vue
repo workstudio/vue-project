@@ -22,14 +22,14 @@
         <el-card shadow="never" class="cardBg">
           <div v-for="(skuElem,idx) in skuElems">
             {{skuElem.name}}：
-            <el-checkbox-group v-if="skuElem.handAddStatus===0" v-model="skuElems[idx].values">
+            <el-checkbox-group v-if="skuElem.handAddStatus===0" v-model="selectSkuElems[idx].values" @change="changeSku">
               <el-checkbox v-for="item in skuElem.values" :label="item.name" :key="item.value" class="littleMarginLeft"></el-checkbox>
             </el-checkbox-group>
             <div v-else>
-              <el-checkbox-group v-model="skuElems[idx].values">
+              <el-checkbox-group v-model="selectSkuElems[idx].values" @change="changeSku">
                 <div v-for="(item,index) in skuElem.values" style="display: inline-block" class="littleMarginLeft">
-                  <el-checkbox :label="item.name" :key="item.value"></el-checkbox>
-                  <el-button type="text" class="littleMarginLeft" @click="handleRemoveProductAttrValue(idx,index)">删除
+                    <el-checkbox :label="item.value" :name="item.mark" :value="item.value">{{item.name}}</el-checkbox>
+                  <el-button type="text" class="littleMarginLeft" @click="handleRemoveSkuElemValue(idx,index)">删除{{idx}}
                   </el-button>
                 </div>
               </el-checkbox-group>
@@ -151,6 +151,7 @@ export default {
       attributeInfos: {},
       inputInfos: {},
       skuInfos: [],
+        selectSkuElems: {1: {values:[]}, 2: {values: []}},
 
       hasEditCreated:false, //编辑模式时是否初始化成功
       productAttributeCategoryOptions: [], //商品属性分类下拉选项
@@ -232,6 +233,9 @@ export default {
     }
   },
   methods: {
+    changeSku(value) {
+        console.log(value, 'vvvvvvvv', this.skuElems, this.selectSkuElems);
+    },
     handlePrev() {
       this.$emit('prevStep')
     },
@@ -488,8 +492,8 @@ export default {
       this.selectProductAttr[idx].options.push(this.addProductAttrValue);
       this.addProductAttrValue = null;
     },
-    handleRemoveProductAttrValue(idx, index) {
-      this.selectProductAttr[idx].options.splice(index, 1);
+    handleRemoveSkuElemValue(idx, index) {
+      this.skuElems[idx] = null;//.options.splice(index, 1);
     },
     getProductSkuSp(row, index) {
       let spData = JSON.parse(row.spData);
