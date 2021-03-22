@@ -16,4 +16,5 @@ import current from './current';
   title: 'local',
 }*/
 
-module.exports = Object.assign(settings, current, local);
+settings = Object.assign(settings, current, local);
+export default settings;
