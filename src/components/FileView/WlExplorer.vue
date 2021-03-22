@@ -204,7 +204,8 @@
               <div v-else-if="i.prop == 'filepath'">
                 <file-item :fileInfo="scope.row[i.prop][0]"></file-item>
               </div>
-              <template v-else="i.prop !== fileSelfProps.name">
+              <template v-else>
+                {{
                 i.formatter
                 ? i.formatter(scope.row, scope.column, scope.row[i.prop],scope.$index)
                 : scope.row[i.prop]

@@ -302,7 +302,6 @@ export default {
       this.layout.upload = false;
       this.listQuery.parent_id = pathId;
       this.getList();
-        console.log(pathId, this.pathDetail, 'ssssssssssss');
       if (pathId != this.pathDetail.id || forceUpdate) {
         this.getPathDetail(pathId);
       }
@@ -332,7 +331,8 @@ export default {
         if (!valid) {
             return ;
         }
-        let data = this.cModel.formatAddDirtData(this.inputInfos, this.formFields);
+        let addData = this.cModel.formatAddDirtData(this.inputInfos, this.formFields);
+        let data = addData.data;
         this.cModel.$create({params: {}, data: data}).then(response => {
           if (response === false) {
             return ;

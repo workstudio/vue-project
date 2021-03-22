@@ -24,6 +24,7 @@ export default {
         lazy: true,
         checkStrictly: true,
         lazyLoad (node, resolve) {
+            console.log(node, 'nnnnnnnn');
           const { level } = node;
 
           setTimeout(() => {
