@@ -209,7 +209,7 @@ export default {
           return ;
         }
           console.log(response);
-        let fileInfo = response.datas;
+        let fileInfo = response;//.datas;
         self.fileList.push({name: fileInfo.name, url: fileInfo.filepath});
         self.$emit("afterSuccess", {pathDetail: {id: self.upOptions.path_id}, fileInfo: fileInfo});
       })

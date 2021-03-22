@@ -23,8 +23,7 @@ export default class BaseModel extends Model {
     for (let field in formFields) {
       if (input[field] || input[field] === 0 || input[field] === '') {
         if (formFields[field].type == 'file') {
-          console.log(data[field], 'aaaaaaaaa');
-          fileData[field] = inputValue;
+          fileData[field] = input[field];
         } else {
           data[field] = input[field];
         }

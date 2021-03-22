@@ -126,7 +126,7 @@ export default {
         if (!valid) {
             return ;
         }
-        let data = this.model.formatAddDirtData(this.inputInfos, this.addFormFields, this.getModel('passport', 'attachmentInfo'));
+        let {data, fileData} = this.model.formatAddDirtData(this.inputInfos, this.addFormFields);
         this.model.$create({params: {}, data: data}).then(response => {
           if (response === false) {
             return ;
@@ -139,6 +139,11 @@ export default {
             type: 'success',
             duration: 2000
           });
+          if (!this.baseMethod.emptyObject(fileData)) {
+            let keyField = this.model.keyField;
+            let keyValue = response[keyField];
+            this.updateAttachmentInfo(keyValue, fileData, this.addFormFields);
+          }
           return this.$emit('handleFilter');
         })
       })
@@ -171,12 +176,10 @@ export default {
           let {data, fileData} = this.model.formatDirtData(this.inputInfos, this.currentRow, this.updateFormFields);
           this.fileData = fileData;
           if (!this.baseMethod.emptyObject(fileData)) {
-            console.log(data, fileData, 'oooooooo');
             this.updateAttachmentInfo(keyValue, fileData, this.updateFormFields);
           }
           if (!this.baseMethod.emptyObject(data)) {
           this.model.$update({params: {keyField: keyValue, action: 'update'}, data: data}).then(response => {
-              console.log(this.fileData, 'ppppp');
             if (response === false) {
               return ;
             }
